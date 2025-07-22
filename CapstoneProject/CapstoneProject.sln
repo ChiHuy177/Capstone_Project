@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapstoneProject.Server", "CapstoneProject.Server\CapstoneProject.Server.csproj", "{EA404541-D173-4C50-AD9C-B993B557E929}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "capstoneproject.client", "capstoneproject.client\capstoneproject.client.esproj", "{DF497588-96F1-40C0-8786-709701C73F07}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EA404541-D173-4C50-AD9C-B993B557E929}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA404541-D173-4C50-AD9C-B993B557E929}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA404541-D173-4C50-AD9C-B993B557E929}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA404541-D173-4C50-AD9C-B993B557E929}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF497588-96F1-40C0-8786-709701C73F07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF497588-96F1-40C0-8786-709701C73F07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF497588-96F1-40C0-8786-709701C73F07}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{DF497588-96F1-40C0-8786-709701C73F07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF497588-96F1-40C0-8786-709701C73F07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF497588-96F1-40C0-8786-709701C73F07}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
