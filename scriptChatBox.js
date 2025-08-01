@@ -7,7 +7,17 @@
         document.head.appendChild(fontAwesomeLink);
     }
 
+    // Thêm SignalR Client Library
+    if (!document.querySelector('script[src*="signalr"]')) {
+        const signalRScript = document.createElement('script');
+        signalRScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js';
+        document.head.appendChild(signalRScript);
+    }
 
+    // Biến global cho connection
+    let connection = null;
+    let isConnected = false;
+    let currentUser = 'Guest_' + Math.random().toString(36).substr(2, 9);
 
     const css = `
 
@@ -124,6 +134,17 @@
             text-align: left;
             width: fit-content;
         }
+
+        .system-message {
+            background: #fff3cd;
+            color: #856404;
+            text-align: center;
+            font-style: italic;
+            font-size: 12px;
+            margin: 5px 0;
+            padding: 5px 10px;
+            border-radius: 10px;
+        }
         
         #chat-input-container {
             padding: 15px;
@@ -161,9 +182,16 @@
         
         #chat-send::before {
             font-family: "Font Awesome 6 Free";
-            content: '';
+            content: '';
             font-size: 16px;
             font-weight: bold;
+        }
+
+        #chat-loading {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 10px;
         }
     `;
 
@@ -203,6 +231,88 @@
     const sendBtn = document.getElementById('chat-send');
     const messagesContainer = document.getElementById('chat-messages');
 
+    // Hàm khởi tạo SignalR
+    async function initializeSignalR() {
+        try {
+            connection = new signalR.HubConnectionBuilder()
+                .withUrl("/chatHub")
+                .withAutomaticReconnect()
+                .build();
+
+            // Lắng nghe tin nhắn từ server
+            connection.on("ReceiveMessage", (user, message) => {
+                addBotMessage(message, user);
+            });
+
+            // Lắng nghe khi user join
+            connection.on("UserJoined", (user) => {
+                addSystemMessage(`${user} đã tham gia chat`);
+            });
+
+            // Lắng nghe khi mất kết nối
+            connection.onclose(async () => {
+                isConnected = false;
+                addSystemMessage("❌ Mất kết nối. Đang thử kết nối lại...");
+                
+                // Tự động reconnect sau 5 giây
+                setTimeout(() => {
+                    if (!isConnected) {
+                        initializeSignalR();
+                    }
+                }, 5000);
+            });
+
+            // Kết nối
+            await connection.start();
+            isConnected = true;
+            
+            // Thông báo join
+            await connection.invoke("JoinChat", currentUser);
+            
+            console.log("✅ Đã kết nối SignalR thành công!");
+        } catch (err) {
+            console.error("❌ Lỗi kết nối SignalR:", err);
+            addSystemMessage("❌ Không thể kết nối đến server. Vui lòng thử lại sau.");
+        }
+    }
+
+    // Hàm hiển thị loading
+    function showLoading() {
+        const loading = document.createElement('div');
+        loading.id = 'chat-loading';
+        loading.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang kết nối...';
+        messagesContainer.appendChild(loading);
+    }
+
+    // Hàm ẩn loading
+    function hideLoading() {
+        const loading = document.getElementById('chat-loading');
+        if (loading) loading.remove();
+    }
+
+    // Hàm thêm tin nhắn user
+    function addUserMessage(message) {
+        const userMsg = document.createElement('div');
+        userMsg.className = 'message user-message';
+        userMsg.textContent = message;
+        messagesContainer.appendChild(userMsg);
+    }
+
+    // Hàm thêm tin nhắn bot
+    function addBotMessage(message, user = 'Bot') {
+        const botMsg = document.createElement('div');
+        botMsg.className = 'message bot-message';
+        botMsg.innerHTML = `<strong>${user}:</strong> ${message}`;
+        messagesContainer.appendChild(botMsg);
+    }
+
+    // Hàm thêm tin nhắn hệ thống
+    function addSystemMessage(message) {
+        const sysMsg = document.createElement('div');
+        sysMsg.className = 'message system-message';
+        sysMsg.textContent = message;
+        messagesContainer.appendChild(sysMsg);
+    }
 
     bubble.addEventListener('click', function () {
         if (chatWindow.style.display === 'flex') {
@@ -214,35 +324,36 @@
         }
     });
 
-
     closeBtn.addEventListener('click', function () {
         chatWindow.style.display = 'none';
         bubble.classList.remove('hidden');
     });
 
-    function sendMessage() {
+    // Hàm gửi tin nhắn
+    async function sendMessage() {
         const message = chatInput.value.trim();
         if (message) {
             // Thêm tin nhắn của user
-            const userMsg = document.createElement('div');
-            userMsg.className = 'message user-message';
-            userMsg.textContent = message;
-            messagesContainer.appendChild(userMsg);
+            addUserMessage(message);
 
             // Clear input
             chatInput.value = '';
 
+            // Gửi tin nhắn qua SignalR
+            if (isConnected && connection) {
+                try {
+                    await connection.invoke("SendMessage", currentUser, message);
+                } catch (err) {
+                    console.error("❌ Lỗi gửi tin nhắn:", err);
+                    addSystemMessage("❌ Lỗi gửi tin nhắn. Vui lòng thử lại!");
+                }
+            } else {
+                // Fallback nếu không kết nối được
+                addBotMessage("Đang kết nối... Vui lòng thử lại sau.");
+            }
+
             // Cuộn xuống cuối
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-            // Phản hồi tự động (có thể tùy chỉnh)
-            setTimeout(() => {
-                const botMsg = document.createElement('div');
-                botMsg.className = 'message bot-message';
-                botMsg.textContent = 'Cảm ơn bạn đã liên hệ! Tin nhắn của bạn đã được ghi nhận.';
-                messagesContainer.appendChild(botMsg);
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }, 1000);
         }
     }
 
@@ -253,6 +364,13 @@
             sendMessage();
         }
     });
+
+    // Khởi tạo SignalR khi trang load xong
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeSignalR);
+    } else {
+        initializeSignalR();
+    }
 
     console.log('✅ Chat bubble đã được thêm thành công!');
 })();
