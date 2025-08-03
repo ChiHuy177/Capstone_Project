@@ -1,0 +1,11 @@
+using CapstoneProject.Server.Models;
+
+namespace CapstoneProject.Server.Services
+{
+    public interface IChatService
+    {
+        Task<ChatMessage> SaveMessageAsync(ChatMessage message);
+        Task<string> GetChatGptResponseAsync(string userMessage);
+        Task<List<ChatMessage>> GetChatHistoryAsync(string userId, int limit = 50);
+    }
+} 

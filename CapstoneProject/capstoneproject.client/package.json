@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@lordicon/react": "^1.11.0",
+    "@microsoft/signalr": "^9.0.6",
     "antd": "^5.26.6",
     "lottie-web": "^5.13.0",
     "react": "^19.1.0",

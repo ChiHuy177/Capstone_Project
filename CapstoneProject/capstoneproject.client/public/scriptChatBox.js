@@ -47,7 +47,7 @@
             transform: scale(1.1);
             box-shadow: 0 6px 25px rgba(0,0,0,0.4);
         }
-        
+        50
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
