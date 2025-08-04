@@ -1,7 +1,24 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Capstone_1\\Capstone_Project\\CapstoneProject\\",
-  "Documents": [],
+  "WorkspaceRootPath": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{DF497588-96F1-40C0-8786-709701C73F07}|capstoneproject.client\\capstoneproject.client.esproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.client\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{DF497588-96F1-40C0-8786-709701C73F07}|capstoneproject.client\\capstoneproject.client.esproj|solutionrelative:capstoneproject.client\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DF497588-96F1-40C0-8786-709701C73F07}|capstoneproject.client\\capstoneproject.client.esproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.client\\src\\main.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{DF497588-96F1-40C0-8786-709701C73F07}|capstoneproject.client\\capstoneproject.client.esproj|solutionrelative:capstoneproject.client\\src\\main.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DF497588-96F1-40C0-8786-709701C73F07}|capstoneproject.client\\capstoneproject.client.esproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.client\\src\\app.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{DF497588-96F1-40C0-8786-709701C73F07}|capstoneproject.client\\capstoneproject.client.esproj|solutionrelative:capstoneproject.client\\src\\app.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,19 +26,71 @@
       "DocumentGroups": [
         {
           "DockedWidth": 296,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 3,
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
             },
             {
               "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Bookmark",
               "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "index.html",
+              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\capstoneproject.client\\index.html",
+              "RelativeDocumentMoniker": "capstoneproject.client\\index.html",
+              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\capstoneproject.client\\index.html",
+              "RelativeToolTip": "capstoneproject.client\\index.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-08-04T05:46:17.387Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "main.tsx",
+              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\capstoneproject.client\\src\\main.tsx",
+              "RelativeDocumentMoniker": "capstoneproject.client\\src\\main.tsx",
+              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\capstoneproject.client\\src\\main.tsx",
+              "RelativeToolTip": "capstoneproject.client\\src\\main.tsx",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-08-04T05:46:08.688Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "App.tsx",
+              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\capstoneproject.client\\src\\App.tsx",
+              "RelativeDocumentMoniker": "capstoneproject.client\\src\\App.tsx",
+              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\capstoneproject.client\\src\\App.tsx",
+              "RelativeToolTip": "capstoneproject.client\\src\\App.tsx",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-08-04T05:46:00.271Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\appsettings.json",
+              "RelativeDocumentMoniker": "CapstoneProject.Server\\appsettings.json",
+              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\appsettings.json",
+              "RelativeToolTip": "CapstoneProject.Server\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAABgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-08-03T07:59:40.384Z",
+              "EditorCaption": ""
             }
           ]
         }
