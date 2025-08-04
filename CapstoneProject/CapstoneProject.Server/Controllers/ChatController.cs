@@ -29,6 +29,34 @@ namespace CapstoneProject.Server.Controllers
             }
         }
 
+        [HttpGet("session/{sessionId}")]
+        public async Task<ActionResult<List<ChatMessage>>> GetChatHistoryBySession(string sessionId, [FromQuery] int limit = 50)
+        {
+            try
+            {
+                var history = await _chatService.GetChatHistoryBySessionAsync(sessionId, limit);
+                return Ok(history);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+        [HttpGet("sessions/{userId}")]
+        public async Task<ActionResult<List<string>>> GetUserSessions(string userId)
+        {
+            try
+            {
+                var sessions = await _chatService.GetUserSessionsAsync(userId);
+                return Ok(sessions);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
         [HttpGet("messages")]
         public async Task<ActionResult<List<ChatMessage>>> GetAllMessages([FromQuery] int limit = 100)
         {

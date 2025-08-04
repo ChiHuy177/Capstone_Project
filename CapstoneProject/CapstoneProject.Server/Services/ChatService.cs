@@ -57,11 +57,29 @@ namespace CapstoneProject.Server.Services
                 .ToListAsync();
         }
 
+        public async Task<List<ChatMessage>> GetChatHistoryBySessionAsync(string sessionId, int limit = 50)
+        {
+            return await _context.ChatMessages
+                .Where(m => m.SessionId == sessionId)
+                .OrderBy(m => m.Timestamp)
+                .Take(limit)
+                .ToListAsync();
+        }
+
         public async Task<List<ChatMessage>> GetAllMessagesAsync(int limit = 100)
         {
             return await _context.ChatMessages
                 .OrderByDescending(m => m.Timestamp)
                 .Take(limit)
+                .ToListAsync();
+        }
+
+        public async Task<List<string>> GetUserSessionsAsync(string userId)
+        {
+            return await _context.ChatMessages
+                .Where(m => m.UserId == userId && m.SessionId != null)
+                .Select(m => m.SessionId!)
+                .Distinct()
                 .ToListAsync();
         }
     }

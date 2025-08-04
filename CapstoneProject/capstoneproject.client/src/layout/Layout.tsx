@@ -3,9 +3,8 @@ import { Layout, Menu } from 'antd';
 import {
     MenuUnfoldOutlined,
     MenuFoldOutlined,
-    UserOutlined,
     VideoCameraOutlined,
-
+    DashboardOutlined
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import AvatarDropdown from '../components/AvatarDropdown';
@@ -21,14 +20,12 @@ interface DashboardLayoutProps {
 const items: MenuProps['items'] = [
     {
         key: '1',
-        icon: <UserOutlined />,
-        // label: <a href="/index">Analystics</a>
-        label: <NavLink to='/'>Analystics</NavLink>
+        icon: <DashboardOutlined />,
+        label: <NavLink to='/'>Dashboard</NavLink>
     },
     {
         key: '2',
         icon: <VideoCameraOutlined />,
-        // label: <a href="/configure">Configure</a>,
         label: <NavLink to='/configure'>Configure</NavLink>
     },
     
