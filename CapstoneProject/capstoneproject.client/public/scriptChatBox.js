@@ -11,6 +11,7 @@
     let connection = null;
     let isConnected = false;
     let currentUser = 'Guest_' + Math.random().toString(36).substr(2, 9);
+    let userInfo = null; // Thêm biến lưu thông tin người dùng
     let retryCount = 0;
     const MAX_RETRY = 3;
     let retryTimeout = null;
@@ -230,6 +231,98 @@
             font-style: italic;
             padding: 10px;
         }
+
+        /* CSS cho form nhập thông tin trong chat window */
+        #user-info-form {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: #f8f9fa;
+        }
+
+        #user-info-form h3 {
+            margin: 0 0 20px 0;
+            color: #133F68;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 13px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #133F68;
+        }
+
+        .form-group input.error {
+            border-color: #dc3545;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 11px;
+            margin-top: 3px;
+            display: none;
+        }
+
+        #start-chat-btn {
+            width: 100%;
+            padding: 12px;
+            background: #133F68;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 10px;
+        }
+
+        #start-chat-btn:hover {
+            background: #0d2d4a;
+        }
+
+        #start-chat-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Ẩn chat messages và input khi hiển thị form */
+        #chat-window.showing-form #chat-messages,
+        #chat-window.showing-form #chat-input-container {
+            display: none;
+        }
+
+        #chat-window.showing-form #user-info-form {
+            display: flex;
+        }
+
+        #chat-window:not(.showing-form) #user-info-form {
+            display: none;
+        }
     `;
 
     // Tạo HTML
@@ -240,8 +333,25 @@
                 <span>Chat Hỗ Trợ</span>
                 <div id="chat-close">×</div>
             </div>
+            
+            <!-- Form nhập thông tin người dùng -->
+            <div id="user-info-form">
+                <h3>Thông tin liên hệ</h3>
+                <div class="form-group">
+                    <label for="user-name">Họ và tên *</label>
+                    <input type="text" id="user-name" placeholder="Nhập họ và tên của bạn" />
+                    <div class="error-message" id="name-error">Vui lòng nhập họ và tên</div>
+                </div>
+                <div class="form-group">
+                    <label for="user-phone">Số điện thoại *</label>
+                    <input type="tel" id="user-phone" placeholder="Nhập số điện thoại" />
+                    <div class="error-message" id="phone-error">Vui lòng nhập số điện thoại hợp lệ</div>
+                </div>
+                <button id="start-chat-btn">Bắt đầu chat</button>
+            </div>
+            
             <div id="chat-messages">
-                <div class="message bot-message">Xin chào1! Tôi có thể giúp gì cho bạn?</div>
+                <div class="message bot-message">Xin chào! Tôi có thể giúp gì cho bạn?</div>
             </div>
             <div id="chat-input-container">
                 <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." />
@@ -268,7 +378,13 @@
             closeBtn: document.getElementById('chat-close'),
             chatInput: document.getElementById('chat-input'),
             sendBtn: document.getElementById('chat-send'),
-            messagesContainer: document.getElementById('chat-messages')
+            messagesContainer: document.getElementById('chat-messages'),
+            form: document.getElementById('user-info-form'),
+            nameInput: document.getElementById('user-name'),
+            phoneInput: document.getElementById('user-phone'),
+            startBtn: document.getElementById('start-chat-btn'),
+            nameError: document.getElementById('name-error'),
+            phoneError: document.getElementById('phone-error')
         };
 
         // Kiểm tra xem tất cả elements có tồn tại không
@@ -280,6 +396,88 @@
         }
 
         return elements;
+    }
+
+    // Hàm hiển thị form nhập thông tin
+    function showUserInfoForm() {
+        const elements = getChatElements();
+        if (!elements) return;
+        
+        // Hiển thị chat window và thêm class để hiển thị form
+        elements.chatWindow.style.display = 'flex';
+        elements.chatWindow.classList.add('showing-form');
+        elements.bubble.classList.add('hidden');
+        elements.nameInput.focus();
+    }
+
+    // Hàm ẩn form nhập thông tin
+    function hideUserInfoForm() {
+        const elements = getChatElements();
+        if (!elements) return;
+        
+        // Xóa class để hiển thị lại chat messages và input
+        elements.chatWindow.classList.remove('showing-form');
+    }
+
+    // Hàm validate form
+    function validateForm() {
+        const elements = getChatElements();
+        if (!elements) return false;
+        
+        let isValid = true;
+        
+        // Validate tên
+        const name = elements.nameInput.value.trim();
+        if (!name) {
+            elements.nameInput.classList.add('error');
+            elements.nameError.style.display = 'block';
+            isValid = false;
+        } else {
+            elements.nameInput.classList.remove('error');
+            elements.nameError.style.display = 'none';
+        }
+        
+        // Validate số điện thoại
+        const phone = elements.phoneInput.value.trim();
+        const phoneRegex = /^[0-9]{10,11}$/;
+        if (!phone || !phoneRegex.test(phone)) {
+            elements.phoneInput.classList.add('error');
+            elements.phoneError.style.display = 'block';
+            isValid = false;
+        } else {
+            elements.phoneInput.classList.remove('error');
+            elements.phoneError.style.display = 'none';
+        }
+        
+        return isValid;
+    }
+
+    // Hàm xử lý khi bấm bắt đầu chat
+    async function handleStartChat() {
+        if (!validateForm()) {
+            return;
+        }
+        
+        const elements = getChatElements();
+        if (!elements) return;
+        
+        // Lưu thông tin người dùng
+        userInfo = {
+            name: elements.nameInput.value.trim(),
+            phone: elements.phoneInput.value.trim()
+        };
+        
+        // Cập nhật currentUser với tên thật
+        currentUser = userInfo.name;
+        
+        // Ẩn form và hiển thị chat
+        hideUserInfoForm();
+        
+        // Thêm tin nhắn chào mừng
+        addBotMessage(`Xin chào ${userInfo.name}! Tôi có thể giúp gì cho bạn?`);
+        
+        // Kết nối SignalR
+        await initializeSignalR();
     }
 
     // Hàm khởi tạo SignalR
@@ -341,7 +539,7 @@
             isConnected = true;
             retryCount = 0; // Reset retry count khi kết nối thành công
             
-            // Thông báo join
+            // Thông báo join với thông tin người dùng
             await connection.invoke("JoinChat", currentUser);
             
             console.log("✅ Đã kết nối SignalR thành công!");
@@ -418,19 +616,55 @@
         const elements = getChatElements();
         if (!elements) return;
 
+        // Event cho chat bubble - hiển thị form thông tin
         elements.bubble.addEventListener('click', function () {
-            if (elements.chatWindow.style.display === 'flex') {
-                elements.chatWindow.style.display = 'none';
-                elements.bubble.classList.remove('hidden');
-            } else {
-                elements.chatWindow.style.display = 'flex';
-                elements.bubble.classList.add('hidden');
+            showUserInfoForm();
+        });
+
+        // Event cho nút bắt đầu chat
+        elements.startBtn.addEventListener('click', handleStartChat);
+
+        // Event cho form inputs - validate realtime
+        elements.nameInput.addEventListener('input', function() {
+            if (this.value.trim()) {
+                this.classList.remove('error');
+                elements.nameError.style.display = 'none';
             }
         });
 
+        elements.phoneInput.addEventListener('input', function() {
+            const phoneRegex = /^[0-9]{10,11}$/;
+            if (this.value.trim() && phoneRegex.test(this.value.trim())) {
+                this.classList.remove('error');
+                elements.phoneError.style.display = 'none';
+            }
+        });
+
+        // Event cho Enter key trong form
+        elements.nameInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                elements.phoneInput.focus();
+            }
+        });
+
+        elements.phoneInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleStartChat();
+            }
+        });
+
+        // Event cho chat window
         elements.closeBtn.addEventListener('click', function () {
             elements.chatWindow.style.display = 'none';
             elements.bubble.classList.remove('hidden');
+            // Reset form khi đóng chat window
+            hideUserInfoForm();
+            elements.nameInput.value = '';
+            elements.phoneInput.value = '';
+            elements.nameInput.classList.remove('error');
+            elements.phoneInput.classList.remove('error');
+            elements.nameError.style.display = 'none';
+            elements.phoneError.style.display = 'none';
         });
 
         elements.sendBtn.addEventListener('click', sendMessage);
@@ -485,9 +719,6 @@
         try {
             // Setup event listeners trước
             setupEventListeners();
-            
-            // Khởi tạo SignalR
-            await initializeSignalR();
             
             console.log('✅ Chat bubble đã được thêm thành công!');
         } catch (err) {

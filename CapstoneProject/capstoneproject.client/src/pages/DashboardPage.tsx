@@ -12,12 +12,14 @@ import {
   SearchOutlined,
   CalendarOutlined,
   HomeOutlined,
-  DashboardOutlined
+  DashboardOutlined,
+  UnorderedListOutlined,
+  AppstoreOutlined
 } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 
 const { Header, Content } = Layout;
-const { Title, Text, Paragraph } = Typography;
+const { Title, Text } = Typography;
 const { Search } = Input;
 
 interface ChatMessage {
@@ -29,12 +31,27 @@ interface ChatMessage {
   sessionId?: string;
 }
 
+interface ChatSession {
+  sessionId: string;
+  userId: string;
+  messageCount: number;
+  userMessageCount: number;
+  botMessageCount: number;
+  firstMessage: string;
+  lastMessage: string;
+  startTime: string;
+  endTime: string;
+  messages: ChatMessage[];
+}
+
 const DashboardPage: React.FC = () => {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedMessage, setSelectedMessage] = useState<ChatMessage | null>(null);
+  const [selectedSession, setSelectedSession] = useState<ChatSession | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const [viewMode, setViewMode] = useState<'messages' | 'sessions'>('sessions');
   
   const fetchChatMessages = async () => {
     setLoading(true);
@@ -43,6 +60,45 @@ const DashboardPage: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         setChatMessages(data);
+        
+        // Gom nhóm dữ liệu theo sessionId
+        const sessionsMap = new Map<string, ChatMessage[]>();
+        
+        data.forEach((message: ChatMessage) => {
+          if (message.sessionId) {
+            if (!sessionsMap.has(message.sessionId)) {
+              sessionsMap.set(message.sessionId, []);
+            }
+            sessionsMap.get(message.sessionId)!.push(message);
+          }
+        });
+        
+        // Chuyển đổi thành mảng ChatSession
+        const sessions: ChatSession[] = Array.from(sessionsMap.entries()).map(([sessionId, messages]) => {
+          const sortedMessages = messages.sort((a, b) => 
+            new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+          );
+          
+          const userMessages = messages.filter(msg => msg.isUserMessage);
+          const botMessages = messages.filter(msg => !msg.isUserMessage);
+          
+          return {
+            sessionId,
+            userId: messages[0]?.userId || 'Unknown',
+            messageCount: messages.length,
+            userMessageCount: userMessages.length,
+            botMessageCount: botMessages.length,
+            firstMessage: sortedMessages[0]?.message || '',
+            lastMessage: sortedMessages[sortedMessages.length - 1]?.message || '',
+            startTime: sortedMessages[0]?.timestamp || '',
+            endTime: sortedMessages[sortedMessages.length - 1]?.timestamp || '',
+            messages: sortedMessages
+          };
+        });
+        
+        // Sắp xếp theo thời gian mới nhất
+        sessions.sort((a, b) => new Date(b.endTime).getTime() - new Date(a.endTime).getTime());
+        setChatSessions(sessions);
       } else {
         message.error('Không thể tải dữ liệu chat');
       }
@@ -67,6 +123,15 @@ const DashboardPage: React.FC = () => {
   const botMessages = chatMessages.filter(msg => !msg.isUserMessage);
   const uniqueUsers = [...new Set(chatMessages.map(msg => msg.userId))].length;
   
+  // Lọc sessions theo từ khóa tìm kiếm
+  const filteredSessions = searchText
+    ? chatSessions.filter(session => 
+        session.userId.toLowerCase().includes(searchText.toLowerCase()) ||
+        session.firstMessage.toLowerCase().includes(searchText.toLowerCase()) ||
+        session.lastMessage.toLowerCase().includes(searchText.toLowerCase())
+      )
+    : chatSessions;
+
   // Lọc tin nhắn theo từ khóa tìm kiếm
   const filteredMessages = searchText
     ? chatMessages.filter(msg => 
@@ -74,6 +139,119 @@ const DashboardPage: React.FC = () => {
         msg.userId.toLowerCase().includes(searchText.toLowerCase())
       )
     : chatMessages;
+
+  const sessionColumns: ColumnsType<ChatSession> = [
+    {
+      title: 'Session ID',
+      dataIndex: 'sessionId',
+      key: 'sessionId',
+      width: 200,
+      ellipsis: true,
+      render: (sessionId: string) => (
+        <Tooltip title={sessionId}>
+          <Text code style={{ fontSize: '12px' }}>{sessionId}</Text>
+        </Tooltip>
+      ),
+    },
+    {
+      title: 'User ID',
+      dataIndex: 'userId',
+      key: 'userId',
+      width: 150,
+      ellipsis: true,
+      filterSearch: true,
+      filters: [...new Set(chatSessions.map(session => session.userId))].map(userId => ({
+        text: userId,
+        value: userId,
+      })),
+      onFilter: (value, record) => record.userId === value,
+      render: (userId) => (
+        <Tooltip title={userId}>
+          <Space>
+            <Avatar size="small" icon={<UserOutlined />} />
+            <Text ellipsis style={{ maxWidth: 100 }}>{userId}</Text>
+          </Space>
+        </Tooltip>
+      ),
+    },
+    {
+      title: 'Số tin nhắn',
+      key: 'messageCount',
+      width: 100,
+      sorter: (a, b) => a.messageCount - b.messageCount,
+      render: (_, record) => (
+        <div style={{ textAlign: 'center' }}>
+          <Badge count={record.messageCount} showZero style={{ backgroundColor: '#52c41a' }} />
+        </div>
+      ),
+    },
+    {
+      title: 'Tin nhắn đầu',
+      dataIndex: 'firstMessage',
+      key: 'firstMessage',
+      width: 250,
+      ellipsis: true,
+      render: (text: string) => (
+        <Tooltip title={text}>
+          <div style={{ maxWidth: 250, wordBreak: 'break-word' }}>
+            {text}
+          </div>
+        </Tooltip>
+      ),
+    },
+    {
+      title: 'Tin nhắn cuối',
+      dataIndex: 'lastMessage',
+      key: 'lastMessage',
+      width: 250,
+      ellipsis: true,
+      render: (text: string) => (
+        <Tooltip title={text}>
+          <div style={{ maxWidth: 250, wordBreak: 'break-word' }}>
+            {text}
+          </div>
+        </Tooltip>
+      ),
+    },
+    {
+      title: 'Thời gian',
+      key: 'timeRange',
+      width: 200,
+      sorter: (a, b) => new Date(a.endTime).getTime() - new Date(b.endTime).getTime(),
+      render: (_, record) => (
+        <Tooltip title={`Bắt đầu: ${convertToVietnamTime(record.startTime).toLocaleString('vi-VN')}\nKết thúc: ${convertToVietnamTime(record.endTime).toLocaleString('vi-VN')}`}>
+          <Space direction="vertical" size="small">
+            <div style={{ fontSize: '12px' }}>
+              <CalendarOutlined /> {convertToVietnamTime(record.startTime).toLocaleDateString('vi-VN')}
+            </div>
+            <div style={{ fontSize: '12px' }}>
+              <CalendarOutlined /> {convertToVietnamTime(record.endTime).toLocaleDateString('vi-VN')}
+            </div>
+          </Space>
+        </Tooltip>
+      ),
+    },
+    {
+      title: 'Hành động',
+      key: 'action',
+      width: 120,
+      render: (_, record) => (
+        <Space size="middle">
+          <Button 
+            type="primary"
+            size="small"
+            icon={<SearchOutlined />}
+            onClick={() => {
+              setSelectedSession(record);
+              setIsModalVisible(true);
+            }}
+          >
+            Xem chi tiết
+          </Button>
+        </Space>
+      ),
+    },
+  ];
 
   const columns: ColumnsType<ChatMessage> = [
     {
@@ -88,6 +266,7 @@ const DashboardPage: React.FC = () => {
       dataIndex: 'userId',
       key: 'userId',
       width: 150,
+      ellipsis: true,
       filterSearch: true,
       filters: [...new Set(chatMessages.map(msg => msg.userId))].map(userId => ({
         text: userId,
@@ -98,7 +277,7 @@ const DashboardPage: React.FC = () => {
         <Tooltip title={userId}>
           <Space>
             <Avatar size="small" icon={<UserOutlined />} />
-            <Text ellipsis style={{ maxWidth: 120 }}>{userId}</Text>
+            <Text ellipsis style={{ maxWidth: 100 }}>{userId}</Text>
           </Space>
         </Tooltip>
       ),
@@ -107,11 +286,14 @@ const DashboardPage: React.FC = () => {
       title: 'Tin nhắn',
       dataIndex: 'message',
       key: 'message',
+      width: 400,
       ellipsis: true,
       render: (text: string) => (
-        <div style={{ maxWidth: 300, wordBreak: 'break-word' }}>
-          {text.length > 100 ? `${text.substring(0, 100)}...` : text}
-        </div>
+        <Tooltip title={text}>
+          <div style={{ maxWidth: 400, wordBreak: 'break-word' }}>
+            {text}
+          </div>
+        </Tooltip>
       ),
     },
     {
@@ -135,6 +317,7 @@ const DashboardPage: React.FC = () => {
       dataIndex: 'timestamp',
       key: 'timestamp',
       width: 180,
+      ellipsis: true,
       sorter: (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
       render: (timestamp: string) => (
         <Tooltip title={convertToVietnamTime(timestamp).toLocaleString('vi-VN')}>
@@ -143,26 +326,6 @@ const DashboardPage: React.FC = () => {
             <span>{convertToVietnamTime(timestamp).toLocaleString('vi-VN')}</span>
           </Space>
         </Tooltip>
-      ),
-    },
-    {
-      title: 'Hành động',
-      key: 'action',
-      width: 120,
-      render: (_, record) => (
-        <Space size="middle">
-          <Button 
-            type="primary"
-            size="small"
-            icon={<SearchOutlined />}
-            onClick={() => {
-              setSelectedMessage(record);
-              setIsModalVisible(true);
-            }}
-          >
-            Chi tiết
-          </Button>
-        </Space>
       ),
     },
   ];
@@ -174,6 +337,45 @@ const DashboardPage: React.FC = () => {
     date.setHours(date.getHours() + 7);
     return date;
   };
+
+  // CSS cho resizable columns
+  const tableStyles = `
+    .resizable-table .ant-table-thead > tr > th {
+      position: relative;
+      cursor: col-resize;
+    }
+    
+    .resizable-table .ant-table-thead > tr > th::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 20px;
+      background: transparent;
+      cursor: col-resize;
+    }
+    
+    .resizable-table .ant-table-thead > tr > th:hover::after {
+      background: #1890ff;
+    }
+    
+    .resizable-table .ant-table-thead > tr > th.resizing::after {
+      background: #1890ff;
+    }
+  `;
+
+  // Thêm CSS vào head
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = tableStyles;
+    document.head.appendChild(style);
+    
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
 
   return (
     <Layout className="dashboard-layout" style={{ minHeight: '100vh' }}>
@@ -251,13 +453,31 @@ const DashboardPage: React.FC = () => {
               >
                 Làm mới dữ liệu
               </Button>
-              <Badge count={filteredMessages.length}>
-                <Button>Tổng số tin nhắn hiển thị</Button>
+              <Button.Group>
+                <Button 
+                  type={viewMode === 'sessions' ? 'primary' : 'default'}
+                  icon={<AppstoreOutlined />}
+                  onClick={() => setViewMode('sessions')}
+                >
+                  Theo Session
+                </Button>
+                <Button 
+                  type={viewMode === 'messages' ? 'primary' : 'default'}
+                  icon={<UnorderedListOutlined />}
+                  onClick={() => setViewMode('messages')}
+                >
+                  Theo Tin nhắn
+                </Button>
+              </Button.Group>
+              <Badge count={viewMode === 'sessions' ? filteredSessions.length : filteredMessages.length}>
+                <Button>
+                  {viewMode === 'sessions' ? 'Tổng số session' : 'Tổng số tin nhắn'} hiển thị
+                </Button>
               </Badge>
             </Space>
             
             <Search
-              placeholder="Tìm kiếm tin nhắn hoặc user ID"
+              placeholder={viewMode === 'sessions' ? "Tìm kiếm session hoặc user ID" : "Tìm kiếm tin nhắn hoặc user ID"}
               allowClear
               enterButton
               style={{ width: 300 }}
@@ -266,23 +486,44 @@ const DashboardPage: React.FC = () => {
             />
           </div>
           
-          <Table
-            columns={columns}
-            dataSource={filteredMessages}
-            rowKey="id"
-            loading={loading}
-            pagination={{
-              pageSize: 10,
-              showSizeChanger: true,
-              showQuickJumper: true,
-              showTotal: (total, range) =>
-                `${range[0]}-${range[1]} của ${total} tin nhắn`,
-            }}
-            scroll={{ x: 800 }}
-            bordered
-            size="middle"
-            rowClassName={(record) => record.isUserMessage ? 'user-message-row' : 'bot-message-row'}
-          />
+          {viewMode === 'sessions' ? (
+            <Table
+              columns={sessionColumns}
+              dataSource={filteredSessions}
+              rowKey="sessionId"
+              loading={loading}
+              pagination={{
+                pageSize: 10,
+                showSizeChanger: true,
+                showQuickJumper: true,
+                showTotal: (total, range) =>
+                  `${range[0]}-${range[1]} của ${total} session`,
+              }}
+              scroll={{ x: 1000 }}
+              bordered
+              size="middle"
+              className="resizable-table"
+            />
+          ) : (
+            <Table
+              columns={columns}
+              dataSource={filteredMessages}
+              rowKey="id"
+              loading={loading}
+              pagination={{
+                pageSize: 10,
+                showSizeChanger: true,
+                showQuickJumper: true,
+                showTotal: (total, range) =>
+                  `${range[0]}-${range[1]} của ${total} tin nhắn`,
+              }}
+              scroll={{ x: 800 }}
+              bordered
+              size="middle"
+              rowClassName={(record) => record.isUserMessage ? 'user-message-row' : 'bot-message-row'}
+              className="resizable-table"
+            />
+          )}
         </div>
       </Content>
       
@@ -290,7 +531,7 @@ const DashboardPage: React.FC = () => {
         title={
           <Space>
             <MessageOutlined />
-            <span>Chi tiết tin nhắn</span>
+            <span>Chi tiết Session</span>
           </Space>
         }
         open={isModalVisible}
@@ -300,67 +541,52 @@ const DashboardPage: React.FC = () => {
             Đóng
           </Button>,
         ]}
-        width={700}
+        width={1600}
         centered
       >
-        {selectedMessage && (
+        {selectedSession && (
           <div>
             <Row gutter={[16, 16]}>
-              <Col span={12}>
-                <Card size="small" title="Thông tin cơ bản">
-                  <p><strong>ID:</strong> {selectedMessage.id}</p>
-                  <p>
+              <Col span={8}>
+                <Card size="small" title="Thông tin Session">
+                  <p><strong>Session ID:</strong></p>
+                  <Text code style={{ fontSize: '12px' }}>{selectedSession.sessionId}</Text>
+                  <p style={{ marginTop: 8 }}>
                     <strong>User ID:</strong> 
                     <Space style={{ marginLeft: 8 }}>
                       <Avatar size="small" icon={<UserOutlined />} />
-                      {selectedMessage.userId}
+                      {selectedSession.userId}
                     </Space>
                   </p>
                   <p>
-                    <strong>Loại:</strong> 
-                    <Tag 
-                      color={selectedMessage.isUserMessage ? 'blue' : 'green'} 
-                      style={{ marginLeft: 8 }}
-                      icon={selectedMessage.isUserMessage ? <UserOutlined /> : <RobotOutlined />}
-                    >
-                      {selectedMessage.isUserMessage ? 'User' : 'ChatGPT'}
-                    </Tag>
+                    <strong>Số tin nhắn:</strong> {selectedSession.messageCount}
                   </p>
-                  {selectedMessage.sessionId && (
-                    <p><strong>Session ID:</strong> {selectedMessage.sessionId}</p>
-                  )}
+                  <p>
+                    <strong>Thời gian bắt đầu:</strong><br/>
+                    {convertToVietnamTime(selectedSession.startTime).toLocaleString('vi-VN')}
+                  </p>
+                  <p>
+                    <strong>Thời gian kết thúc:</strong><br/>
+                    {convertToVietnamTime(selectedSession.endTime).toLocaleString('vi-VN')}
+                  </p>
                 </Card>
               </Col>
-              <Col span={12}>
-                <Card size="small" title="Thời gian">
-                  <p><strong>Thời gian tạo:</strong></p>
-                  <p>
-                    <CalendarOutlined /> {convertToVietnamTime(selectedMessage.timestamp).toLocaleDateString('vi-VN')}
-                  </p>
-                  <p>
-                    <CalendarOutlined /> {convertToVietnamTime(selectedMessage.timestamp).toLocaleTimeString('vi-VN')}
-                  </p>
+              <Col span={16}>
+                <Card size="small" title="Tất cả tin nhắn trong session">
+                  <Table
+                    columns={columns}
+                    dataSource={selectedSession.messages}
+                    rowKey="id"
+                    loading={loading}
+                    pagination={false}
+                    scroll={{ x: 800, y: 400 }}
+                    bordered
+                    size="small"
+                    rowClassName={(record) => record.isUserMessage ? 'user-message-row' : 'bot-message-row'}
+                  />
                 </Card>
               </Col>
             </Row>
-            
-            <Card 
-              title="Nội dung tin nhắn" 
-              style={{ marginTop: 16 }}
-              className={selectedMessage.isUserMessage ? 'user-message-card' : 'bot-message-card'}
-              bordered
-            >
-              <div style={{ 
-                background: selectedMessage.isUserMessage ? '#f0f8ff' : '#f6ffed', 
-                padding: '16px', 
-                borderRadius: '8px',
-                maxHeight: '300px',
-                overflowY: 'auto',
-                border: `1px solid ${selectedMessage.isUserMessage ? '#91caff' : '#b7eb8f'}`
-              }}>
-                <Paragraph>{selectedMessage.message}</Paragraph>
-              </div>
-            </Card>
           </div>
         )}
       </Modal>
