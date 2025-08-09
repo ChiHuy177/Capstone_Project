@@ -1,6 +1,8 @@
 using CapstoneProject.Server.Data;
 using CapstoneProject.Server.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
+using System.Text;
 
 namespace CapstoneProject.Server.Services
 {
@@ -19,34 +21,56 @@ namespace CapstoneProject.Server.Services
             await _context.SaveChangesAsync();
             return message;
         }
+        private const string ApiKey = "AIzaSyATpv1VA5t3jl1L8qV5FN2JC-KpIYzrVT8"; // Thay bằng API key của bạn
+        private const string Endpoint = $"https://generativelanguage.googleapis.com/v1/models/gemini-2.5-pro:generateContent?key={ApiKey}";
 
         public async Task<string> GetChatGptResponseAsync(string userMessage)
         {
-            // Mock ChatGPT responses - trong thực tế sẽ gọi OpenAI API
-            await Task.Delay(1000); // Simulate API call delay
-            
-            var responses = new Dictionary<string, string>
-            {
-                { "hello", "Xin chào! Tôi có thể giúp gì cho bạn?" },
-                { "help", "Tôi có thể giúp bạn với các vấn đề về công nghệ, lập trình, hoặc bất kỳ câu hỏi nào khác." },
-                { "how are you", "Tôi đang hoạt động tốt, cảm ơn bạn đã hỏi! Bạn có cần hỗ trợ gì không?" },
-                { "bye", "Tạm biệt! Chúc bạn một ngày tốt lành!" },
-                { "thanks", "Không có gì! Tôi rất vui được giúp đỡ bạn." }
-            };
+            using var client = new HttpClient();
 
-            var lowerMessage = userMessage.ToLower();
-            
-            foreach (var response in responses)
+            var requestBody = new
             {
-                if (lowerMessage.Contains(response.Key))
+                contents = new[]
                 {
-                    return response.Value;
+                new
+                {
+                    parts = new[]
+                    {
+                        new { text = userMessage }
+                    }
                 }
             }
+            };
 
-            // Default response
-            return "Cảm ơn bạn đã gửi tin nhắn! Tôi đang xử lý yêu cầu của bạn. Bạn có thể hỏi thêm về bất kỳ vấn đề gì khác.";
+            var jsonContent = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync(Endpoint, jsonContent);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                using var doc = JsonDocument.Parse(json);
+
+                // Trích xuất phần phản hồi
+                var content = doc.RootElement
+                    .GetProperty("candidates")[0]
+                    .GetProperty("content")
+                    .GetProperty("parts")[0]
+                    .GetProperty("text")
+                    .GetString();
+
+                return content ?? "Không có phản hồi từ Gemini";
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                return $"Lỗi gọi Gemini API: {response.StatusCode}\n{error}";
+            }
         }
+
+
+
+
 
         public async Task<List<ChatMessage>> GetChatHistoryAsync(string userId, int limit = 50)
         {
@@ -83,4 +107,4 @@ namespace CapstoneProject.Server.Services
                 .ToListAsync();
         }
     }
-} 
+}

@@ -20,7 +20,7 @@ namespace CapstoneProject.Server.Data
             {
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.UserId).IsRequired().HasMaxLength(100);
-                entity.Property(e => e.Message).IsRequired().HasMaxLength(2000);
+                entity.Property(e => e.Message).IsRequired().HasMaxLength(10000);
                 entity.Property(e => e.Timestamp).IsRequired();
                 entity.Property(e => e.IsUserMessage).IsRequired();
             });

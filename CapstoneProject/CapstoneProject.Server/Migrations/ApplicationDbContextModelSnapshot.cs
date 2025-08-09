@@ -30,8 +30,8 @@ namespace CapstoneProject.Server.Migrations
 
                     b.Property<string>("Message")
                         .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("varchar(2000)");
+                        .HasMaxLength(10000)
+                        .HasColumnType("varchar(10000)");
 
                     b.Property<string>("SessionId")
                         .HasColumnType("longtext");
