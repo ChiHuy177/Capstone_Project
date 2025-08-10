@@ -4,12 +4,11 @@ import {
     MenuUnfoldOutlined,
     MenuFoldOutlined,
     VideoCameraOutlined,
-    DashboardOutlined
+    DashboardOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import AvatarDropdown from '../components/AvatarDropdown';
 import { NavLink } from 'react-router-dom';
-
 
 const { Header, Sider, Content } = Layout;
 
@@ -21,14 +20,13 @@ const items: MenuProps['items'] = [
     {
         key: '1',
         icon: <DashboardOutlined />,
-        label: <NavLink to='/'>Dashboard</NavLink>
+        label: <NavLink to="/">Dashboard</NavLink>,
     },
     {
         key: '2',
         icon: <VideoCameraOutlined />,
-        label: <NavLink to='/configure'>Configure</NavLink>
+        label: <NavLink to="/configure">Configure</NavLink>,
     },
-    
 ];
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
@@ -36,9 +34,34 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
     return (
         <Layout style={{ minHeight: '100vh' }}>
-            <Sider trigger={null} collapsible collapsed={collapsed}>
-                <div style={{ height: 32, margin: 16, background: 'rgba(255,255,255,0.3)' }} />
-                <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']} items={items} />
+            <Sider
+                trigger={null}
+                collapsible
+                collapsed={collapsed}
+                style={{ background: '#174168' }}
+            >
+                <div
+                    style={{
+                        height: 32,
+                        margin: 16,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                >
+                    {collapsed ? (
+                        <img src="/EIU_Logo_Square.png" style={{ height: 32 }} alt="EIU Logo" />
+                    ) : (
+                        <img src="/EIU_Logo.png" style={{ height: 32 }} alt="EIU Logo" />
+                    )}
+                </div>
+                <Menu
+                    theme="dark"
+                    mode="inline"
+                    defaultSelectedKeys={['1']}
+                    items={items}
+                    style={{ background: '#174168' }}
+                />
             </Sider>
             <Layout>
                 <Header
@@ -61,7 +84,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                     <div
                         style={{ display: 'flex', alignItems: 'center', gap: 24, paddingRight: 24 }}
                     >
-                        <AvatarDropdown/>
+                        <AvatarDropdown />
                     </div>
                 </Header>
                 <Content

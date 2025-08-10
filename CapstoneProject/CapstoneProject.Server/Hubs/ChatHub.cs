@@ -16,12 +16,14 @@ namespace CapstoneProject.Server.Hubs
 
         public async Task SendMessage(string user, string message)
         {
+            Console.WriteLine($"📥 Nhận tin nhắn từ user '{user}': {message}");
+
             // Tạo SessionId mới nếu user chưa có session
             if (!_userSessions.ContainsKey(user))
             {
                 _userSessions[user] = Guid.NewGuid().ToString();
             }
-            
+
             string sessionId = _userSessions[user];
 
             // Lưu tin nhắn user vào database
@@ -33,15 +35,13 @@ namespace CapstoneProject.Server.Hubs
                 Timestamp = DateTime.UtcNow,
                 SessionId = sessionId
             };
-            
-            await _chatService.SaveMessageAsync(userMessage);
 
-            // Gửi tin nhắn đến tất cả clients
-            await Clients.All.SendAsync("ReceiveMessage", user, message);
+            await _chatService.SaveMessageAsync(userMessage);
 
             // Xử lý tin nhắn với ChatGPT (mock)
             var chatGptResponse = await _chatService.GetChatGptResponseAsync(message);
-            
+            Console.WriteLine($"🤖 Response từ ChatGPT: {chatGptResponse}");
+
             // Lưu response của ChatGPT vào database
             var botMessage = new ChatMessage
             {
@@ -51,10 +51,11 @@ namespace CapstoneProject.Server.Hubs
                 Timestamp = DateTime.UtcNow,
                 SessionId = sessionId
             };
-            
+
             await _chatService.SaveMessageAsync(botMessage);
 
-            // Gửi response về cho user
+            // Chỉ gửi response bot về cho user, không echo lại tin nhắn user
+            Console.WriteLine($"📤 Gửi response bot về user '{user}': {chatGptResponse}");
             await Clients.Caller.SendAsync("ReceiveMessage", "ChatGPT", chatGptResponse);
         }
 
@@ -62,7 +63,7 @@ namespace CapstoneProject.Server.Hubs
         {
             // Tạo SessionId mới khi user join chat
             _userSessions[user] = Guid.NewGuid().ToString();
-            
+
             await Clients.All.SendAsync("UserJoined", user);
         }
 
@@ -70,7 +71,7 @@ namespace CapstoneProject.Server.Hubs
         {
             // Tạo SessionId mới cho user
             _userSessions[user] = Guid.NewGuid().ToString();
-            
+
             await Clients.Caller.SendAsync("SessionStarted", _userSessions[user]);
         }
 
@@ -85,4 +86,4 @@ namespace CapstoneProject.Server.Hubs
             await base.OnDisconnectedAsync(exception);
         }
     }
-} 
+}
