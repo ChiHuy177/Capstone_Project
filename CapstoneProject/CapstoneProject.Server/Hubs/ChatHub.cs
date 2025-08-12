@@ -16,7 +16,7 @@ namespace CapstoneProject.Server.Hubs
 
         public async Task SendMessage(string user, string message)
         {
-            Console.WriteLine($"📥 Nhận tin nhắn từ user '{user}': {message}");
+            Console.WriteLine($"Nhận tin nhắn từ user '{user}': {message}");
 
             // Tạo SessionId mới nếu user chưa có session
             if (!_userSessions.ContainsKey(user))
@@ -40,7 +40,7 @@ namespace CapstoneProject.Server.Hubs
 
             // Xử lý tin nhắn với ChatGPT (mock)
             var chatGptResponse = await _chatService.GetChatGptResponseAsync(message);
-            Console.WriteLine($"🤖 Response từ ChatGPT: {chatGptResponse}");
+            Console.WriteLine($"Response từ ChatGPT: {chatGptResponse}");
 
             // Lưu response của ChatGPT vào database
             var botMessage = new ChatMessage
@@ -55,7 +55,7 @@ namespace CapstoneProject.Server.Hubs
             await _chatService.SaveMessageAsync(botMessage);
 
             // Chỉ gửi response bot về cho user, không echo lại tin nhắn user
-            Console.WriteLine($"📤 Gửi response bot về user '{user}': {chatGptResponse}");
+            Console.WriteLine($"Gửi response bot về user '{user}': {chatGptResponse}");
             await Clients.Caller.SendAsync("ReceiveMessage", "ChatGPT", chatGptResponse);
         }
 

@@ -3,6 +3,7 @@ using CapstoneProject.Server.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text;
+using CapstoneProject.Server.Repository.interfaces;
 
 namespace CapstoneProject.Server.Services
 {
@@ -10,9 +11,12 @@ namespace CapstoneProject.Server.Services
     {
         private readonly ApplicationDbContext _context;
 
-        public ChatService(ApplicationDbContext context)
+        private readonly IChatRepository _chatRepository;
+
+        public ChatService(ApplicationDbContext context,IChatRepository chatRepository)
         {
             _context = context;
+            _chatRepository = chatRepository;
         }
 
         public async Task<ChatMessage> SaveMessageAsync(ChatMessage message)
@@ -21,7 +25,7 @@ namespace CapstoneProject.Server.Services
             await _context.SaveChangesAsync();
             return message;
         }
-        private const string ApiKey = "AIzaSyATpv1VA5t3jl1L8qV5FN2JC-KpIYzrVT8"; // Thay bằng API key của bạn
+        private const string ApiKey = "AIzaSyATpv1VA5t3jl1L8qV5FN2JC-KpIYzrVT8";
         private const string Endpoint = $"https://generativelanguage.googleapis.com/v1/models/gemini-2.5-pro:generateContent?key={ApiKey}";
 
         public async Task<string> GetChatGptResponseAsync(string userMessage)
@@ -68,43 +72,24 @@ namespace CapstoneProject.Server.Services
             }
         }
 
-
-
-
-
         public async Task<List<ChatMessage>> GetChatHistoryAsync(string userId, int limit = 50)
         {
-            return await _context.ChatMessages
-                .Where(m => m.UserId == userId)
-                .OrderByDescending(m => m.Timestamp)
-                .Take(limit)
-                .ToListAsync();
+            return await _chatRepository.GetChatHistory(userId, limit);
         }
 
         public async Task<List<ChatMessage>> GetChatHistoryBySessionAsync(string sessionId, int limit = 50)
         {
-            return await _context.ChatMessages
-                .Where(m => m.SessionId == sessionId)
-                .OrderBy(m => m.Timestamp)
-                .Take(limit)
-                .ToListAsync();
+            return await _chatRepository.GetChatHistoryBySessionAsync (sessionId, limit);
         }
 
         public async Task<List<ChatMessage>> GetAllMessagesAsync(int limit = 100)
         {
-            return await _context.ChatMessages
-                .OrderByDescending(m => m.Timestamp)
-                .Take(limit)
-                .ToListAsync();
+            return await _chatRepository.GetAll(limit);
         }
 
         public async Task<List<string>> GetUserSessionsAsync(string userId)
         {
-            return await _context.ChatMessages
-                .Where(m => m.UserId == userId && m.SessionId != null)
-                .Select(m => m.SessionId!)
-                .Distinct()
-                .ToListAsync();
+            return await _chatRepository.GetUserSession(userId);
         }
     }
 }

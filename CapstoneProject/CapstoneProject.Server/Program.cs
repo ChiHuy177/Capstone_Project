@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using CapstoneProject.Server.Data;
 using CapstoneProject.Server.Services;
 using CapstoneProject.Server.Hubs;
+using CapstoneProject.Server.Repository.interfaces;
+using CapstoneProject.Server.Repository.implementations;
+using System.Reflection;
 
 namespace CapstoneProject.Server
 {
@@ -24,8 +27,18 @@ namespace CapstoneProject.Server
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
             
             // Add Services
-            builder.Services.AddScoped<IChatService, ChatService>();
-            
+            builder.Services.Scan(scan => scan
+                .FromAssemblies(Assembly.GetExecutingAssembly())
+
+                .AddClasses(classes => classes.Where(type => type.Name.EndsWith("Repository")))
+                    .AsMatchingInterface()
+                    .WithScopedLifetime()
+
+                .AddClasses(classes => classes.Where(type => type.Name.EndsWith("Service")))
+                    .AsMatchingInterface()
+                    .WithScopedLifetime()
+            );
+
             // Add CORS for SignalR
             builder.Services.AddCors(options =>
             {
