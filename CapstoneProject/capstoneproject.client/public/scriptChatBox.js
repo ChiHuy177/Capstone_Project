@@ -19,9 +19,12 @@
     let isConnected = false;
     let currentUser = 'Guest_' + Math.random().toString(36).substr(2, 9);
     let userInfo = null; // Thêm biến lưu thông tin người dùng
+    let hasUserInfo = false; // Thêm biến theo dõi đã nhập thông tin chưa
     let retryCount = 0;
     const MAX_RETRY = 3;
     let retryTimeout = null;
+    let typingTimeout = null; // Thêm biến theo dõi timeout cho typing indicator
+    let isWaitingForResponse = false; // Thêm biến theo dõi đang chờ response
 
     // Hàm load SignalR library với Promise
     function loadSignalR() {
@@ -420,7 +423,7 @@
             </div>
             
             <div id="chat-messages">
-                <div class="message bot-message">Xin chào! Tôi có thể giúp gì cho bạn?</div>
+                <div class="message bot-message"></div>
             </div>
             <div id="chat-input-container">
                 <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." />
@@ -459,7 +462,7 @@
         // Kiểm tra xem tất cả elements có tồn tại không
         for (const [key, element] of Object.entries(elements)) {
             if (!element) {
-                console.error(`❌ Không tìm thấy element: ${key}`);
+                console.error(`Không tìm thấy element: ${key}`);
                 return null;
             }
         }
@@ -472,11 +475,18 @@
         const elements = getChatElements();
         if (!elements) return;
 
-        // Hiển thị chat window và thêm class để hiển thị form
-        elements.chatWindow.style.display = 'flex';
-        elements.chatWindow.classList.add('showing-form');
-        elements.bubble.classList.add('hidden');
-        elements.nameInput.focus();
+        // Chỉ hiển thị form nếu chưa có thông tin người dùng
+        if (!hasUserInfo) {
+            // Hiển thị chat window và thêm class để hiển thị form
+            elements.chatWindow.style.display = 'flex';
+            elements.chatWindow.classList.add('showing-form');
+            elements.bubble.classList.add('hidden');
+            elements.nameInput.focus();
+        } else {
+            // Nếu đã có thông tin, hiển thị chat window trực tiếp
+            elements.chatWindow.style.display = 'flex';
+            elements.bubble.classList.add('hidden');
+        }
     }
 
     // Hàm ẩn form nhập thông tin
@@ -536,6 +546,9 @@
             phone: elements.phoneInput.value.trim(),
         };
 
+        // Đánh dấu đã có thông tin người dùng
+        hasUserInfo = true;
+
         // Cập nhật currentUser với tên thật
         currentUser = userInfo.name;
 
@@ -578,7 +591,7 @@
         const elements = getChatElements();
         if (!elements) return;
 
-        console.log('🤖 Thêm tin nhắn bot:', message, 'từ user:', user);
+        console.log('Thêm tin nhắn bot:', message, 'từ user:', user);
         const botMsg = document.createElement('div');
         botMsg.className = 'message bot-message';
 
@@ -614,7 +627,6 @@
         typingIndicator.id = 'typing-indicator';
         typingIndicator.className = 'typing-indicator';
         typingIndicator.innerHTML = `
-            <span style="font-size: 12px; color: #666; margin-right: 8px;">Bot đang nhập...</span>
             <div class="typing-dot"></div>
             <div class="typing-dot"></div>
             <div class="typing-dot"></div>
@@ -632,15 +644,18 @@
 
         // Lưu thời gian bắt đầu hiển thị
         typingIndicator.dataset.startTime = Date.now();
+
+        // Đánh dấu đang chờ response
+        isWaitingForResponse = true;
     }
 
-    // Hàm ẩn typing indicator với delay tối thiểu
+    // Hàm ẩn typing indicator với delay tối thiểu 2 giây
     function hideTypingIndicator() {
         const typingIndicator = document.getElementById('typing-indicator');
         if (typingIndicator) {
             const startTime = parseInt(typingIndicator.dataset.startTime) || 0;
             const elapsed = Date.now() - startTime;
-            const minDisplayTime = 1500; // Tối thiểu 1.5 giây
+            const minDisplayTime = 2000; // Tối thiểu 2 giây
 
             if (elapsed < minDisplayTime) {
                 // Nếu chưa đủ thời gian, đợi thêm
@@ -648,14 +663,23 @@
                     const indicator = document.getElementById('typing-indicator');
                     if (indicator) {
                         indicator.remove();
-                        console.log('✅ Typing indicator đã được ẩn sau delay');
+                        console.log('   Typing indicator đã được ẩn sau delay 2 giây');
                     }
                 }, minDisplayTime - elapsed);
             } else {
                 // Nếu đã đủ thời gian, ẩn ngay
                 typingIndicator.remove();
-                console.log('✅ Typing indicator đã được ẩn');
+                console.log('   Typing indicator đã được ẩn');
             }
+        }
+
+        // Reset trạng thái chờ response
+        isWaitingForResponse = false;
+
+        // Clear timeout nếu có
+        if (typingTimeout) {
+            clearTimeout(typingTimeout);
+            typingTimeout = null;
         }
     }
 
@@ -686,10 +710,20 @@
 
             // Lắng nghe tin nhắn từ server
             connection.on('ReceiveMessage', (user, message) => {
-                console.log('📨 Nhận tin nhắn từ server:', { user, message });
-                // Ẩn typing indicator trước khi hiển thị tin nhắn
-                hideTypingIndicator();
-                addBotMessage(message, user);
+                console.log(' Nhận tin nhắn từ server:', { user, message });
+
+                // Nếu đang chờ response, ẩn typing indicator trước
+                if (isWaitingForResponse) {
+                    hideTypingIndicator();
+
+                    // Delay 2 giây trước khi hiển thị tin nhắn
+                    setTimeout(() => {
+                        addBotMessage(message, user);
+                    }, 2000);
+                } else {
+                    // Nếu không chờ response, hiển thị tin nhắn ngay
+                    addBotMessage(message, user);
+                }
             });
 
             // Lắng nghe khi user join
@@ -700,7 +734,7 @@
             // Lắng nghe khi mất kết nối
             connection.onclose(() => {
                 isConnected = false;
-                addSystemMessage('❌ Mất kết nối. Đang thử kết nối lại...');
+                addSystemMessage(' Mất kết nối. Đang thử kết nối lại...');
 
                 // Tự động reconnect sau 5 giây
                 if (retryTimeout) {
@@ -712,9 +746,7 @@
                         retryCount++;
                         initializeSignalR();
                     } else if (retryCount >= MAX_RETRY) {
-                        addSystemMessage(
-                            '❌ Đã thử kết nối lại nhiều lần. Vui lòng refresh trang.'
-                        );
+                        addSystemMessage(' Đã thử kết nối lại nhiều lần. Vui lòng refresh trang.');
                     }
                 }, 5000);
             });
@@ -727,11 +759,11 @@
             // Thông báo join với thông tin người dùng
             await connection.invoke('JoinChat', currentUser);
 
-            console.log('✅ Đã kết nối SignalR thành công!');
-            addSystemMessage('✅ Đã kết nối thành công!');
+            console.log('   Đã kết nối SignalR thành công!');
+            addSystemMessage('   Đã kết nối thành công!');
         } catch (err) {
-            console.error('❌ Lỗi kết nối SignalR:', err);
-            addSystemMessage('❌ Không thể kết nối đến server. Vui lòng thử lại sau.');
+            console.error(' Lỗi kết nối SignalR:', err);
+            addSystemMessage(' Không thể kết nối đến server. Vui lòng thử lại sau.');
 
             // Retry logic
             if (retryCount < MAX_RETRY) {
@@ -766,7 +798,7 @@
         const loading = document.getElementById('chat-loading');
         if (loading) {
             loading.remove();
-            console.log('✅ Loading indicator đã được ẩn');
+            console.log('   Loading indicator đã được ẩn');
         } else {
             console.log('⚠️ Không tìm thấy loading indicator để ẩn');
         }
@@ -831,14 +863,17 @@
         elements.closeBtn.addEventListener('click', function () {
             elements.chatWindow.style.display = 'none';
             elements.bubble.classList.remove('hidden');
-            // Reset form khi đóng chat window
-            hideUserInfoForm();
-            elements.nameInput.value = '';
-            elements.phoneInput.value = '';
-            elements.nameInput.classList.remove('error');
-            elements.phoneInput.classList.remove('error');
-            elements.nameError.style.display = 'none';
-            elements.phoneError.style.display = 'none';
+
+            // Chỉ reset form nếu chưa có thông tin người dùng
+            if (!hasUserInfo) {
+                hideUserInfoForm();
+                elements.nameInput.value = '';
+                elements.phoneInput.value = '';
+                elements.nameInput.classList.remove('error');
+                elements.phoneInput.classList.remove('error');
+                elements.nameError.style.display = 'none';
+                elements.phoneError.style.display = 'none';
+            }
         });
 
         elements.sendBtn.addEventListener('click', sendMessage);
@@ -874,23 +909,25 @@
                     // Gửi tin nhắn (không cần await vì response sẽ đến qua SignalR event)
                     await connection.invoke('SendMessage', currentUser, message);
 
-                    // Set timeout để ẩn typing indicator nếu không nhận được response
-                    setTimeout(() => {
+                    // Set timeout 1 phút để ẩn typing indicator nếu không nhận được response
+                    typingTimeout = setTimeout(() => {
                         const typingIndicator = document.getElementById('typing-indicator');
-                        if (typingIndicator) {
+                        if (typingIndicator && isWaitingForResponse) {
                             hideTypingIndicator();
-                            addSystemMessage('⏰ Không nhận được phản hồi. Vui lòng thử lại!');
+                            addSystemMessage(
+                                '⏰ Không nhận được phản hồi trong 1 phút. Vui lòng thử lại!'
+                            );
                         }
-                    }, 30000); // 30 giây timeout
+                    }, 60000); // 1 phút timeout
                 } catch (err) {
-                    console.error('❌ Lỗi gửi tin nhắn:', err);
+                    console.error(' Lỗi gửi tin nhắn:', err);
                     hideTypingIndicator();
-                    addSystemMessage('❌ Lỗi gửi tin nhắn. Vui lòng thử lại!');
+                    addSystemMessage('Lỗi gửi tin nhắn. Vui lòng thử lại!');
                 }
             } else {
                 // Fallback nếu không kết nối được
                 hideTypingIndicator();
-                addSystemMessage('❌ Không có kết nối. Vui lòng thử lại sau.');
+                addSystemMessage('Không có kết nối. Vui lòng thử lại sau.');
             }
         }
     }
@@ -899,6 +936,9 @@
     function cleanup() {
         if (retryTimeout) {
             clearTimeout(retryTimeout);
+        }
+        if (typingTimeout) {
+            clearTimeout(typingTimeout);
         }
         if (connection) {
             connection.stop();
@@ -911,9 +951,9 @@
             // Setup event listeners trước
             setupEventListeners();
 
-            console.log('✅ Chat bubble đã được thêm thành công!');
+            console.log('Chat bubble đã được thêm thành công!');
         } catch (err) {
-            console.error('❌ Lỗi khởi tạo chat bubble:', err);
+            console.error('Lỗi khởi tạo chat bubble:', err);
         }
     }
 

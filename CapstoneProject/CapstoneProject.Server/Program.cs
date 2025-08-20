@@ -6,6 +6,8 @@ using CapstoneProject.Server.Hubs;
 using CapstoneProject.Server.Repository.interfaces;
 using CapstoneProject.Server.Repository.implementations;
 using System.Reflection;
+using CapstoneProject.Server.Services.implementations;
+using CapstoneProject.Server.Services.interfaces;
 
 namespace CapstoneProject.Server
 {
@@ -17,15 +19,15 @@ namespace CapstoneProject.Server
 
             // Add services to the container.
             builder.Services.AddControllers();
-            
+
             // Add SignalR
             builder.Services.AddSignalR();
-            
+
             // Add Database
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-            
+
             // Add Services
             builder.Services.Scan(scan => scan
                 .FromAssemblies(Assembly.GetExecutingAssembly())
@@ -51,10 +53,14 @@ namespace CapstoneProject.Server
                 });
             });
 
+            builder.Services.AddSingleton<IKnowledgeService, KnowledgeService>();
+
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
             var app = builder.Build();
+
+            app.UseStaticFiles();
 
             app.UseDefaultFiles();
             app.MapStaticAssets();
@@ -66,14 +72,14 @@ namespace CapstoneProject.Server
             }
 
             app.UseHttpsRedirection();
-            
+
             // Use CORS
             app.UseCors("AllowAll");
 
             app.UseAuthorization();
 
             app.MapControllers();
-            
+
             // Map SignalR Hub
             app.MapHub<ChatHub>("/chatHub");
 

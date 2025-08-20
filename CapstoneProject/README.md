@@ -3,6 +3,7 @@
 ## Mô tả Project
 
 Đây là một hệ thống chat hoàn chỉnh với các tính năng:
+
 - Chat widget tích hợp với SignalR real-time
 - Lưu trữ tin nhắn vào MySQL database
 - Mock ChatGPT responses
@@ -31,11 +32,13 @@ CapstoneProject/
 
 1. Cài đặt MySQL Server
 2. Tạo database:
+
 ```sql
 CREATE DATABASE capstoneproject;
 ```
 
 3. Cập nhật connection string trong `CapstoneProject.Server/appsettings.json`:
+
 ```json
 {
   "ConnectionStrings": {
@@ -92,37 +95,42 @@ Client sẽ chạy tại: `https://localhost:54410`
 ## Troubleshooting
 
 ### Lỗi kết nối SignalR
+
 - Kiểm tra HTTPS certificate
 - Đảm bảo CORS được cấu hình đúng
 - Kiểm tra firewall
 
 ### Lỗi Database
+
 - Kiểm tra MySQL service đang chạy
 - Kiểm tra connection string
 - Chạy `dotnet ef database update`
 
 ### Lỗi Build
+
 - Chạy `dotnet restore`
 - Xóa thư mục `bin` và `obj`, sau đó build lại
 
 ## Cấu hình HTTPS
 
 Project đã được cấu hình để chạy trên HTTPS:
+
 - Server: `https://localhost:7001`
 - Client: `https://localhost:54410`
 
 Nếu gặp lỗi certificate, chạy:
+
 ```bash
 dotnet dev-certs https --trust
 ```
 
 ## Tính năng
 
-- ✅ Real-time chat với SignalR
-- ✅ Lưu trữ MySQL
-- ✅ Mock ChatGPT responses
-- ✅ Dashboard quản lý
-- ✅ HTTPS support
-- ✅ Auto-reconnection
-- ✅ Responsive design
-- ✅ Vietnamese language support 
+- Real-time chat với SignalR
+- Lưu trữ MySQL
+- Mock ChatGPT responses
+- Dashboard quản lý
+- HTTPS support
+- Auto-reconnection
+- Responsive design
+- Vietnamese language support

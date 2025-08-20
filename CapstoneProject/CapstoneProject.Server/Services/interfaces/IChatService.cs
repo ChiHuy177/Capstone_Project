@@ -10,5 +10,7 @@ namespace CapstoneProject.Server.Services
         Task<List<ChatMessage>> GetChatHistoryBySessionAsync(string sessionId, int limit = 50);
         Task<List<ChatMessage>> GetAllMessagesAsync(int limit = 100);
         Task<List<string>> GetUserSessionsAsync(string userId);
+
+        Task<List<long>> GetNumberOfMessagesAsync();
     }
-} 
+}

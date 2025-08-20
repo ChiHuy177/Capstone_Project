@@ -27,4 +27,8 @@
     </ProjectReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\knowledge.txt" />
+  </ItemGroup>
+
 </Project> 

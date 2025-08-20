@@ -32,6 +32,7 @@ import {
     AppstoreOutlined,
 } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
+import ChatService from '../services/ChatSerice';
 
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;
@@ -71,57 +72,49 @@ const DashboardPage: React.FC = () => {
     const fetchChatMessages = async () => {
         setLoading(true);
         try {
-            const response = await fetch('https://localhost:5026/api/chat/messages');
-            if (response.ok) {
-                const data = await response.json();
-                setChatMessages(data);
+            const data = await ChatService.getAllMessage();
+            setChatMessages(data);
 
-                // Gom nhóm dữ liệu theo sessionId
-                const sessionsMap = new Map<string, ChatMessage[]>();
+            // Gom nhóm dữ liệu theo sessionId
+            const sessionsMap = new Map<string, ChatMessage[]>();
 
-                data.forEach((message: ChatMessage) => {
-                    if (message.sessionId) {
-                        if (!sessionsMap.has(message.sessionId)) {
-                            sessionsMap.set(message.sessionId, []);
-                        }
-                        sessionsMap.get(message.sessionId)!.push(message);
+            data.forEach((message: ChatMessage) => {
+                if (message.sessionId) {
+                    if (!sessionsMap.has(message.sessionId)) {
+                        sessionsMap.set(message.sessionId, []);
                     }
-                });
+                    sessionsMap.get(message.sessionId)!.push(message);
+                }
+            });
 
-                // Chuyển đổi thành mảng ChatSession
-                const sessions: ChatSession[] = Array.from(sessionsMap.entries()).map(
-                    ([sessionId, messages]) => {
-                        const sortedMessages = messages.sort(
-                            (a, b) =>
-                                new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-                        );
+            // Chuyển đổi thành mảng ChatSession
+            const sessions: ChatSession[] = Array.from(sessionsMap.entries()).map(
+                ([sessionId, messages]) => {
+                    const sortedMessages = messages.sort(
+                        (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+                    );
 
-                        const userMessages = messages.filter((msg) => msg.isUserMessage);
-                        const botMessages = messages.filter((msg) => !msg.isUserMessage);
+                    const userMessages = messages.filter((msg) => msg.isUserMessage);
+                    const botMessages = messages.filter((msg) => !msg.isUserMessage);
 
-                        return {
-                            sessionId,
-                            userId: messages[0]?.userId || 'Unknown',
-                            messageCount: messages.length,
-                            userMessageCount: userMessages.length,
-                            botMessageCount: botMessages.length,
-                            firstMessage: sortedMessages[0]?.message || '',
-                            lastMessage: sortedMessages[sortedMessages.length - 1]?.message || '',
-                            startTime: sortedMessages[0]?.timestamp || '',
-                            endTime: sortedMessages[sortedMessages.length - 1]?.timestamp || '',
-                            messages: sortedMessages,
-                        };
-                    }
-                );
+                    return {
+                        sessionId,
+                        userId: messages[0]?.userId || 'Unknown',
+                        messageCount: messages.length,
+                        userMessageCount: userMessages.length,
+                        botMessageCount: botMessages.length,
+                        firstMessage: sortedMessages[0]?.message || '',
+                        lastMessage: sortedMessages[sortedMessages.length - 1]?.message || '',
+                        startTime: sortedMessages[0]?.timestamp || '',
+                        endTime: sortedMessages[sortedMessages.length - 1]?.timestamp || '',
+                        messages: sortedMessages,
+                    };
+                }
+            );
 
-                // Sắp xếp theo thời gian mới nhất
-                sessions.sort(
-                    (a, b) => new Date(b.endTime).getTime() - new Date(a.endTime).getTime()
-                );
-                setChatSessions(sessions);
-            } else {
-                message.error('Không thể tải dữ liệu chat');
-            }
+            // Sắp xếp theo thời gian mới nhất
+            sessions.sort((a, b) => new Date(b.endTime).getTime() - new Date(a.endTime).getTime());
+            setChatSessions(sessions);
         } catch (error) {
             console.error('Error fetching chat messages:', error);
             message.error('Lỗi kết nối server');
@@ -338,7 +331,7 @@ const DashboardPage: React.FC = () => {
             width: 120,
             filters: [
                 { text: 'User', value: true },
-                { text: 'ChatGPT', value: false },
+                { text: 'EIU', value: false },
             ],
             onFilter: (value, record) => record.isUserMessage === value,
             render: (isUser: boolean) => (
@@ -376,51 +369,12 @@ const DashboardPage: React.FC = () => {
         return date;
     };
 
-    // CSS cho resizable columns
-    const tableStyles = `
-    .resizable-table .ant-table-thead > tr > th {
-      position: relative;
-      cursor: col-resize;
-    }
-    
-    .resizable-table .ant-table-thead > tr > th::after {
-      content: '';
-      position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 4px;
-      height: 20px;
-      background: transparent;
-      cursor: col-resize;
-    }
-    
-    .resizable-table .ant-table-thead > tr > th:hover::after {
-      background: #1890ff;
-    }
-    
-    .resizable-table .ant-table-thead > tr > th.resizing::after {
-      background: #1890ff;
-    }
-  `;
-
-    // Thêm CSS vào head
-    useEffect(() => {
-        const style = document.createElement('style');
-        style.textContent = tableStyles;
-        document.head.appendChild(style);
-
-        return () => {
-            document.head.removeChild(style);
-        };
-    }, []);
-
     return (
         <Layout className="dashboard-layout" style={{ minHeight: '100vh' }}>
             <Header
                 style={{
                     background: '#fff',
-                    padding: '0 24px',
+                    padding: '0 16px',
                     boxShadow: '0 1px 4px rgba(0,21,41,.08)',
                 }}
             >
@@ -433,22 +387,30 @@ const DashboardPage: React.FC = () => {
                     }}
                 >
                     <Title level={3} style={{ margin: 0 }}>
-                        <DashboardOutlined /> Hệ thống quản lý Chat
+                        <DashboardOutlined />
+                        <span className="hidden-xs">Hệ thống quản lý Chat</span>
+                        <span className="visible-xs">Dashboard</span>
                     </Title>
                 </div>
             </Header>
 
-            <Content style={{ padding: '0 24px', margin: '16px 0' }}>
+            <Content style={{ padding: '0 16px', margin: '16px 0' }}>
                 <Breadcrumb style={{ margin: '16px 0' }}>
                     <Breadcrumb.Item href="/">
-                        <HomeOutlined /> Trang chủ
+                        <HomeOutlined />
+                        <span className="hidden-xs">Trang chủ</span>
+                        <span className="visible-xs">Trang chủ</span>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
-                        <DashboardOutlined /> Dashboard
+                        <DashboardOutlined />
+                        <span className="hidden-xs">Dashboard</span>
+                        <span className="visible-xs">Dashboard</span>
                     </Breadcrumb.Item>
                 </Breadcrumb>
 
-                <div style={{ background: '#fff', padding: 24, minHeight: 360, borderRadius: 4 }}>
+                <div
+                    style={{ background: '#fff', padding: '16px', minHeight: 360, borderRadius: 4 }}
+                >
                     <Row gutter={[16, 24]}>
                         <Col xs={24} sm={8}>
                             <Card bordered={false} hoverable>
@@ -494,69 +456,74 @@ const DashboardPage: React.FC = () => {
 
                     <Divider />
 
-                    <div
-                        style={{
-                            marginBottom: 16,
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            flexWrap: 'wrap',
-                            gap: 8,
-                        }}
-                    >
-                        <Space>
-                            <Button
-                                type="primary"
-                                icon={<ReloadOutlined />}
-                                onClick={fetchChatMessages}
-                                loading={loading}
-                            >
-                                Làm mới dữ liệu
-                            </Button>
-                            <Button.Group>
+                    <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+                        <Col xs={24} sm={24} md={16} lg={18}>
+                            <Space wrap size="small">
                                 <Button
-                                    type={viewMode === 'sessions' ? 'primary' : 'default'}
-                                    icon={<AppstoreOutlined />}
-                                    onClick={() => setViewMode('sessions')}
+                                    type="primary"
+                                    icon={<ReloadOutlined />}
+                                    onClick={fetchChatMessages}
+                                    loading={loading}
+                                    size="small"
                                 >
-                                    Theo Session
+                                    <span className="hidden-xs">Làm mới dữ liệu</span>
+                                    <span className="visible-xs">Làm mới</span>
                                 </Button>
-                                <Button
-                                    type={viewMode === 'messages' ? 'primary' : 'default'}
-                                    icon={<UnorderedListOutlined />}
-                                    onClick={() => setViewMode('messages')}
+                                <Button.Group size="small">
+                                    <Button
+                                        type={viewMode === 'sessions' ? 'primary' : 'default'}
+                                        icon={<AppstoreOutlined />}
+                                        onClick={() => setViewMode('sessions')}
+                                    >
+                                        <span className="hidden-xs">Theo Session</span>
+                                        <span className="visible-xs">Session</span>
+                                    </Button>
+                                    <Button
+                                        type={viewMode === 'messages' ? 'primary' : 'default'}
+                                        icon={<UnorderedListOutlined />}
+                                        onClick={() => setViewMode('messages')}
+                                    >
+                                        <span className="hidden-xs">Theo Tin nhắn</span>
+                                        <span className="visible-xs">Tin nhắn</span>
+                                    </Button>
+                                </Button.Group>
+                                <Badge
+                                    count={
+                                        viewMode === 'sessions'
+                                            ? filteredSessions.length
+                                            : filteredMessages.length
+                                    }
                                 >
-                                    Theo Tin nhắn
-                                </Button>
-                            </Button.Group>
-                            <Badge
-                                count={
+                                    <Button size="small">
+                                        <span className="hidden-xs">
+                                            {viewMode === 'sessions'
+                                                ? 'Tổng số session'
+                                                : 'Tổng số tin nhắn'}{' '}
+                                            hiển thị
+                                        </span>
+                                        <span className="visible-xs">
+                                            {viewMode === 'sessions' ? 'Session' : 'Tin nhắn'}
+                                        </span>
+                                    </Button>
+                                </Badge>
+                            </Space>
+                        </Col>
+                        <Col xs={24} sm={24} md={8} lg={6}>
+                            <Search
+                                placeholder={
                                     viewMode === 'sessions'
-                                        ? filteredSessions.length
-                                        : filteredMessages.length
+                                        ? 'Tìm kiếm session hoặc user ID'
+                                        : 'Tìm kiếm tin nhắn hoặc user ID'
                                 }
-                            >
-                                <Button>
-                                    {viewMode === 'sessions'
-                                        ? 'Tổng số session'
-                                        : 'Tổng số tin nhắn'}{' '}
-                                    hiển thị
-                                </Button>
-                            </Badge>
-                        </Space>
-
-                        <Search
-                            placeholder={
-                                viewMode === 'sessions'
-                                    ? 'Tìm kiếm session hoặc user ID'
-                                    : 'Tìm kiếm tin nhắn hoặc user ID'
-                            }
-                            allowClear
-                            enterButton
-                            style={{ width: 300 }}
-                            value={searchText}
-                            onChange={(e) => setSearchText(e.target.value)}
-                        />
-                    </div>
+                                allowClear
+                                enterButton
+                                size="small"
+                                style={{ width: '100%' }}
+                                value={searchText}
+                                onChange={(e) => setSearchText(e.target.value)}
+                            />
+                        </Col>
+                    </Row>
 
                     {viewMode === 'sessions' ? (
                         <Table
@@ -568,12 +535,16 @@ const DashboardPage: React.FC = () => {
                                 pageSize: 10,
                                 showSizeChanger: true,
                                 showQuickJumper: true,
-                                showTotal: (total, range) =>
-                                    `${range[0]}-${range[1]} của ${total} session`,
+                                showTotal: (total, range) => (
+                                    <span className="hidden-xs">
+                                        {`${range[0]}-${range[1]} của ${total} session`}
+                                    </span>
+                                ),
+                                size: 'small',
                             }}
-                            scroll={{ x: 1000 }}
+                            scroll={{ x: 1000, y: 400 }}
                             bordered
-                            size="middle"
+                            size="small"
                             className="resizable-table"
                         />
                     ) : (
@@ -586,12 +557,16 @@ const DashboardPage: React.FC = () => {
                                 pageSize: 10,
                                 showSizeChanger: true,
                                 showQuickJumper: true,
-                                showTotal: (total, range) =>
-                                    `${range[0]}-${range[1]} của ${total} tin nhắn`,
+                                showTotal: (total, range) => (
+                                    <span className="hidden-xs">
+                                        {`${range[0]}-${range[1]} của ${total} tin nhắn`}
+                                    </span>
+                                ),
+                                size: 'small',
                             }}
-                            scroll={{ x: 800 }}
+                            scroll={{ x: 800, y: 400 }}
                             bordered
-                            size="middle"
+                            size="small"
                             rowClassName={(record) =>
                                 record.isUserMessage ? 'user-message-row' : 'bot-message-row'
                             }
@@ -615,13 +590,13 @@ const DashboardPage: React.FC = () => {
                         Đóng
                     </Button>,
                 ]}
-                width={1600}
-                centered
+                width="90%"
+                style={{ maxWidth: 1600 }}
             >
                 {selectedSession && (
                     <div>
                         <Row gutter={[16, 16]}>
-                            <Col span={8}>
+                            <Col xs={24} md={8}>
                                 <Card size="small" title="Thông tin Session">
                                     <p>
                                         <strong>Session ID:</strong>
@@ -655,7 +630,7 @@ const DashboardPage: React.FC = () => {
                                     </p>
                                 </Card>
                             </Col>
-                            <Col span={16}>
+                            <Col xs={24} md={16}>
                                 <Card size="small" title="Tất cả tin nhắn trong session">
                                     <Table
                                         columns={columns}

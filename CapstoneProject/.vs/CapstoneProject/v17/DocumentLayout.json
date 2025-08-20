@@ -3,12 +3,48 @@
   "WorkspaceRootPath": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{DF497588-96F1-40C0-8786-709701C73F07}|capstoneproject.client\\capstoneproject.client.esproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.client\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{DF497588-96F1-40C0-8786-709701C73F07}|capstoneproject.client\\capstoneproject.client.esproj|solutionrelative:capstoneproject.client\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DF497588-96F1-40C0-8786-709701C73F07}|capstoneproject.client\\capstoneproject.client.esproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.client\\public\\scriptchatbox.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{DF497588-96F1-40C0-8786-709701C73F07}|capstoneproject.client\\capstoneproject.client.esproj|solutionrelative:capstoneproject.client\\public\\scriptchatbox.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\services\\implementations\\chatservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\services\\implementations\\chatservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\wwwroot\\knowledge.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\wwwroot\\knowledge.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\repository\\implementations\\chatrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\repository\\implementations\\chatrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\repository\\interfaces\\ichatrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\repository\\interfaces\\ichatrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\services\\interfaces\\ichatservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\services\\interfaces\\ichatservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\services\\implementations\\knowledgeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\services\\implementations\\knowledgeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\services\\interfaces\\iknowledgeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\services\\interfaces\\iknowledgeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\controllers\\chatcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -19,24 +55,12 @@
       "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\hubs\\chathub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\repository\\interfaces\\igenericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\repository\\interfaces\\igenericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\repository\\implementations\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\repository\\implementations\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\repository\\implementations\\chatrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\repository\\implementations\\chatrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\repository\\interfaces\\ichatrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\repository\\interfaces\\ichatrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -50,7 +74,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 296,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -66,20 +90,104 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "index.html",
+              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\capstoneproject.client\\index.html",
+              "RelativeDocumentMoniker": "capstoneproject.client\\index.html",
+              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\capstoneproject.client\\index.html",
+              "RelativeToolTip": "capstoneproject.client\\index.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAzAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-08-19T09:23:13.848Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "scriptChatBox.js",
+              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\capstoneproject.client\\public\\scriptChatBox.js",
+              "RelativeDocumentMoniker": "capstoneproject.client\\public\\scriptChatBox.js",
+              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\capstoneproject.client\\public\\scriptChatBox.js",
+              "RelativeToolTip": "capstoneproject.client\\public\\scriptChatBox.js",
+              "ViewState": "AgIAAKsDAAAAAAAAAAAUwMkDAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-08-19T08:18:18.912Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\appsettings.json",
+              "RelativeDocumentMoniker": "CapstoneProject.Server\\appsettings.json",
+              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\appsettings.json",
+              "RelativeToolTip": "CapstoneProject.Server\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-08-19T06:26:56.244Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "knowledge.txt",
+              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\wwwroot\\knowledge.txt",
+              "RelativeDocumentMoniker": "CapstoneProject.Server\\wwwroot\\knowledge.txt",
+              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\wwwroot\\knowledge.txt",
+              "RelativeToolTip": "CapstoneProject.Server\\wwwroot\\knowledge.txt",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2025-08-12T04:17:10.382Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "KnowledgeService.cs",
+              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Services\\implementations\\KnowledgeService.cs",
+              "RelativeDocumentMoniker": "CapstoneProject.Server\\Services\\implementations\\KnowledgeService.cs",
+              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Services\\implementations\\KnowledgeService.cs",
+              "RelativeToolTip": "CapstoneProject.Server\\Services\\implementations\\KnowledgeService.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAADwvxwAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-12T04:11:31.455Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "IKnowledgeService.cs",
+              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Services\\interfaces\\IKnowledgeService.cs",
+              "RelativeDocumentMoniker": "CapstoneProject.Server\\Services\\interfaces\\IKnowledgeService.cs",
+              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Services\\interfaces\\IKnowledgeService.cs",
+              "RelativeToolTip": "CapstoneProject.Server\\Services\\interfaces\\IKnowledgeService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-12T04:11:18.971Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Program.cs",
+              "RelativeDocumentMoniker": "CapstoneProject.Server\\Program.cs",
+              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Program.cs",
+              "RelativeToolTip": "CapstoneProject.Server\\Program.cs",
+              "ViewState": "AgIAADkAAAAAAAAAAAAQwDcAAABRAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-12T04:02:22.587Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "IChatService.cs",
               "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Services\\interfaces\\IChatService.cs",
               "RelativeDocumentMoniker": "CapstoneProject.Server\\Services\\interfaces\\IChatService.cs",
               "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Services\\interfaces\\IChatService.cs",
               "RelativeToolTip": "CapstoneProject.Server\\Services\\interfaces\\IChatService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-12T03:20:48.013Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-12T03:20:48.013Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 11,
               "Title": "ChatController.cs",
               "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Controllers\\ChatController.cs",
               "RelativeDocumentMoniker": "CapstoneProject.Server\\Controllers\\ChatController.cs",
@@ -87,12 +195,11 @@
               "RelativeToolTip": "CapstoneProject.Server\\Controllers\\ChatController.cs",
               "ViewState": "AgIAACkAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-12T03:20:39.685Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-12T03:20:39.685Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 12,
               "Title": "ChatHub.cs",
               "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Hubs\\ChatHub.cs",
               "RelativeDocumentMoniker": "CapstoneProject.Server\\Hubs\\ChatHub.cs",
@@ -100,25 +207,23 @@
               "RelativeToolTip": "CapstoneProject.Server\\Hubs\\ChatHub.cs",
               "ViewState": "AgIAAAsAAAAAAAAAAAAAwBIAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-12T03:20:09.156Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-12T03:20:09.156Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "ChatService.cs",
               "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Services\\implementations\\ChatService.cs",
               "RelativeDocumentMoniker": "CapstoneProject.Server\\Services\\implementations\\ChatService.cs",
               "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Services\\implementations\\ChatService.cs",
               "RelativeToolTip": "CapstoneProject.Server\\Services\\implementations\\ChatService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEkAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAF0AAAAAAAAAAAAuwGgAAADkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-12T01:47:51.364Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-12T01:47:51.364Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 15,
               "Title": "ApplicationDbContext.cs",
               "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Data\\ApplicationDbContext.cs",
               "RelativeDocumentMoniker": "CapstoneProject.Server\\Data\\ApplicationDbContext.cs",
@@ -126,12 +231,11 @@
               "RelativeToolTip": "CapstoneProject.Server\\Data\\ApplicationDbContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-12T01:39:25.214Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-12T01:39:25.214Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 14,
               "Title": "GenericRepository.cs",
               "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Repository\\implementations\\GenericRepository.cs",
               "RelativeDocumentMoniker": "CapstoneProject.Server\\Repository\\implementations\\GenericRepository.cs",
@@ -139,12 +243,11 @@
               "RelativeToolTip": "CapstoneProject.Server\\Repository\\implementations\\GenericRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-12T01:38:05.645Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-12T01:38:05.645Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 13,
               "Title": "IGenericRepository.cs",
               "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Repository\\interfaces\\IGenericRepository.cs",
               "RelativeDocumentMoniker": "CapstoneProject.Server\\Repository\\interfaces\\IGenericRepository.cs",
@@ -152,47 +255,31 @@
               "RelativeToolTip": "CapstoneProject.Server\\Repository\\interfaces\\IGenericRepository.cs",
               "ViewState": "AgIAABYAAAAAAAAAAADwvw0AAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-12T01:37:21.175Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-12T01:37:21.175Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Program.cs",
-              "RelativeDocumentMoniker": "CapstoneProject.Server\\Program.cs",
-              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Program.cs",
-              "RelativeToolTip": "CapstoneProject.Server\\Program.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAswCYAAAApAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-12T01:30:48.224Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 5,
               "Title": "ChatRepository.cs",
               "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Repository\\implementations\\ChatRepository.cs",
               "RelativeDocumentMoniker": "CapstoneProject.Server\\Repository\\implementations\\ChatRepository.cs",
               "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Repository\\implementations\\ChatRepository.cs",
               "RelativeToolTip": "CapstoneProject.Server\\Repository\\implementations\\ChatRepository.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAYwB4AAAAUAAAAAAAAAA==",
+              "ViewState": "AgIAABUAAAAAAAAAAAAYwAcAAABBAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-12T01:29:34.595Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-12T01:29:34.595Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 6,
               "Title": "IChatRepository.cs",
               "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Repository\\interfaces\\IChatRepository.cs",
               "RelativeDocumentMoniker": "CapstoneProject.Server\\Repository\\interfaces\\IChatRepository.cs",
               "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Repository\\interfaces\\IChatRepository.cs",
               "RelativeToolTip": "CapstoneProject.Server\\Repository\\interfaces\\IChatRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAABkAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-12T01:27:44.585Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-12T01:27:44.585Z"
             }
           ]
         }

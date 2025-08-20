@@ -1,6 +1,48 @@
-body{
+body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+.resizable-table .ant-table-thead > tr > th {
+    position: relative;
+    cursor: col-resize;
+}
 
+.resizable-table .ant-table-thead > tr > th::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 20px;
+    background: transparent;
+    cursor: col-resize;
+}
+
+.resizable-table .ant-table-thead > tr > th:hover::after {
+    background: #1890ff;
+}
+
+.resizable-table .ant-table-thead > tr > th.resizing::after {
+    background: #1890ff;
+}
+
+/* Responsive classes */
+.hidden-xs {
+    display: inline;
+}
+
+.visible-xs {
+    display: none;
+}
+
+@media (max-width: 576px) {
+    .hidden-xs {
+        display: none;
+    }
+
+    .visible-xs {
+        display: inline;
+    }
+}

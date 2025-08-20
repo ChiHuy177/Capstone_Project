@@ -37,6 +37,11 @@ namespace CapstoneProject.Server.Repository.implementations
                 .ToListAsync();
         }
 
+        public Task<List<long>> GetNumberOfMessagesAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<string>> GetUserSession(string userID)
         {
             return await _context.ChatMessages

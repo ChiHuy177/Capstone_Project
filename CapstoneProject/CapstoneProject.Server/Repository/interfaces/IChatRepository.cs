@@ -8,5 +8,7 @@ namespace CapstoneProject.Server.Repository.interfaces
         public Task<List<ChatMessage>> GetAll(int limit);
         public Task<List<string>> GetUserSession(string userID);
         public Task<List<ChatMessage>> GetChatHistoryBySessionAsync(string sessionId, int limit = 50);
+
+        public Task<List<long>> GetNumberOfMessagesAsync();
     }
 }

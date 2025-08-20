@@ -38,7 +38,16 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                 trigger={null}
                 collapsible
                 collapsed={collapsed}
-                style={{ background: '#174168' }}
+                style={{
+                    background: '#174168',
+                    position: 'fixed',
+                    left: 0,
+                    top: 0,
+                    bottom: 0,
+                    zIndex: 1000,
+                    overflow: 'auto',
+                    height: '100vh',
+                }}
             >
                 <div
                     style={{
@@ -63,7 +72,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                     style={{ background: '#174168' }}
                 />
             </Sider>
-            <Layout>
+            <Layout style={{ marginLeft: collapsed ? 80 : 200, transition: 'margin-left 0.2s' }}>
                 <Header
                     style={{
                         padding: 0,
@@ -71,6 +80,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
+                        position: 'fixed',
+                        top: 0,
+                        right: 0,
+                        left: collapsed ? 80 : 200,
+                        zIndex: 999,
+                        transition: 'left 0.2s',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                     }}
                 >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -88,7 +104,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                     </div>
                 </Header>
                 <Content
-                    style={{ margin: '24px 16px', padding: 24, background: '#fff', minHeight: 280 }}
+                    style={{
+                        margin: '88px 16px 24px 16px',
+                        padding: 24,
+                        background: '#fff',
+                        minHeight: 280,
+                        transition: 'margin-left 0.2s',
+                    }}
                 >
                     {children}
                 </Content>

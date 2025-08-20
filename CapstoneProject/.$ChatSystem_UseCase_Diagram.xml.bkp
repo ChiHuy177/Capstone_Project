@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2024-01-01T00:00:00.000Z" agent="5.0" etag="xxx"
+    version="22.1.16" type="device">
+    <diagram name="Chat System Use Case" id="chat-system-use-case">
+        <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1"
+            arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0"
+            shadow="0">
+            <root>
+                <mxCell id="0" />
+                <mxCell id="1" parent="0" />
+
+                <!-- System Boundary -->
+                <mxCell id="system-boundary" value="Hệ thống Chatbox EIU"
+                    style="shape=rect;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontSize=14;fontStyle=1;fillColor=#e1d5e7;strokeColor=#9673a6;"
+                    vertex="1" parent="1">
+                    <mxGeometry x="200" y="100" width="800" height="600" as="geometry" />
+                </mxCell>
+
+                <!-- Actors -->
+                <mxCell id="user-actor" value="Người dùng"
+                    style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;"
+                    vertex="1" parent="1">
+                    <mxGeometry x="80" y="300" width="30" height="60" as="geometry" />
+                </mxCell>
+
+                <mxCell id="admin-actor" value="Admin"
+                    style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#d5e8d4;strokeColor=#82b366;"
+                    vertex="1" parent="1">
+                    <mxGeometry x="1050" y="300" width="30" height="60" as="geometry" />
+                </mxCell>
+
+                <!-- Use Cases -->
+                <!-- User Use Cases -->
+                <mxCell id="join-chat" value="Join Chat"
+                    style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;"
+                    vertex="1" parent="1">
+                    <mxGeometry x="250" y="150" width="120" height="60" as="geometry" />
+                </mxCell>
+
+                <mxCell id="enter-user-info" value="Nhập thông tin cá nhân"
+                    style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;"
+                    vertex="1" parent="1">
+                    <mxGeometry x="250" y="250" width="120" height="60" as="geometry" />
+                </mxCell>
+
+                <mxCell id="send-message" value="Gửi tin nhắn"
+                    style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;"
+                    vertex="1" parent="1">
+                    <mxGeometry x="250" y="350" width="120" height="60" as="geometry" />
+                </mxCell>
+
+                <mxCell id="receive-response" value="Nhận phản hồi AI"
+                    style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;"
+                    vertex="1" parent="1">
+                    <mxGeometry x="250" y="450" width="120" height="60" as="geometry" />
+                </mxCell>
+
+                <mxCell id="close-chat" value="Đóng chat"
+                    style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;"
+                    vertex="1" parent="1">
+                    <mxGeometry x="250" y="550" width="120" height="60" as="geometry" />
+                </mxCell>
+
+                <!-- System Use Cases -->
+                <mxCell id="create-session" value="Tạo session mới"
+                    style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;"
+                    vertex="1" parent="1">
+                    <mxGeometry x="450" y="150" width="120" height="60" as="geometry" />
+                </mxCell>
+
+                <mxCell id="connect-signalr" value="Kết nối SignalR"
+                    style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;"
+                    vertex="1" parent="1">
+                    <mxGeometry x="450" y="250" width="120" height="60" as="geometry" />
+                </mxCell>
+
+                <mxCell id="process-ai-response" value="Xử lý AI Response"
+                    style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;"
+                    vertex="1" parent="1">
+                    <mxGeometry x="450" y="350" width="120" height="60" as="geometry" />
+                </mxCell>
+
+                <mxCell id="save-message" value="Lưu tin nhắn"
+                    style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;"
+                    vertex="1" parent="1">
+                    <mxGeometry x="450" y="450" width="120" height="60" as="geometry" />
+                </mxCell>
+
+                <mxCell id="auto-reconnect" value="Tự động kết nối lại"
+                    style="ellipse;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;"
+                    vertex="1" parent="1">
+                    <mxGeometry x="450" y="550" width="120" height="60" as="geometry" />
+                </mxCell>
+
+                <!-- Admin Use Cases -->
+                <mxCell id="view-dashboard" value="Xem Dashboard"
+                    style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;"
+                    vertex="1" parent="1">
+                    <mxGeometry x="750" y="150" width="120" height="60" as="geometry" />
+                </mxCell>
+
+                <mxCell id="view-all-messages" value="Xem tất cả tin nhắn"
+                    style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;"
+                    vertex="1" parent="1">
+                    <mxGeometry x="750" y="250" width="120" height="60" as="geometry" />
+                </mxCell>
+
+                <mxCell id="view-user-history" value="Xem lịch sử theo user"
+                    style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;"
+                    vertex="1" parent="1">
+                    <mxGeometry x="750" y="350" width="120" height="60" as="geometry" />
+                </mxCell>
+
+                <mxCell id="view-session-history" value="Xem lịch sử theo session"
+                    style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;"
+                    vertex="1" parent="1">
+                    <mxGeometry x="750" y="450" width="120" height="60" as="geometry" />
+                </mxCell>
+
+                <mxCell id="view-statistics" value="Xem thống kê"
+                    style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;"
+                    vertex="1" parent="1">
+                    <mxGeometry x="750" y="550" width="120" height="60" as="geometry" />
+                </mxCell>
+
+                <!-- Associations -->
+                <!-- User Associations -->
+                <mxCell id="user-join-chat" value=""
+                    style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;"
+                    edge="1" parent="1" source="user-actor" target="join-chat">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="400" as="sourcePoint" />
+                        <mxPoint x="450" y="350" as="targetPoint" />
+                    </mxGeometry>
+                </mxCell>
+
+                <mxCell id="user-enter-info" value=""
+                    style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;"
+                    edge="1" parent="1" source="user-actor" target="enter-user-info">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="400" as="sourcePoint" />
+                        <mxPoint x="450" y="350" as="targetPoint" />
+                    </mxGeometry>
+                </mxCell>
+
+                <mxCell id="user-send-message" value=""
+                    style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;"
+                    edge="1" parent="1" source="user-actor" target="send-message">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="400" as="sourcePoint" />
+                        <mxPoint x="450" y="350" as="targetPoint" />
+                    </mxGeometry>
+                </mxCell>
+
+                <mxCell id="user-receive-response" value=""
+                    style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;"
+                    edge="1" parent="1" source="user-actor" target="receive-response">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="400" as="sourcePoint" />
+                        <mxPoint x="450" y="350" as="targetPoint" />
+                    </mxGeometry>
+                </mxCell>
+
+                <mxCell id="user-close-chat" value=""
+                    style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;"
+                    edge="1" parent="1" source="user-actor" target="close-chat">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="400" as="sourcePoint" />
+                        <mxPoint x="450" y="350" as="targetPoint" />
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Admin Associations -->
+                <mxCell id="admin-dashboard" value=""
+                    style="endArrow=none;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;"
+                    edge="1" parent="1" source="admin-actor" target="view-dashboard">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="400" as="sourcePoint" />
+                        <mxPoint x="450" y="350" as="targetPoint" />
+                    </mxGeometry>
+                </mxCell>
+
+                <mxCell id="admin-all-messages" value=""
+                    style="endArrow=none;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;"
+                    edge="1" parent="1" source="admin-actor" target="view-all-messages">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="400" as="sourcePoint" />
+                        <mxPoint x="450" y="350" as="targetPoint" />
+                    </mxGeometry>
+                </mxCell>
+
+                <mxCell id="admin-user-history" value=""
+                    style="endArrow=none;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;"
+                    edge="1" parent="1" source="admin-actor" target="view-user-history">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="400" as="sourcePoint" />
+                        <mxPoint x="450" y="350" as="targetPoint" />
+                    </mxGeometry>
+                </mxCell>
+
+                <mxCell id="admin-session-history" value=""
+                    style="endArrow=none;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;"
+                    edge="1" parent="1" source="admin-actor" target="view-session-history">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="400" as="sourcePoint" />
+                        <mxPoint x="450" y="350" as="targetPoint" />
+                    </mxGeometry>
+                </mxCell>
+
+                <mxCell id="admin-statistics" value=""
+                    style="endArrow=none;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;"
+                    edge="1" parent="1" source="admin-actor" target="view-statistics">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="400" as="sourcePoint" />
+                        <mxPoint x="450" y="350" as="targetPoint" />
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Include Relationships -->
+                <mxCell id="join-include-create" value="&lt;&lt;include&gt;&gt;"
+                    style="endArrow=open;endSize=12;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;"
+                    edge="1" parent="1" source="join-chat" target="create-session">
+                    <mxGeometry width="160" relative="1" as="geometry">
+                        <mxPoint x="400" y="400" as="sourcePoint" />
+                        <mxPoint x="560" y="350" as="targetPoint" />
+                    </mxGeometry>
+                </mxCell>
+
+                <mxCell id="join-include-connect" value="&lt;&lt;include&gt;&gt;"
+                    style="endArrow=open;endSize=12;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;"
+                    edge="1" parent="1" source="join-chat" target="connect-signalr">
+                    <mxGeometry width="160" relative="1" as="geometry">
+                        <mxPoint x="400" y="400" as="sourcePoint" />
+                        <mxPoint x="560" y="350" as="targetPoint" />
+                    </mxGeometry>
+                </mxCell>
+
+                <mxCell id="send-include-save" value="&lt;&lt;include&gt;&gt;"
+                    style="endArrow=open;endSize=12;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;"
+                    edge="1" parent="1" source="send-message" target="save-message">
+                    <mxGeometry width="160" relative="1" as="geometry">
+                        <mxPoint x="400" y="400" as="sourcePoint" />
+                        <mxPoint x="560" y="350" as="targetPoint" />
+                    </mxGeometry>
+                </mxCell>
+
+                <mxCell id="send-include-process" value="&lt;&lt;include&gt;&gt;"
+                    style="endArrow=open;endSize=12;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;"
+                    edge="1" parent="1" source="send-message" target="process-ai-response">
+                    <mxGeometry width="160" relative="1" as="geometry">
+                        <mxPoint x="400" y="400" as="sourcePoint" />
+                        <mxPoint x="560" y="350" as="targetPoint" />
+                    </mxGeometry>
+                </mxCell>
+
+                <mxCell id="process-include-save" value="&lt;&lt;include&gt;&gt;"
+                    style="endArrow=open;endSize=12;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;"
+                    edge="1" parent="1" source="process-ai-response" target="save-message">
+                    <mxGeometry width="160" relative="1" as="geometry">
+                        <mxPoint x="400" y="400" as="sourcePoint" />
+                        <mxPoint x="560" y="350" as="targetPoint" />
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Extend Relationships -->
+                <mxCell id="connect-extend-reconnect" value="&lt;&lt;extend&gt;&gt;"
+                    style="endArrow=open;endSize=12;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;"
+                    edge="1" parent="1" source="connect-signalr" target="auto-reconnect">
+                    <mxGeometry width="160" relative="1" as="geometry">
+                        <mxPoint x="400" y="400" as="sourcePoint" />
+                        <mxPoint x="560" y="350" as="targetPoint" />
+                    </mxGeometry>
+                </mxCell>
+
+                <!-- Notes -->
+                <mxCell id="note1"
+                    value="Sử dụng Groq API (Llama 3.3-70B)&#xa;với knowledge base từ file&#xa;knowledge.txt về thông tin EIU"
+                    style="shape=note;strokeWidth=2;fontSize=14;size=20;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#666600;"
+                    vertex="1" parent="1">
+                    <mxGeometry x="50" y="50" width="200" height="80" as="geometry" />
+                </mxCell>
+
+                <mxCell id="note2"
+                    value="Real-time communication&#xa;qua SignalR WebSocket&#xa;với auto-reconnection"
+                    style="shape=note;strokeWidth=2;fontSize=14;size=20;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#2e5984;"
+                    vertex="1" parent="1">
+                    <mxGeometry x="950" y="50" width="200" height="80" as="geometry" />
+                </mxCell>
+
+                <mxCell id="note3"
+                    value="Lưu trữ tin nhắn vào&#xa;MySQL database với&#xa;Entity Framework"
+                    style="shape=note;strokeWidth=2;fontSize=14;size=20;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#2d5016;"
+                    vertex="1" parent="1">
+                    <mxGeometry x="50" y="650" width="200" height="80" as="geometry" />
+                </mxCell>
+
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile> 

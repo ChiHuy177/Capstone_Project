@@ -1,11 +1,11 @@
 # Hướng dẫn Test Project Chat System
 
-## ✅ Trạng thái hiện tại
+## Trạng thái hiện tại
 
-- **Server**: ✅ Đang chạy trên `https://localhost:5026`
-- **Client**: ✅ Đang chạy trên `https://localhost:54410`
-- **Database**: ✅ MySQL đã được tạo và cấu hình
-- **SignalR**: ✅ Đã cấu hình CORS và HTTPS
+- **Server**: Đang chạy trên `https://localhost:5026`
+- **Client**: Đang chạy trên `https://localhost:54410`
+- **Database**: MySQL đã được tạo và cấu hình
+- **SignalR**: Đã cấu hình CORS và HTTPS
 
 ## 🧪 Các bước test
 
@@ -38,8 +38,8 @@
 1. **Mở Developer Tools** (F12)
 2. **Vào tab Console**
 3. **Kiểm tra log**:
-   - ✅ "Đã kết nối SignalR thành công!"
-   - ✅ "Chat bubble đã được thêm thành công!"
+   - "Đã kết nối SignalR thành công!"
+   - "Chat bubble đã được thêm thành công!"
 
 ## 🔍 Kiểm tra Database
 
@@ -54,38 +54,41 @@
 ## 🐛 Troubleshooting
 
 ### Nếu chat không hoạt động:
+
 1. **Kiểm tra console** (F12) xem có lỗi gì không
 2. **Kiểm tra network tab** xem có request nào fail không
 3. **Kiểm tra SignalR connection** trong console
 
 ### Nếu Dashboard không load được:
+
 1. **Kiểm tra CORS** - đảm bảo server cho phép origin `https://localhost:54410`
 2. **Kiểm tra API endpoint** có đúng port không
 3. **Kiểm tra database connection**
 
 ### Nếu server không start:
+
 1. **Kiểm tra port** có bị conflict không
 2. **Kiểm tra MySQL** có đang chạy không
 3. **Kiểm tra connection string** trong appsettings.json
 
 ## 📊 Flow hoạt động đã hoàn thành
 
-1. ✅ **User gửi tin nhắn** → Chat widget
-2. ✅ **SignalR** → Gửi tin nhắn đến server
-3. ✅ **Server** → Lưu tin nhắn vào MySQL
-4. ✅ **Mock ChatGPT** → Xử lý tin nhắn và trả response
-5. ✅ **Server** → Lưu response vào MySQL
-6. ✅ **SignalR** → Gửi response về chat widget
-7. ✅ **Dashboard** → Hiển thị lịch sử chat
+1.  **User gửi tin nhắn** → Chat widget
+2.  **SignalR** → Gửi tin nhắn đến server
+3.  **Server** → Lưu tin nhắn vào MySQL
+4.  **Mock ChatGPT** → Xử lý tin nhắn và trả response
+5.  **Server** → Lưu response vào MySQL
+6.  **SignalR** → Gửi response về chat widget
+7.  **Dashboard** → Hiển thị lịch sử chat
 
 ## 🎯 Kết quả mong đợi
 
-- ✅ Chat widget hiển thị và hoạt động
-- ✅ Tin nhắn được gửi và nhận real-time
-- ✅ Database lưu trữ tin nhắn user và ChatGPT
-- ✅ Dashboard hiển thị lịch sử chat
-- ✅ HTTPS hoạt động trên cả server và client
-- ✅ SignalR connection ổn định
+- Chat widget hiển thị và hoạt động
+- Tin nhắn được gửi và nhận real-time
+- Database lưu trữ tin nhắn user và ChatGPT
+- Dashboard hiển thị lịch sử chat
+- HTTPS hoạt động trên cả server và client
+- SignalR connection ổn định
 
 ## 🚀 URLs quan trọng
 
@@ -96,4 +99,4 @@
 
 ---
 
-**🎉 Project đã hoàn thành và sẵn sàng test!** 
+**🎉 Project đã hoàn thành và sẵn sàng test!**

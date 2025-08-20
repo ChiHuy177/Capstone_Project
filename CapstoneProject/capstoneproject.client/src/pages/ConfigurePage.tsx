@@ -21,6 +21,8 @@ import {
     RobotOutlined,
     HomeOutlined,
     KeyOutlined,
+    GlobalOutlined,
+    SkinOutlined,
 } from '@ant-design/icons';
 
 const { Title, Text } = Typography;
@@ -30,6 +32,8 @@ const { Option } = Select;
 interface ConfigFormData {
     apiToken: string;
     aiModel: string;
+    theme: string;
+    language: string;
 }
 
 const ConfigurePage: React.FC = () => {
@@ -40,26 +44,35 @@ const ConfigurePage: React.FC = () => {
     const aiModels = [
         { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo' },
         { value: 'gpt-4', label: 'GPT-4' },
-        { value: 'gpt-4-turbo', label: 'GPT-4 Turbo' },
-        { value: 'gpt-4o', label: 'GPT-4o' },
-        { value: 'claude-3-sonnet', label: 'Claude 3 Sonnet' },
-        { value: 'claude-3-opus', label: 'Claude 3 Opus' },
         { value: 'gemini-pro', label: 'Gemini Pro' },
-        { value: 'gemini-ultra', label: 'Gemini Ultra' },
+    ];
+
+    // Danh sách themes
+    const themes = [
+        { value: 'light', label: 'Sáng' },
+        { value: 'dark', label: 'Tối' },
+        { value: 'auto', label: 'Tự động' },
+    ];
+
+    // Danh sách ngôn ngữ
+    const languages = [
+        { value: 'vi', label: 'Tiếng Việt' },
+        { value: 'en', label: 'English' },
+        { value: 'zh', label: '中文' },
     ];
 
     const handleSave = async (values: ConfigFormData) => {
         setLoading(true);
 
         try {
-            // Log data ra console như yêu cầu
             console.log('=== CONFIGURATION DATA ===');
             console.log('API Token:', values.apiToken);
             console.log('Selected AI Model:', values.aiModel);
+            console.log('Theme:', values.theme);
+            console.log('Language:', values.language);
             console.log('Timestamp:', new Date().toISOString());
             console.log('========================');
 
-            // Giả lập việc lưu dữ liệu
             await new Promise((resolve) => setTimeout(resolve, 1000));
 
             message.success('Cấu hình đã được lưu thành công!');
@@ -109,7 +122,7 @@ const ConfigurePage: React.FC = () => {
                                     </Space>
                                 }
                                 bordered={false}
-                                style={{ height: '100%' }}
+                                style={{ marginBottom: 24 }}
                             >
                                 <Form
                                     form={form}
@@ -118,6 +131,8 @@ const ConfigurePage: React.FC = () => {
                                     initialValues={{
                                         apiToken: '',
                                         aiModel: 'gpt-3.5-turbo',
+                                        theme: 'light',
+                                        language: 'vi',
                                     }}
                                 >
                                     <Form.Item
@@ -178,26 +193,110 @@ const ConfigurePage: React.FC = () => {
                                             ))}
                                         </Select>
                                     </Form.Item>
+                                </Form>
+                            </Card>
 
-                                    <Divider />
+                            <Card
+                                title={
+                                    <Space>
+                                        <SkinOutlined />
+                                        <span>Cấu hình giao diện</span>
+                                    </Space>
+                                }
+                                bordered={false}
+                                style={{ marginBottom: 24 }}
+                            >
+                                <Form form={form} layout="vertical">
+                                    <Form.Item
+                                        label={
+                                            <Space>
+                                                <SkinOutlined />
+                                                <span>Theme</span>
+                                            </Space>
+                                        }
+                                        name="theme"
+                                        rules={[
+                                            { required: true, message: 'Vui lòng chọn Theme!' },
+                                        ]}
+                                        tooltip="Chọn giao diện sáng, tối hoặc tự động"
+                                    >
+                                        <Select
+                                            placeholder="Chọn Theme"
+                                            size="large"
+                                            showSearch
+                                            optionFilterProp="children"
+                                            filterOption={(input, option) =>
+                                                (option?.children as unknown as string)
+                                                    ?.toLowerCase()
+                                                    ?.includes(input.toLowerCase())
+                                            }
+                                        >
+                                            {themes.map((theme) => (
+                                                <Option key={theme.value} value={theme.value}>
+                                                    <Space>
+                                                        <SkinOutlined />
+                                                        {theme.label}
+                                                    </Space>
+                                                </Option>
+                                            ))}
+                                        </Select>
+                                    </Form.Item>
 
-                                    <Form.Item style={{ marginBottom: 0 }}>
-                                        <Space size="middle">
-                                            <Button
-                                                type="primary"
-                                                htmlType="submit"
-                                                loading={loading}
-                                                icon={<SaveOutlined />}
-                                                size="large"
-                                            >
-                                                Lưu cấu hình
-                                            </Button>
-                                            <Button onClick={handleReset} size="large">
-                                                Reset
-                                            </Button>
-                                        </Space>
+                                    <Form.Item
+                                        label={
+                                            <Space>
+                                                <GlobalOutlined />
+                                                <span>Ngôn ngữ</span>
+                                            </Space>
+                                        }
+                                        name="language"
+                                        rules={[
+                                            { required: true, message: 'Vui lòng chọn ngôn ngữ!' },
+                                        ]}
+                                        tooltip="Chọn ngôn ngữ hiển thị cho ứng dụng"
+                                    >
+                                        <Select
+                                            placeholder="Chọn ngôn ngữ"
+                                            size="large"
+                                            showSearch
+                                            optionFilterProp="children"
+                                            filterOption={(input, option) =>
+                                                (option?.children as unknown as string)
+                                                    ?.toLowerCase()
+                                                    ?.includes(input.toLowerCase())
+                                            }
+                                        >
+                                            {languages.map((language) => (
+                                                <Option key={language.value} value={language.value}>
+                                                    <Space>
+                                                        <GlobalOutlined />
+                                                        {language.label}
+                                                    </Space>
+                                                </Option>
+                                            ))}
+                                        </Select>
                                     </Form.Item>
                                 </Form>
+                            </Card>
+
+                            <Card bordered={false}>
+                                <Form.Item style={{ marginBottom: 0 }}>
+                                    <Space size="middle">
+                                        <Button
+                                            type="primary"
+                                            htmlType="submit"
+                                            loading={loading}
+                                            icon={<SaveOutlined />}
+                                            size="large"
+                                            onClick={() => form.submit()}
+                                        >
+                                            Lưu cấu hình
+                                        </Button>
+                                        <Button onClick={handleReset} size="large">
+                                            Reset
+                                        </Button>
+                                    </Space>
+                                </Form.Item>
                             </Card>
                         </Col>
 
@@ -209,10 +308,7 @@ const ConfigurePage: React.FC = () => {
                                             <KeyOutlined /> API Token
                                         </Title>
                                         <Text type="secondary">
-                                            • Lấy API Token từ trang web của nhà cung cấp AI
-                                            <br />
-                                            • Đảm bảo token có quyền truy cập cần thiết
-                                            <br />• Giữ bí mật API Token của bạn
+                                            Lấy API Token từ trang web của nhà cung cấp AI
                                         </Text>
                                     </div>
 
@@ -223,12 +319,37 @@ const ConfigurePage: React.FC = () => {
                                             <RobotOutlined /> Model AI
                                         </Title>
                                         <Text type="secondary">
-                                            • GPT-3.5 Turbo: Nhanh, tiết kiệm chi phí
+                                            GPT-3.5 Turbo: Nhanh, tiết kiệm chi phí
                                             <br />
-                                            • GPT-4: Chất lượng cao, suy luận tốt
+                                            GPT-4: Chất lượng cao, suy luận
                                             <br />
-                                            • Claude: Hiểu ngữ cảnh tốt
-                                            <br />• Gemini: Đa phương tiện
+                                            Gemini: Đa phương tiện
+                                        </Text>
+                                    </div>
+
+                                    <Divider />
+
+                                    <div>
+                                        <Title level={5}>
+                                            <SkinOutlined /> Theme
+                                        </Title>
+                                        <Text type="secondary">
+                                            Sáng: Giao diện sáng, dễ nhìn
+                                            <br />
+                                            Tối: Giao diện tối, bảo vệ mắt
+                                        </Text>
+                                    </div>
+
+                                    <Divider />
+
+                                    <div>
+                                        <Title level={5}>
+                                            <GlobalOutlined /> Ngôn ngữ
+                                        </Title>
+                                        <Text type="secondary">
+                                            Tiếng Việt: Ngôn ngữ mặc định
+                                            <br />
+                                            English: Tiếng Anh
                                         </Text>
                                     </div>
                                 </Space>
