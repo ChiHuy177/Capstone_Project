@@ -82,7 +82,6 @@ namespace CapstoneProject.Server.Services
             var Model = _configuration["GrogApiModel"];
             var Url = _configuration["GrogApiUrl"];
 
-
             var apiKey = _configuration["GrogApiKey"];
             if (string.IsNullOrWhiteSpace(apiKey))
                 return "Thiếu GROQ_API_KEY. Vui lòng đặt biến môi trường GROQ_API_KEY.";
