@@ -11,10 +11,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("89cf5b6d-b83a-4841-9915-f94d5be10000")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("CapstoneProject.Server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9814387f36aac1f0e7c3585412773d58eabf0707")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d533713771e5c00ceffb0eda39e0a332f220888c")]
 [assembly: System.Reflection.AssemblyProductAttribute("CapstoneProject.Server")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CapstoneProject.Server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

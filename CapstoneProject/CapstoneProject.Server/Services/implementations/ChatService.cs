@@ -16,11 +16,14 @@ namespace CapstoneProject.Server.Services
 
         private readonly IKnowledgeService _knowledgeService;
 
-        public ChatService(ApplicationDbContext context, IChatRepository chatRepository, IKnowledgeService knowledgeService)
+        private readonly IConfiguration _configuration;
+
+        public ChatService(ApplicationDbContext context, IChatRepository chatRepository, IKnowledgeService knowledgeService, IConfiguration configuration)
         {
             _context = context;
             _chatRepository = chatRepository;
             _knowledgeService = knowledgeService;
+            _configuration = configuration;
         }
 
         public async Task<ChatMessage> SaveMessageAsync(ChatMessage message)
@@ -29,8 +32,7 @@ namespace CapstoneProject.Server.Services
             await _context.SaveChangesAsync();
             return message;
         }
-        private const string ApiKey = "AIzaSyATpv1VA5t3jl1L8qV5FN2JC-KpIYzrVT8";
-        private const string Endpoint = $"https://generativelanguage.googleapis.com/v1/models/gemini-2.5-pro:generateContent?key={ApiKey}";
+   
 
         //public async Task<string> GetChatGptResponseAsync(string userMessage)
         //{
@@ -77,11 +79,11 @@ namespace CapstoneProject.Server.Services
         //}
         public async Task<string> GetChatGptResponseAsync(string userMessage)
         {
-            const string Model = "llama-3.3-70b-versatile";
-            const string Url = "https://api.groq.com/openai/v1/chat/completions";
+            var Model = _configuration["GrogApiModel"];
+            var Url = _configuration["GrogApiUrl"];
 
 
-            var apiKey = "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";
+            var apiKey = _configuration["GrogApiKey"];
             if (string.IsNullOrWhiteSpace(apiKey))
                 return "Thiếu GROQ_API_KEY. Vui lòng đặt biến môi trường GROQ_API_KEY.";
 
