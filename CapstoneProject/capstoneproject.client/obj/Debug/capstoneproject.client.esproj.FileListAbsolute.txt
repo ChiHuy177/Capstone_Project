@@ -1,0 +1,2 @@
+C:\Capstone_1\Capstone_Project\CapstoneProject\capstoneproject.client\obj\Debug\capstoneproject.client.esproj.CoreCompileInputs.cache
+D:\GitHub\Capstone_Project\CapstoneProject\capstoneproject.client\obj\Debug\capstoneproject.client.esproj.CoreCompileInputs.cache
