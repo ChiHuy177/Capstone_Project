@@ -70,5 +70,19 @@ namespace CapstoneProject.Server.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
+        [HttpGet("count")]
+        public async Task<ActionResult<object>> CountMessages()
+        {
+            try
+            {
+                var result = await _chatService.GetNumberOfMessagesAsync();
+                return Ok(result);
+                
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
     }
 } 

@@ -31,6 +31,7 @@ namespace CapstoneProject.Server
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
             // Add Services
+            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.Scan(scan => scan
                 .FromAssemblies(Assembly.GetExecutingAssembly())
 

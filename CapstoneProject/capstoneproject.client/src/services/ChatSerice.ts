@@ -7,4 +7,11 @@ export default class ChatService {
             return result.data;
         }
     }
+
+    static async countAllMessage() {
+        const result = await apiClient.get('api/chat/count');
+        if (result.status) {
+            return result.data;
+        }
+    }
 }

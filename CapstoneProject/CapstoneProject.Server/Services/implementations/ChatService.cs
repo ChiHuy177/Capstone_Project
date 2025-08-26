@@ -18,12 +18,15 @@ namespace CapstoneProject.Server.Services
 
         private readonly IConfiguration _configuration;
 
-        public ChatService(ApplicationDbContext context, IChatRepository chatRepository, IKnowledgeService knowledgeService, IConfiguration configuration)
+        private readonly IGenericRepository<ChatMessage> _genericRepository;
+
+        public ChatService(ApplicationDbContext context, IChatRepository chatRepository, IKnowledgeService knowledgeService, IConfiguration configuration, IGenericRepository<ChatMessage> genericRepository)
         {
             _context = context;
             _chatRepository = chatRepository;
             _knowledgeService = knowledgeService;
             _configuration = configuration;
+            _genericRepository = genericRepository;
         }
 
         public async Task<ChatMessage> SaveMessageAsync(ChatMessage message)
@@ -159,14 +162,26 @@ namespace CapstoneProject.Server.Services
             return await _chatRepository.GetUserSession(userId);
         }
 
-        public Task<List<long>> GetNumberOfMessagesAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        //public async Task<List<long>> GetNumberOfMessagesAsync()
+        //public Task<List<long>> GetNumberOfMessagesAsync()
         //{
-        //    return await _chatRepository
+        //    throw new NotImplementedException();
         //}
+
+        public async Task<object> GetNumberOfMessagesAsync()
+        {
+            var allMessage = await _genericRepository.CountAsync(x => true);
+            var userMessage = await _genericRepository.CountAsync(x => x.IsUserMessage);
+            var botMessage = await _genericRepository.CountAsync(x => !x.IsUserMessage);
+            var numberOfUsers = await _context.ChatMessages.Select(x => x.SessionId).Distinct().CountAsync();
+            var result = new
+            {
+                allMessage,
+                userMessage, 
+                botMessage,
+                numberOfUsers
+            };
+            return result;
+            
+        }
     }
 }

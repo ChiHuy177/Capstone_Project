@@ -1,6 +1,10 @@
-@CapstoneProject.Server_HostAddress = https://localhost:5026
+@CapstoneProject.Server_HostAddress = https://localhost:7289
 
 GET {{CapstoneProject.Server_HostAddress}}/weatherforecast/
 Accept: application/json
+
+###
+
+GET {{CapstoneProject.Server_HostAddress}}/api/message/chat/count
 
 ###

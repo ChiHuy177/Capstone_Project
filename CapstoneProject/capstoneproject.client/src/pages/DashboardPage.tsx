@@ -33,6 +33,7 @@ import {
 } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import ChatService from '../services/ChatSerice';
+import type { CountChatModel } from '../models/CountChatModel';
 
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;
@@ -68,6 +69,7 @@ const DashboardPage: React.FC = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [searchText, setSearchText] = useState('');
     const [viewMode, setViewMode] = useState<'messages' | 'sessions'>('sessions');
+    const [numberOfMessages, setNumberOfMessages] = useState<CountChatModel>();
 
     const fetchChatMessages = async () => {
         setLoading(true);
@@ -123,18 +125,25 @@ const DashboardPage: React.FC = () => {
         }
     };
 
+    const fetchNumberOfMessages = async () => {
+        setLoading(true);
+        try {
+            const data = await ChatService.countAllMessage();
+            setNumberOfMessages(data);
+        } catch (error) {
+            message.error(error instanceof Error ? error.message : String(error));
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         fetchChatMessages();
-
+        fetchNumberOfMessages();
         // Refresh data every 30 seconds
         const interval = setInterval(fetchChatMessages, 30000);
         return () => clearInterval(interval);
     }, []);
-
-    // Tính toán số liệu thống kê
-    const userMessages = chatMessages.filter((msg) => msg.isUserMessage);
-    const botMessages = chatMessages.filter((msg) => !msg.isUserMessage);
-    const uniqueUsers = [...new Set(chatMessages.map((msg) => msg.userId))].length;
 
     // Lọc sessions theo từ khóa tìm kiếm
     const filteredSessions = searchText
@@ -416,7 +425,7 @@ const DashboardPage: React.FC = () => {
                             <Card bordered={false} hoverable>
                                 <Statistic
                                     title="Tổng tin nhắn"
-                                    value={chatMessages.length}
+                                    value={numberOfMessages?.allMessage}
                                     prefix={<MessageOutlined />}
                                     valueStyle={{ color: '#3f8600' }}
                                 />
@@ -426,7 +435,7 @@ const DashboardPage: React.FC = () => {
                             <Card bordered={false} hoverable>
                                 <Statistic
                                     title="Tin nhắn người dùng"
-                                    value={userMessages.length}
+                                    value={numberOfMessages?.userMessage}
                                     prefix={<UserOutlined />}
                                     valueStyle={{ color: '#1890ff' }}
                                 />
@@ -435,8 +444,8 @@ const DashboardPage: React.FC = () => {
                         <Col xs={24} sm={8}>
                             <Card bordered={false} hoverable>
                                 <Statistic
-                                    title="Tin nhắn ChatGPT"
-                                    value={botMessages.length}
+                                    title="Tin nhắn AI-agent"
+                                    value={numberOfMessages?.botMessage}
                                     prefix={<RobotOutlined />}
                                     valueStyle={{ color: '#52c41a' }}
                                 />
@@ -446,7 +455,7 @@ const DashboardPage: React.FC = () => {
                             <Card bordered={false} hoverable>
                                 <Statistic
                                     title="Số người dùng"
-                                    value={uniqueUsers}
+                                    value={numberOfMessages?.numberOfUsers}
                                     prefix={<UserOutlined />}
                                     valueStyle={{ color: '#722ed1' }}
                                 />
