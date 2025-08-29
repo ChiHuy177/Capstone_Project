@@ -35,82 +35,23 @@ namespace CapstoneProject.Server.Services
             await _context.SaveChangesAsync();
             return message;
         }
-   
 
-        //public async Task<string> GetChatGptResponseAsync(string userMessage)
-        //{
-        //    using var client = new HttpClient();
-
-        //    var requestBody = new
-        //    {
-        //        contents = new[]
-        //        {
-        //        new
-        //        {
-        //            parts = new[]
-        //            {
-        //                new { text = userMessage }
-        //            }
-        //        }
-        //    }
-        //    };
-
-        //    var jsonContent = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
-
-        //    var response = await client.PostAsync(Endpoint, jsonContent);
-
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        var json = await response.Content.ReadAsStringAsync();
-        //        using var doc = JsonDocument.Parse(json);
-
-        //        // Trích xuất phần phản hồi
-        //        var content = doc.RootElement
-        //            .GetProperty("candidates")[0]
-        //            .GetProperty("content")
-        //            .GetProperty("parts")[0]
-        //            .GetProperty("text")
-        //            .GetString();
-
-        //        return content ?? "Không có phản hồi từ Gemini";
-        //    }
-        //    else
-        //    {
-        //        var error = await response.Content.ReadAsStringAsync();
-        //        return $"Lỗi gọi Gemini API: {response.StatusCode}\n{error}";
-        //    }
-        //}
-        public async Task<string> GetChatGptResponseAsync(string userMessage)
+        public async Task<string> GetGeminiReponseAsync(string userMessage, string model, string url, string apiKey)
         {
-            var Model = _configuration["GrogApiModel"];
-            var Url = _configuration["GrogApiUrl"];
-
-            var apiKey = _configuration["GrogApiKey"];
-            if (string.IsNullOrWhiteSpace(apiKey))
-                return "Thiếu GROQ_API_KEY. Vui lòng đặt biến môi trường GROQ_API_KEY.";
+            var swAll = System.Diagnostics.Stopwatch.StartNew();
 
             using var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
-
-
-            // Đọc knowledge.txt 
-            string knowledge = _knowledgeService.GetKnowledge();
-
-
-            var contentForUser = string.IsNullOrWhiteSpace(knowledge)
-                ? userMessage
-                : $"CONTEXT:\n{knowledge}\n\nCÂU HỎI:\n{userMessage}";
+            client.DefaultRequestHeaders.Add("x-goog-api-key", apiKey);
 
             var requestBody = new
             {
-                model = Model,
-                messages = new object[]
-                {
-                    new { role = "system", content = "Chỉ dùng thông tin trong CONTEXT khi trả lời, không được đề cập về việc đọc file Context ở câu trả lời. Nếu thiếu dữ liệu thì có thể search từ trường Đại học quốc tế miền đông." },
-                    new { role = "user", content = contentForUser }
-                },
-                temperature = 0.2,
-                stream = false
+                contents = new[] {
+                        new {
+                            parts = new [] {
+                                new { text = userMessage}
+                            }
+                        }
+                    },
             };
 
             var jsonContent = new StringContent(
@@ -119,28 +60,42 @@ namespace CapstoneProject.Server.Services
                 "application/json"
             );
 
-            var response = await client.PostAsync(Url, jsonContent);
+            var sentAt = DateTime.UtcNow;
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+
+            var response = await client.PostAsync($"{url}?key={apiKey}", jsonContent);
             var respText = await response.Content.ReadAsStringAsync();
 
-            if (!response.IsSuccessStatusCode)
-                return $"Groq API error: {(int)response.StatusCode} {response.StatusCode}\n{respText}";
+            sw.Stop();
+            var receivedAt = DateTime.UtcNow;
+            var duration = sw.ElapsedMilliseconds;
+
+            Console.WriteLine($"Sent: {sentAt}, Received: {receivedAt}, Duration: {duration}ms");
 
             try
             {
                 using var doc = JsonDocument.Parse(respText);
-                var content = doc.RootElement
-                    .GetProperty("choices")[0]
-                    .GetProperty("message")
+                var text = doc.RootElement
+                    .GetProperty("candidates")[0]
                     .GetProperty("content")
+                    .GetProperty("parts")[0]
+                    .GetProperty("text")
                     .GetString();
 
-                return content ?? "Không có phản hồi từ Groq";
+                return text ?? "Không có phản hồi từ Gemini";
             }
             catch
             {
                 return $"Không parse được phản hồi:\n{respText}";
             }
+            finally
+            {
+                swAll.Stop();
+                Console.WriteLine($"Time of All SYTEM: {swAll.ElapsedMilliseconds}");
+            }
+
         }
+
 
         public async Task<List<ChatMessage>> GetChatHistoryAsync(string userId, int limit = 50)
         {
@@ -176,12 +131,89 @@ namespace CapstoneProject.Server.Services
             var result = new
             {
                 allMessage,
-                userMessage, 
+                userMessage,
                 botMessage,
                 numberOfUsers
             };
             return result;
-            
+
+        }
+
+        public async Task<string> GetAIResponseAsync(string userMessage, string apiKey, string model)
+        {
+            var swAll = System.Diagnostics.Stopwatch.StartNew();
+
+
+            var url = "https://openrouter.ai/api/v1/chat/completions";
+
+            using var client = new HttpClient();
+
+            // Headers
+            client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiKey);
+
+
+            var requestBody = new
+            {
+                model = model,
+                messages = new object[]
+                {
+                    new { role = "system", content = "Bạn là 1 người làm công tác tuyển sinh của trường Đại học quốc tế miền đông, Việt Nam" },
+                    new { role = "user",   content = userMessage }
+                },
+                max_tokens = 1024,
+                stream = false
+            };
+
+            var jsonContent = new StringContent(
+                System.Text.Json.JsonSerializer.Serialize(requestBody),
+                Encoding.UTF8,
+                "application/json"
+            );
+
+            var sentAt = DateTime.UtcNow;
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+
+
+            using var response = await client.PostAsync(url, jsonContent);
+            var respText = await response.Content.ReadAsStringAsync();
+
+            sw.Stop();
+            var receivedAt = DateTime.UtcNow;
+            Console.WriteLine($"[DeepSeek] Sent: {sentAt:o}, Received: {receivedAt:o}, Duration: {sw.ElapsedMilliseconds}ms, Status: {(int)response.StatusCode}");
+
+            try
+            {
+                using var doc = JsonDocument.Parse(respText);
+                var root = doc.RootElement;
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    if (root.TryGetProperty("error", out var err))
+                    {
+                        var msg = err.TryGetProperty("message", out var m) ? m.GetString() : err.ToString();
+                        return $"Lỗi API: {msg}";
+                    }
+                    return $"HTTP {(int)response.StatusCode}: {respText}";
+                }
+
+                var content = root
+                    .GetProperty("choices")[0]
+                    .GetProperty("message")
+                    .GetProperty("content")
+                    .GetString();
+
+                return string.IsNullOrWhiteSpace(content) ? "Không có phản hồi từ DeepSeek" : content;
+            }
+            catch (Exception)
+            {
+                return $"Không parse được phản hồi:\n{respText}";
+            }
+            finally
+            {
+                swAll.Stop();
+                Console.WriteLine($"[DeepSeek] Time of All SYSTEM: {swAll.ElapsedMilliseconds}ms");
+            }
         }
     }
 }

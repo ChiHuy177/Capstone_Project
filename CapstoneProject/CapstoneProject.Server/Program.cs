@@ -8,6 +8,9 @@ using CapstoneProject.Server.Repository.implementations;
 using System.Reflection;
 using CapstoneProject.Server.Services.implementations;
 using CapstoneProject.Server.Services.interfaces;
+using Scalar.AspNetCore;
+using Microsoft.AspNetCore.Identity;
+using CapstoneProject.Server.Authentication.Entities;
 
 namespace CapstoneProject.Server
 {
@@ -25,10 +28,7 @@ namespace CapstoneProject.Server
             // Add SignalR
             builder.Services.AddSignalR();
 
-            // Add Database
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+            
 
             // Add Services
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -61,18 +61,31 @@ namespace CapstoneProject.Server
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
+            builder.Services.AddIdentity<User, IdentityRole<Guid>>(opt =>
+            {
+                opt.Password.RequireDigit = true;
+                opt.Password.RequireLowercase = true;
+                opt.Password.RequireNonAlphanumeric = true;
+                opt.Password.RequireUppercase = true;
+                opt.Password.RequiredLength = 8;
+                opt.User.RequireUniqueEmail = true;
+            }).AddEntityFrameworkStores<ApplicationDbContext>();
+
+            // Add Database
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+            builder.Services.AddEndpointsApiExplorer();
+
             var app = builder.Build();
 
-            app.UseStaticFiles();
-
-            app.UseDefaultFiles();
-            app.MapStaticAssets();
-
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.MapOpenApi();
-            }
+            app.MapOpenApi();
+            app.MapScalarApiReference();
+
+            // Map Scalar API reference FIRST - before any other routing
+
 
             app.UseHttpsRedirection();
 
@@ -86,6 +99,7 @@ namespace CapstoneProject.Server
             // Map SignalR Hub
             app.MapHub<ChatHub>("/chatHub");
 
+            // Map fallback to SPA AFTER all API endpoints
             app.MapFallbackToFile("/index.html");
 
             app.Run();
