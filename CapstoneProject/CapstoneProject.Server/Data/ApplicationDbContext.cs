@@ -1,9 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using CapstoneProject.Server.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using CapstoneProject.Server.Authentication.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace CapstoneProject.Server.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -24,6 +27,9 @@ namespace CapstoneProject.Server.Data
                 entity.Property(e => e.Timestamp).IsRequired();
                 entity.Property(e => e.IsUserMessage).IsRequired();
             });
+
+            modelBuilder.Entity<User>().Property(u => u.FirstName).HasMaxLength(256);
+            modelBuilder.Entity<User>().Property(u => u.LastName).HasMaxLength(256);
         }
     }
 } 

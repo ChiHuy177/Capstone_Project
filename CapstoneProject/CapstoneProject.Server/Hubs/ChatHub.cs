@@ -8,6 +8,9 @@ namespace CapstoneProject.Server.Hubs
     {
         private readonly IChatService _chatService;
         private static readonly Dictionary<string, string> _userSessions = new();
+        const string apiKey = "";
+        const string url = "";
+        const string model = "";
 
         public ChatHub(IChatService chatService)
         {
@@ -38,15 +41,18 @@ namespace CapstoneProject.Server.Hubs
 
             await _chatService.SaveMessageAsync(userMessage);
 
-            // Xử lý tin nhắn với ChatGPT (mock)
-            var chatGptResponse = await _chatService.GetChatGptResponseAsync(message);
-            Console.WriteLine($"Response từ ChatGPT: {chatGptResponse}");
+
+
+            // var geminiResponse = await _chatService.GetGeminiReponseAsync(message);
+            //var deepseekResponse = await _chatService.GetDeepSeekResponseAsync(message);
+            // Console.WriteLine($"Response từ ChatGPT: {geminiResponse}");
+            var aiResponse = await _chatService.GetAIResponseAsync(message, apiKey, model);
 
             // Lưu response của ChatGPT vào database
             var botMessage = new ChatMessage
             {
                 UserId = "ChatGPT",
-                Message = chatGptResponse,
+                Message = aiResponse,
                 IsUserMessage = false,
                 Timestamp = DateTime.UtcNow,
                 SessionId = sessionId
@@ -54,9 +60,7 @@ namespace CapstoneProject.Server.Hubs
 
             await _chatService.SaveMessageAsync(botMessage);
 
-            // Chỉ gửi response bot về cho user, không echo lại tin nhắn user
-            Console.WriteLine($"Gửi response bot về user '{user}': {chatGptResponse}");
-            await Clients.Caller.SendAsync("ReceiveMessage", "ChatGPT", chatGptResponse);
+            await Clients.Caller.SendAsync("ReceiveMessage", "ChatGPT", aiResponse);
         }
 
         public async Task JoinChat(string user)
