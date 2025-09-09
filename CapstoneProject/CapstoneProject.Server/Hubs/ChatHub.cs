@@ -8,9 +8,9 @@ namespace CapstoneProject.Server.Hubs
     {
         private readonly IChatService _chatService;
         private static readonly Dictionary<string, string> _userSessions = new();
-        const string apiKey = "";
+        const string apiKey = "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";
         const string url = "";
-        const string model = "";
+        const string model = "openai/gpt-oss-120b:free";
 
         public ChatHub(IChatService chatService)
         {
@@ -41,11 +41,6 @@ namespace CapstoneProject.Server.Hubs
 
             await _chatService.SaveMessageAsync(userMessage);
 
-
-
-            // var geminiResponse = await _chatService.GetGeminiReponseAsync(message);
-            //var deepseekResponse = await _chatService.GetDeepSeekResponseAsync(message);
-            // Console.WriteLine($"Response từ ChatGPT: {geminiResponse}");
             var aiResponse = await _chatService.GetAIResponseAsync(message, apiKey, model);
 
             // Lưu response của ChatGPT vào database

@@ -11,6 +11,13 @@ using CapstoneProject.Server.Services.interfaces;
 using Scalar.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using CapstoneProject.Server.Authentication.Entities;
+using CapstoneProject.Server.Authentication.Infrastructure.Options;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using CapstoneProject.Server.Handler;
+using CapstoneProject.Server.Authentication.Infrastructure.Processor;
 
 namespace CapstoneProject.Server
 {
@@ -32,6 +39,7 @@ namespace CapstoneProject.Server
 
             // Add Services
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            builder.Services.AddScoped<IAuthTokenProcessor, AuthTokenProcessor>();
             builder.Services.Scan(scan => scan
                 .FromAssemblies(Assembly.GetExecutingAssembly())
 
@@ -61,6 +69,9 @@ namespace CapstoneProject.Server
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
+            builder.Services.Configure<JwtOptions>(
+                builder.Configuration.GetSection(JwtOptions.JwtOptionsKey));
+
             builder.Services.AddIdentity<User, IdentityRole<Guid>>(opt =>
             {
                 opt.Password.RequireDigit = true;
@@ -70,6 +81,42 @@ namespace CapstoneProject.Server
                 opt.Password.RequiredLength = 8;
                 opt.User.RequireUniqueEmail = true;
             }).AddEntityFrameworkStores<ApplicationDbContext>();
+
+            builder.Services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                var jwtOptions = builder.Configuration.GetSection(JwtOptions.JwtOptionsKey)
+                .Get<JwtOptions>() ?? throw new ArgumentException(nameof(JwtOptions));
+
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtOptions.Issuer,
+                    ValidAudience = jwtOptions.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Secret)),
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        context.Token = context.Request.Cookies["ACCESS_TOKEN"];
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
+            builder.Services.AddAuthorization();
+
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
 
             // Add Database
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -86,7 +133,7 @@ namespace CapstoneProject.Server
 
             // Map Scalar API reference FIRST - before any other routing
 
-
+            app.UseExceptionHandler(_ => {});
             app.UseHttpsRedirection();
 
             // Use CORS

@@ -1,0 +1,15 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using CapstoneProject.Server.Authentication.Requests;
+
+namespace CapstoneProject.Server.Services.interfaces
+{
+    public interface IAccountService
+    {
+        Task RegisterAsync(RegisterRequest registerRequest);
+        Task LoginAsync(LoginRequest loginRequest);
+        Task RefreshTokenAsync(string? refreshToken);
+    }
+}
