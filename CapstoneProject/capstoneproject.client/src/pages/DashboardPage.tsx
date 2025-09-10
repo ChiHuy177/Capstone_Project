@@ -32,7 +32,7 @@ import {
     AppstoreOutlined,
 } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import ChatService from '../services/ChatSerice';
+import ChatService from '../services/ChatService';
 import type { CountChatModel } from '../models/CountChatModel';
 
 const { Header, Content } = Layout;

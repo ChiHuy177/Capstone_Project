@@ -36,6 +36,9 @@ body {
 .visible-xs {
     display: none;
 }
+.password-item label{
+    width: 100%;
+}
 
 @media (max-width: 576px) {
     .hidden-xs {

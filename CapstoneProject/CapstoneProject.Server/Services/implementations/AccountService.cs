@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace CapstoneProject.Server.Services.implementations
 {
-    public class AccountService: IAccountService
+    public class AccountService : IAccountService
     {
         private readonly IAuthTokenProcessor _tokenProcessor;
         private readonly UserManager<User> _userManager;
@@ -80,10 +80,36 @@ namespace CapstoneProject.Server.Services.implementations
                 throw new RefreshTokenInvalidException("Unable to find user with the provided refresh token");
             }
 
-            if(user.RefreshTokenExpireAtUtc < DateTime.UtcNow)
+            if (user.RefreshTokenExpireAtUtc < DateTime.UtcNow)
             {
                 throw new RefreshTokenInvalidException("Refresh token has expired");
             }
+
+            // Issue new access token and rotate refresh token
+            var (jwtToken, accessExpireAtUtc) = _tokenProcessor.GenerateJwtToken(user);
+            var newRefreshToken = _tokenProcessor.GenerateRefreshToken();
+            var newRefreshExpireAtUtc = DateTime.UtcNow.AddDays(7);
+
+            user.RefreshToken = newRefreshToken;
+            user.RefreshTokenExpireAtUtc = newRefreshExpireAtUtc;
+            await _userManager.UpdateAsync(user);
+
+            _tokenProcessor.WriteAuthTokenAsHttpOnlyCookie("ACCESS_TOKEN", jwtToken, accessExpireAtUtc);
+            _tokenProcessor.WriteAuthTokenAsHttpOnlyCookie("REFRESH_TOKEN", newRefreshToken, newRefreshExpireAtUtc);
+        }
+
+        public async Task LogoutAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                user.RefreshToken = null;
+                user.RefreshTokenExpireAtUtc = null;
+                await _userManager.UpdateAsync(user);
+                _tokenProcessor.ClearAuthCookie("ACCESS_TOKEN");
+                _tokenProcessor.ClearAuthCookie("REFRESH_TOKEN");
+            }
+
         }
 
     }

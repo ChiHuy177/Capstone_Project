@@ -35,7 +35,7 @@ namespace CapstoneProject.Server
             // Add SignalR
             builder.Services.AddSignalR();
 
-            
+
 
             // Add Services
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -133,12 +133,13 @@ namespace CapstoneProject.Server
 
             // Map Scalar API reference FIRST - before any other routing
 
-            app.UseExceptionHandler(_ => {});
+            app.UseExceptionHandler(_ => { });
             app.UseHttpsRedirection();
 
             // Use CORS
             app.UseCors("AllowAll");
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();

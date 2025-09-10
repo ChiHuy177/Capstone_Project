@@ -10,7 +10,7 @@ using System.Text;
 
 namespace CapstoneProject.Server.Authentication.Infrastructure.Processor
 {
-    public class AuthTokenProcessor: IAuthTokenProcessor
+    public class AuthTokenProcessor : IAuthTokenProcessor
     {
         private readonly JwtOptions _jwtOptions;
         private readonly IHttpContextAccessor _contextAccessor;
@@ -18,6 +18,20 @@ namespace CapstoneProject.Server.Authentication.Infrastructure.Processor
         {
             _jwtOptions = jwtOptions.Value;
             _contextAccessor = httpContextAccessor;
+        }
+
+        public void ClearAuthCookie(string cookieName)
+        {
+            _contextAccessor.HttpContext.Response.Cookies.Append(cookieName,
+            "", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                IsEssential = true,
+                Expires = DateTimeOffset.UnixEpoch,
+                Path = "/",
+                SameSite = SameSiteMode.None,
+            });
         }
 
         public (string jwtToken, DateTime expireAtUtc) GenerateJwtToken(User user)
@@ -33,8 +47,9 @@ namespace CapstoneProject.Server.Authentication.Infrastructure.Processor
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(ClaimTypes.NameIdentifier, user.ToString())
+                new Claim(JwtRegisteredClaimNames.Email, user.Email.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.FirstName + " " + user.LastName)
             };
 
             var expires = DateTime.UtcNow.AddMinutes(_jwtOptions.ExpirationTimeInMinutes);
@@ -69,6 +84,8 @@ namespace CapstoneProject.Server.Authentication.Infrastructure.Processor
                 Expires = expiration,
                 IsEssential = true,
                 Secure = true,
+                Path = "/",
+                SameSite = SameSiteMode.None,
             });
         }
 

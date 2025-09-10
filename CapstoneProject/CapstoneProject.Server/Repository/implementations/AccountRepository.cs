@@ -17,7 +17,7 @@ namespace CapstoneProject.Server.Repository.implementations
 
         public async Task<User?> GetUserByRefreshTokenAsync(string refreshToken)
         {
-            var user = await _context.Users.FirstAsync(u => u.RefreshToken == refreshToken);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
             return user;
         }
     }
