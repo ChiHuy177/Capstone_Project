@@ -40,6 +40,18 @@ import {
 import type { ColumnsType } from 'antd/es/table';
 import ChatService from '../services/ChatService';
 import type { CountChatModel } from '../models/CountChatModel';
+import { Activity, Clock } from 'lucide-react';
+import {
+    ResponsiveContainer,
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    Tooltip as RechartsTooltip,
+    CartesianGrid,
+    AreaChart,
+    Area,
+} from 'recharts';
 
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;
@@ -77,6 +89,41 @@ const DashboardPage: React.FC = () => {
     const [searchText, setSearchText] = useState('');
     const [viewMode, setViewMode] = useState<'messages' | 'sessions'>('sessions');
     const [numberOfMessages, setNumberOfMessages] = useState<CountChatModel>();
+
+    const byDay = React.useMemo(() => {
+        const toVNDayKey = (d: Date) => {
+            const ms = d.getTime() + 7 * 60 * 60 * 1000; // UTC+7
+            const nd = new Date(ms);
+            const y = nd.getUTCFullYear();
+            const m = String(nd.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(nd.getUTCDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`; // sortable key
+        };
+        const map = new Map<string, number>();
+        chatMessages.forEach((m) => {
+            const key = toVNDayKey(new Date(m.timestamp));
+            map.set(key, (map.get(key) || 0) + 1);
+        });
+        const items = Array.from(map.entries()).map(([dateKey, count]) => ({
+            date: dateKey,
+            count,
+        }));
+        items.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+        return items.slice(-14);
+    }, [chatMessages]);
+
+    const byHour = React.useMemo(() => {
+        const arr: { hour: string; count: number }[] = Array.from({ length: 24 }, (_, h) => ({
+            hour: `${h}h`,
+            count: 0,
+        }));
+        chatMessages.forEach((m) => {
+            const d = new Date(m.timestamp);
+            const h = (d.getUTCHours() + 7) % 24; // UTC+7
+            if (h >= 0 && h < 24) arr[h].count += 1;
+        });
+        return arr;
+    }, [chatMessages]);
 
     const fetchChatMessages = async () => {
         setLoading(true);
@@ -659,6 +706,102 @@ const DashboardPage: React.FC = () => {
                     </div>
 
                     <Divider style={{ margin: '24px 0' }} />
+
+                    {/* Charts Section */}
+                    <div style={{ marginBottom: 24 }}>
+                        <Title level={4} style={{ marginBottom: 16, color: '#124170' }}>
+                            <DashboardOutlined style={{ marginRight: 8, color: '#67C090' }} />
+                            Biểu đồ
+                        </Title>
+                        <Row gutter={[16, 16]}>
+                            <Col span={24}>
+                                <Card
+                                    title={
+                                        <span>
+                                            <Activity size={18} style={{ marginRight: 8 }} />
+                                            Thống kê theo ngày
+                                        </span>
+                                    }
+                                    style={{ borderRadius: 12 }}
+                                >
+                                    <div style={{ height: 260 }}>
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <LineChart data={byDay}>
+                                                <CartesianGrid strokeDasharray="3 3" />
+                                                <XAxis
+                                                    dataKey="date"
+                                                    tickFormatter={(v: string) => {
+                                                        // v is YYYY-MM-DD
+                                                        const parts = v.split('-');
+                                                        const m = parts[1];
+                                                        const d = parts[2];
+                                                        return `${d}/${m}`;
+                                                    }}
+                                                />
+                                                <YAxis allowDecimals={false} />
+                                                <RechartsTooltip />
+                                                <Line
+                                                    type="monotone"
+                                                    dataKey="count"
+                                                    stroke="#1677ff"
+                                                    strokeWidth={2}
+                                                    dot={false}
+                                                />
+                                            </LineChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                </Card>
+                            </Col>
+
+                            <Col span={24}>
+                                <Card
+                                    title={
+                                        <span>
+                                            <Clock size={18} style={{ marginRight: 8 }} />
+                                            Phân bố theo giờ
+                                        </span>
+                                    }
+                                    style={{ borderRadius: 12 }}
+                                >
+                                    <div style={{ height: 260 }}>
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <AreaChart data={byHour}>
+                                                <defs>
+                                                    <linearGradient
+                                                        id="hourFill"
+                                                        x1="0"
+                                                        y1="0"
+                                                        x2="0"
+                                                        y2="1"
+                                                    >
+                                                        <stop
+                                                            offset="0%"
+                                                            stopColor="#1677ff"
+                                                            stopOpacity={0.35}
+                                                        />
+                                                        <stop
+                                                            offset="100%"
+                                                            stopColor="#1677ff"
+                                                            stopOpacity={0.05}
+                                                        />
+                                                    </linearGradient>
+                                                </defs>
+                                                <CartesianGrid strokeDasharray="3 3" />
+                                                <XAxis dataKey="hour" />
+                                                <YAxis allowDecimals={false} />
+                                                <RechartsTooltip />
+                                                <Area
+                                                    dataKey="count"
+                                                    stroke="#1677ff"
+                                                    fill="url(#hourFill)"
+                                                />
+                                            </AreaChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </div>
 
                     {/* Controls Section */}
                     <div style={{ marginBottom: 24 }}>
