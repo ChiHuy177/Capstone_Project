@@ -8,13 +8,11 @@ import {
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import AvatarDropdown from '../components/AvatarDropdown';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router-dom';
 
 const { Header, Sider, Content } = Layout;
 
-interface DashboardLayoutProps {
-    children: React.ReactNode;
-}
+type DashboardLayoutProps = object;
 
 const items: MenuProps['items'] = [
     {
@@ -29,7 +27,7 @@ const items: MenuProps['items'] = [
     },
 ];
 
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+const DashboardLayout: React.FC<DashboardLayoutProps> = () => {
     const [collapsed, setCollapsed] = React.useState(false);
 
     return (
@@ -112,7 +110,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                         transition: 'margin-left 0.2s',
                     }}
                 >
-                    {children}
+                    <Outlet />
                 </Content>
             </Layout>
         </Layout>

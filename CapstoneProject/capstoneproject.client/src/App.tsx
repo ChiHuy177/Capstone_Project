@@ -1,17 +1,19 @@
 import { BrowserRouter } from 'react-router-dom';
-import Layout from './layout/Layout';
+import 'antd/dist/reset.css';
 import RoutesApp from './routes';
 import { ConfigProvider } from 'antd';
+import { AuthProvider } from './contexts/Auth/AuthContext';
+
 
 function App() {
     return (
-        <ConfigProvider>
-            <BrowserRouter>
-                <Layout>
+        <AuthProvider>
+            <ConfigProvider>
+                <BrowserRouter>
                     <RoutesApp />
-                </Layout>
-            </BrowserRouter>
-        </ConfigProvider>
+                </BrowserRouter>
+            </ConfigProvider>
+        </AuthProvider>
     );
 }
 

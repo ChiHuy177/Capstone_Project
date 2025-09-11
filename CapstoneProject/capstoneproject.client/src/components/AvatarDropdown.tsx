@@ -1,36 +1,27 @@
 import React from 'react';
 import { Avatar, Dropdown, type MenuProps } from 'antd';
+import { useAuth } from '../contexts/Auth/AuthContext';
 
-const items: MenuProps['items'] = [
-    {
-        label: (
-            <a href="https://www.antgroup.com" target="_blank" rel="noopener noreferrer">
-                1st menu item
-            </a>
-        ),
-        key: '0',
-    },
-    {
-        label: (
-            <a href="https://www.aliyun.com" target="_blank" rel="noopener noreferrer">
-                2nd menu item
-            </a>
-        ),
-        key: '1',
-    },
-    {
-        type: 'divider',
-    },
-    {
-        label: '3rd menu item',
-        key: '3',
-    },
-];
+const AvatarDropdown: React.FC = () => {
+    const { logout } = useAuth();
 
-const AvatarDropdown: React.FC = () => (
-    <Dropdown menu={{ items }} placement="bottomRight" trigger={['click']} arrow>
-        <Avatar style={{ cursor: 'pointer' }}>HUY</Avatar>
-    </Dropdown>
-);
+    const items: MenuProps['items'] = [
+        {
+            label: 'Đăng xuất',
+            key: '3',
+            onClick: async () => {
+                await logout();
+            },
+        },
+    ];
+    return (
+        <Dropdown menu={{ items }} placement="bottomRight" trigger={['click']} arrow>
+            <Avatar
+                style={{ cursor: 'pointer' }}
+                src="https://api.dicebear.com/7.x/miniavs/svg?seed=3"
+            />
+        </Dropdown>
+    );
+};
 
 export default AvatarDropdown;

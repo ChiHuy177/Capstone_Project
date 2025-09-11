@@ -10,7 +10,7 @@ namespace CapstoneProject.Server.Hubs
         private static readonly Dictionary<string, string> _userSessions = new();
         const string apiKey = "";
         const string url = "";
-        const string model = "";
+        const string model = "deepseek/deepseek-r1-0528-qwen3-8b:free";
 
         public ChatHub(IChatService chatService)
         {
@@ -41,11 +41,6 @@ namespace CapstoneProject.Server.Hubs
 
             await _chatService.SaveMessageAsync(userMessage);
 
-
-
-            // var geminiResponse = await _chatService.GetGeminiReponseAsync(message);
-            //var deepseekResponse = await _chatService.GetDeepSeekResponseAsync(message);
-            // Console.WriteLine($"Response từ ChatGPT: {geminiResponse}");
             var aiResponse = await _chatService.GetAIResponseAsync(message, apiKey, model);
 
             // Lưu response của ChatGPT vào database

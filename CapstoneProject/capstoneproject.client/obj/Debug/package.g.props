@@ -13,6 +13,7 @@
     <PackageJsonDependenciesMicrosoftSignalr Condition="$(PackageJsonDependenciesMicrosoftSignalr) == ''">^9.0.6</PackageJsonDependenciesMicrosoftSignalr>
     <PackageJsonDependenciesAntd Condition="$(PackageJsonDependenciesAntd) == ''">^5.26.6</PackageJsonDependenciesAntd>
     <PackageJsonDependenciesAxios Condition="$(PackageJsonDependenciesAxios) == ''">^1.11.0</PackageJsonDependenciesAxios>
+    <PackageJsonDependenciesFramerMotion Condition="$(PackageJsonDependenciesFramerMotion) == ''">^12.23.12</PackageJsonDependenciesFramerMotion>
     <PackageJsonDependenciesLottieWeb Condition="$(PackageJsonDependenciesLottieWeb) == ''">^5.13.0</PackageJsonDependenciesLottieWeb>
     <PackageJsonDependenciesReact Condition="$(PackageJsonDependenciesReact) == ''">^19.1.0</PackageJsonDependenciesReact>
     <PackageJsonDependenciesReactDom Condition="$(PackageJsonDependenciesReactDom) == ''">^19.1.0</PackageJsonDependenciesReactDom>

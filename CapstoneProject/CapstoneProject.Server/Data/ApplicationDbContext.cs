@@ -15,6 +15,8 @@ namespace CapstoneProject.Server.Data
 
         public DbSet<ChatMessage> ChatMessages { get; set; }
 
+        public DbSet<User> Users {  get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -28,8 +30,8 @@ namespace CapstoneProject.Server.Data
                 entity.Property(e => e.IsUserMessage).IsRequired();
             });
 
-            modelBuilder.Entity<User>().Property(u => u.FirstName).HasMaxLength(256);
-            modelBuilder.Entity<User>().Property(u => u.LastName).HasMaxLength(256);
+            modelBuilder.Entity<User>().Property(u => u.FullName).HasMaxLength(256);
+
         }
     }
 } 

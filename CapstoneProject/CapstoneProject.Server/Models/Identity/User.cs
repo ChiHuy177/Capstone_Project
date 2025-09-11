@@ -4,24 +4,23 @@ namespace CapstoneProject.Server.Authentication.Entities
 {
     public class User : IdentityUser<Guid>
     {
-        public required string FirstName { get; set; }
-        public required string LastName { get; set; }
+        public required string FullName { get; set; }
+
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpireAtUtc { get; set; }
-        public static User Create(string email, string firstName, string lastName)
+        public static User Create(string email, string fullName)
         {
             return new User
             {
                 Email = email,
                 UserName = email,
-                FirstName = firstName,
-                LastName = lastName,
+                FullName = fullName
             };
         }
 
         public override string ToString()
         {
-            return FirstName + " " + LastName;
+            return FullName;
         }
     }
 }

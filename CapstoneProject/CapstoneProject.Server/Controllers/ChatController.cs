@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using CapstoneProject.Server.Services;
 using CapstoneProject.Server.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CapstoneProject.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ChatController : ControllerBase
     {
         private readonly IChatService _chatService;
@@ -70,6 +72,7 @@ namespace CapstoneProject.Server.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
+
         [HttpGet("count")]
         public async Task<ActionResult<object>> CountMessages()
         {
@@ -77,7 +80,7 @@ namespace CapstoneProject.Server.Controllers
             {
                 var result = await _chatService.GetNumberOfMessagesAsync();
                 return Ok(result);
-                
+
             }
             catch (Exception ex)
             {
