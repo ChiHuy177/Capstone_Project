@@ -8,6 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using CapstoneProject.Server.Authentication.Entities;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
 
 namespace CapstoneProject.Server.Controllers
 {
@@ -84,5 +88,33 @@ namespace CapstoneProject.Server.Controllers
             });
         }
 
+        [HttpGet("login/google")]
+        public IResult GoogleLogin([FromQuery] string returnUrl,
+            LinkGenerator linkGenerator, SignInManager<User> signInManager)
+        {
+            var httpContext = HttpContext;
+            var properties = signInManager.ConfigureExternalAuthenticationProperties("Google",
+                linkGenerator.GetPathByName(httpContext, "GoogleCallback") + $"?returnUrl={returnUrl}");
+
+            return Results.Challenge(properties, ["Google"]);
+        }
+
+        [HttpGet]
+        [Route("login/google/callback", Name = "GoogleCallback")]
+        public async Task<IResult> GoogleResponse([FromQuery] string returnUrl,
+            IAccountService accountService)
+        {
+            var httpContext = HttpContext;
+            var result = await httpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+
+            if (!result.Succeeded)
+            {
+                return Results.Unauthorized();
+            }
+
+            await accountService.LoginWithGoogleAsync(result.Principal);
+
+            return Results.Redirect(returnUrl);
+        }
     }
 }

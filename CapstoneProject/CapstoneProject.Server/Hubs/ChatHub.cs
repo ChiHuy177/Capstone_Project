@@ -8,9 +8,9 @@ namespace CapstoneProject.Server.Hubs
     {
         private readonly IChatService _chatService;
         private static readonly Dictionary<string, string> _userSessions = new();
-        const string apiKey = "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";
+        const string apiKey = "";
         const string url = "";
-        const string model = "openai/gpt-oss-120b:free";
+        const string model = "deepseek/deepseek-r1-0528-qwen3-8b:free";
 
         public ChatHub(IChatService chatService)
         {

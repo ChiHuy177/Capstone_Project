@@ -423,7 +423,7 @@
             </div>
             
             <div id="chat-messages">
-                <div class="message bot-message"></div>
+                
             </div>
             <div id="chat-input-container">
                 <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." />
@@ -597,7 +597,7 @@
 
         // Format tin nhắn trước khi hiển thị
         const formattedMessage = formatMessage(message);
-        botMsg.innerHTML = `<strong>${user}:</strong> ${formattedMessage}`;
+        botMsg.innerHTML = `${formattedMessage}`;
 
         elements.messagesContainer.appendChild(botMsg);
         elements.messagesContainer.scrollTop = elements.messagesContainer.scrollHeight;

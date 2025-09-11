@@ -1,42 +1,30 @@
-import { Form, Input, Button, Checkbox, Typography, Card, message } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import React from 'react';
+import { Form, Input, Button, Typography, Card, message } from 'antd';
+import { LockOutlined, MailOutlined, IdcardOutlined } from '@ant-design/icons';
 import { useAuth } from '../../contexts/Auth/AuthContext';
-import useForm from 'antd/es/form/hooks/useForm';
 import { motion } from 'framer-motion';
 
 const { Title, Link } = Typography;
 
-const LoginForm = () => {
-    const { login } = useAuth();
-    const [form] = useForm();
+const RegisterForm = () => {
+    const [form] = Form.useForm();
+    const { register } = useAuth();
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const onFinish = async (values: any) => {
         try {
-            const loginData = {
-                username: values.username,
-                email: values.username,
+            const registerData = {
+                fullName: values.fullName,
+                email: values.email,
                 password: values.password,
             };
-            await login(loginData);
-            message.success('Đăng nhập thành công!');
-            // navigate('/');
-        } catch (error: unknown) {
-            const anyError = error as { response?: { data?: unknown } };
-            let serverMessage = 'Đăng nhập thất bại.';
-            const data = anyError?.response?.data;
-            if (typeof data === 'string') {
-                serverMessage = data;
-            } else if (data && typeof data === 'object' && 'message' in data) {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                serverMessage = (data as any).message ?? serverMessage;
-            }
-            console.log(serverMessage);
+            console.log('Register data:', registerData);
+            await register(registerData);
+            message.success('Đăng ký tài khoản thành công!');
+        } catch (error) {
+            message.error('Đăng ký thất bại. Vui lòng thử lại!');
+            console.error('Registration error:', error);
         }
-    };
-
-    const signInWithGG = () => {
-        window.location.href =
-            'https://localhost:5026/api/account/login/google?returnUrl=https://localhost:54410/';
     };
 
     return (
@@ -63,21 +51,21 @@ const LoginForm = () => {
                 <Card
                     style={{
                         width: '100%',
-                        maxWidth: '420px',
+                        maxWidth: '500px',
                         borderRadius: '16px',
                         boxShadow: '0 25px 50px rgba(0, 0, 0, 0.15)',
                         border: 'none',
                         background: '#ffffff',
                     }}
                     bodyStyle={{
-                        padding: '48px 40px 40px 40px',
+                        padding: '40px 40px 32px 40px',
                     }}
                 >
                     {/* Logo Section */}
                     <div
                         style={{
                             textAlign: 'center',
-                            marginBottom: '40px',
+                            marginBottom: '5px',
                         }}
                     >
                         <div
@@ -103,30 +91,19 @@ const LoginForm = () => {
                                 lineHeight: '1.3',
                             }}
                         >
-                            Đăng nhập vào Hệ thống
-                        </Title>
-                        <Title
-                            level={3}
-                            style={{
-                                color: '#133F68',
-                                fontSize: '22px',
-                                fontWeight: '600',
-                                margin: '0',
-                                marginTop: '4px',
-                            }}
-                        >
-                            EIU
+                            Đăng ký vào Hệ thống EIU Chatbot Management System
                         </Title>
                     </div>
 
-                    {/* Login Form */}
+                    {/* Register Form */}
                     <Form
                         form={form}
-                        name="ueh_login"
+                        name="eiu_register"
                         onFinish={onFinish}
                         layout="vertical"
                         size="large"
                         requiredMark={false}
+                        scrollToFirstError
                     >
                         <Form.Item
                             label={
@@ -137,22 +114,27 @@ const LoginForm = () => {
                                         fontWeight: '500',
                                     }}
                                 >
-                                    Email hoặc tên đăng nhập
+                                    Họ và tên
                                 </span>
                             }
-                            name="username"
+                            name="fullName"
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Vui lòng nhập email hoặc tên đăng nhập!',
+                                    message: 'Vui lòng nhập họ và tên!',
+                                },
+                                {
+                                    min: 2,
+                                    message: 'Họ và tên phải có ít nhất 2 ký tự!',
                                 },
                             ]}
-                            style={{ marginBottom: '24px' }}
+                            style={{ marginBottom: '18px' }}
                         >
                             <Input
-                                prefix={<UserOutlined style={{ color: '#9ca3af' }} />}
+                                prefix={<IdcardOutlined style={{ color: '#9ca3af' }} />}
+                                placeholder="Nhập họ và tên đầy đủ"
                                 style={{
-                                    height: '52px',
+                                    height: '48px',
                                     borderRadius: '8px',
                                     fontSize: '14px',
                                     border: '2px solid #e5e7eb',
@@ -162,38 +144,54 @@ const LoginForm = () => {
                         </Form.Item>
 
                         <Form.Item
-                            className="password-item"
                             label={
-                                <div
+                                <span
                                     style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        width: '100%',
+                                        color: '#374151',
+                                        fontSize: '14px',
+                                        fontWeight: '500',
                                     }}
                                 >
-                                    <span
-                                        style={{
-                                            color: '#374151',
-                                            fontSize: '14px',
-                                            fontWeight: '500',
-                                        }}
-                                    >
-                                        Mật khẩu
-                                    </span>
-                                    <div style={{ marginLeft: 'auto' }}>
-                                        <Link
-                                            href="#"
-                                            style={{
-                                                color: '#133F68',
-                                                fontSize: '14px',
-                                                fontWeight: '500',
-                                            }}
-                                        >
-                                            Quên mật khẩu?
-                                        </Link>
-                                    </div>
-                                </div>
+                                    Email
+                                </span>
+                            }
+                            name="email"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Vui lòng nhập email!',
+                                },
+                                {
+                                    type: 'email',
+                                    message: 'Email không hợp lệ!',
+                                },
+                            ]}
+                            style={{ marginBottom: '18px' }}
+                        >
+                            <Input
+                                prefix={<MailOutlined style={{ color: '#9ca3af' }} />}
+                                placeholder="example@eiu.edu.vn"
+                                style={{
+                                    height: '48px',
+                                    borderRadius: '8px',
+                                    fontSize: '14px',
+                                    border: '2px solid #e5e7eb',
+                                    backgroundColor: '#f9fafb',
+                                }}
+                            />
+                        </Form.Item>
+
+                        <Form.Item
+                            label={
+                                <span
+                                    style={{
+                                        color: '#374151',
+                                        fontSize: '14px',
+                                        fontWeight: '500',
+                                    }}
+                                >
+                                    Mật khẩu
+                                </span>
                             }
                             name="password"
                             rules={[
@@ -201,13 +199,18 @@ const LoginForm = () => {
                                     required: true,
                                     message: 'Vui lòng nhập mật khẩu!',
                                 },
+                                {
+                                    min: 6,
+                                    message: 'Mật khẩu phải có ít nhất 6 ký tự!',
+                                },
                             ]}
-                            style={{ marginBottom: '28px' }}
+                            style={{ marginBottom: '18px' }}
                         >
                             <Input.Password
                                 prefix={<LockOutlined style={{ color: '#9ca3af' }} />}
+                                placeholder="Nhập mật khẩu"
                                 style={{
-                                    height: '52px',
+                                    height: '48px',
                                     borderRadius: '8px',
                                     fontSize: '14px',
                                     border: '2px solid #e5e7eb',
@@ -217,21 +220,51 @@ const LoginForm = () => {
                         </Form.Item>
 
                         <Form.Item
-                            name="remember"
-                            valuePropName="checked"
-                            style={{ marginBottom: '32px' }}
+                            label={
+                                <span
+                                    style={{
+                                        color: '#374151',
+                                        fontSize: '14px',
+                                        fontWeight: '500',
+                                    }}
+                                >
+                                    Xác nhận mật khẩu
+                                </span>
+                            }
+                            name="confirmPassword"
+                            dependencies={['password']}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Vui lòng xác nhận mật khẩu!',
+                                },
+                                ({ getFieldValue }) => ({
+                                    validator(_, value) {
+                                        if (!value || getFieldValue('password') === value) {
+                                            return Promise.resolve();
+                                        }
+                                        return Promise.reject(
+                                            new Error('Mật khẩu xác nhận không khớp!')
+                                        );
+                                    },
+                                }),
+                            ]}
+                            style={{ marginBottom: '24px' }}
                         >
-                            <Checkbox
+                            <Input.Password
+                                prefix={<LockOutlined style={{ color: '#9ca3af' }} />}
+                                placeholder="Nhập lại mật khẩu"
                                 style={{
-                                    color: '#374151',
+                                    height: '48px',
+                                    borderRadius: '8px',
                                     fontSize: '14px',
+                                    border: '2px solid #e5e7eb',
+                                    backgroundColor: '#f9fafb',
                                 }}
-                            >
-                                <span style={{ marginLeft: '8px' }}>Lưu thông tin đăng nhập</span>
-                            </Checkbox>
+                            />
                         </Form.Item>
 
-                        <Form.Item style={{ marginBottom: '32px' }}>
+                        <Form.Item style={{ marginBottom: '28px' }}>
                             <Button
                                 type="primary"
                                 htmlType="submit"
@@ -243,7 +276,7 @@ const LoginForm = () => {
                                     borderColor: '#133F68',
                                     fontSize: '16px',
                                     fontWeight: '600',
-                                    boxShadow: '0 4px 12px rgba(15, 118, 110, 0.3)',
+                                    boxShadow: '0 4px 12px rgba(19, 63, 104, 0.3)',
                                     transition: 'all 0.3s ease',
                                 }}
                                 onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
@@ -257,11 +290,11 @@ const LoginForm = () => {
                                     el.style.transform = 'translateY(0)';
                                 }}
                             >
-                                Đăng nhập
+                                Đăng ký tài khoản
                             </Button>
                         </Form.Item>
 
-                        {/* Register Link */}
+                        {/* Login Link */}
                         <div
                             style={{
                                 textAlign: 'center',
@@ -269,43 +302,17 @@ const LoginForm = () => {
                                 fontSize: '14px',
                             }}
                         >
-                            Chưa có tài khoản?{' '}
+                            Đã có tài khoản?{' '}
                             <Link
-                                href="/register"
+                                href="/login"
                                 style={{
                                     color: '#133F68',
                                     fontWeight: '600',
                                     textDecoration: 'none',
                                 }}
                             >
-                                Đăng ký tài khoản
+                                Đăng nhập ngay
                             </Link>
-                            <Button
-                                onClick={signInWithGG}
-                                style={{
-                                    height: '52px',
-                                    borderRadius: '8px',
-                                    backgroundColor: '#133F68',
-                                    borderColor: '#133F68',
-                                    fontSize: '16px',
-                                    fontWeight: '600',
-                                    boxShadow: '0 4px 12px rgba(15, 118, 110, 0.3)',
-                                    transition: 'all 0.3s ease',
-                                    color: 'white',
-                                }}
-                                onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
-                                    const el = e.currentTarget;
-                                    el.style.backgroundColor = '#133F68';
-                                    el.style.transform = 'translateY(-1px)';
-                                }}
-                                onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
-                                    const el = e.currentTarget;
-                                    el.style.backgroundColor = '#133F68';
-                                    el.style.transform = 'translateY(0)';
-                                }}
-                            >
-                                LOGIN WITH GOOGLE
-                            </Button>
                         </div>
                     </Form>
                 </Card>
@@ -314,4 +321,4 @@ const LoginForm = () => {
     );
 };
 
-export default LoginForm;
+export default RegisterForm;

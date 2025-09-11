@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-catch */
-import type { LoginRequest } from '../models/AuthModel';
+import type { LoginRequest, RegisterRequest } from '../models/AuthModel';
 import apiClient from '../utils/apiClient';
 
 export class AuthService {
@@ -54,6 +54,18 @@ export class AuthService {
             return response.data;
         } catch (error) {
             console.error('Logout failed:', error);
+            throw error;
+        }
+    }
+
+    static async register(registerData: RegisterRequest) {
+        try {
+            const response = await apiClient.post('api/account/register', registerData, {
+                withCredentials: true,
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Register failed:', error);
             throw error;
         }
     }

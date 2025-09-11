@@ -6,19 +6,21 @@ import LoginForm from '../pages/Auth/LoginPage';
 import PublicOnlyRoute from './PublicOnlyRoute';
 import ProtectedRoute from './ProtectedRoute';
 import DashboardLayout from '../layout/Layout';
-import NotFoundPage from '../pages/NotFoundPage';
+import NotFoundPage from '../pages/NotFound/NotFoundPage';
+import RegisterForm from '../pages/Auth/RegisterPage';
 
 const RoutesApp: React.FC = () => (
     <Routes>
         <Route element={<PublicOnlyRoute />}>
             <Route path="/login" element={<LoginForm />} />
+            <Route path="/register" element={<RegisterForm />} />
         </Route>
         <Route element={<ProtectedRoute />}>
             <Route element={<DashboardLayout />}>
                 <Route index element={<DashboardPage />} />
                 <Route path="configure" element={<ConfigurePage />} />
-                <Route path="*" element={<NotFoundPage />} />
             </Route>
+            <Route path="*" element={<NotFoundPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>

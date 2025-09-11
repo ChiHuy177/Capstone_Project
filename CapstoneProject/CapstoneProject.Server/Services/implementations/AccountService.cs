@@ -1,8 +1,10 @@
-﻿using CapstoneProject.Server.Authentication.Entities;
+﻿using System.Security.Claims;
+using CapstoneProject.Server.Authentication.Entities;
 using CapstoneProject.Server.Authentication.Exception;
 using CapstoneProject.Server.Authentication.Requests;
 using CapstoneProject.Server.Repository.interfaces;
 using CapstoneProject.Server.Services.interfaces;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 
 namespace CapstoneProject.Server.Services.implementations
@@ -30,7 +32,7 @@ namespace CapstoneProject.Server.Services.implementations
                 throw new UserAlreadyExistException(registerRequest.Email);
             }
 
-            var newUser = User.Create(registerRequest.Email, registerRequest.FirstName, registerRequest.LastName);
+            var newUser = User.Create(registerRequest.Email, registerRequest.FullName);
 
             newUser.PasswordHash = _userManager.PasswordHasher.HashPassword(newUser, registerRequest.Password);
 
@@ -112,6 +114,82 @@ namespace CapstoneProject.Server.Services.implementations
 
         }
 
+        public async Task LoginWithGoogleAsync(ClaimsPrincipal? claimsPrincipal)
+        {
+            if (claimsPrincipal == null)
+            {
+                throw new ExternalLoginProviderException("Google", "Failed to retrieve user information from Google.");
+            }
+
+            var email = claimsPrincipal.FindFirstValue(ClaimTypes.Email);
+
+            if (email == null)
+            {
+                throw new ExternalLoginProviderException("Google", "Email claim not found.");
+            }
+
+            var existingUser = await _userManager.FindByLoginAsync("Google", email);
+            if (existingUser != null)
+            {
+                // User already linked with Google, proceed to login
+                var (jwtToken1, accessExpireAtUtc1) = _tokenProcessor.GenerateJwtToken(existingUser);
+                var newRefreshToken1 = _tokenProcessor.GenerateRefreshToken();
+                var newRefreshExpireAtUtc1 = DateTime.UtcNow.AddDays(7);
+
+                existingUser.RefreshToken = newRefreshToken1;
+                existingUser.RefreshTokenExpireAtUtc = newRefreshExpireAtUtc1;
+                await _userManager.UpdateAsync(existingUser);
+
+                _tokenProcessor.WriteAuthTokenAsHttpOnlyCookie("ACCESS_TOKEN", jwtToken1, accessExpireAtUtc1);
+                _tokenProcessor.WriteAuthTokenAsHttpOnlyCookie("REFRESH_TOKEN", newRefreshToken1, newRefreshExpireAtUtc1);
+                return;
+            }
+
+
+
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                var newUser = new User
+                {
+                    UserName = email,
+                    Email = email,
+                    FullName = claimsPrincipal.FindFirstValue(ClaimTypes.GivenName) ?? string.Empty,
+                    EmailConfirmed = true
+                };
+
+                var result = await _userManager.CreateAsync(newUser);
+
+                if (!result.Succeeded)
+                {
+                    throw new ExternalLoginProviderException("Google", "Failed to create user account.");
+                }
+                user = newUser;
+
+            }
+            var info = new UserLoginInfo("Google",
+                    claimsPrincipal.FindFirstValue(ClaimTypes.Email) ?? string.Empty, "Google");
+
+            var loginResult = await _userManager.AddLoginAsync(user, info);
+
+            if (!loginResult.Succeeded)
+            {
+                throw new ExternalLoginProviderException("Google",
+                $"Failed to link Google account: {string.Join(", ", loginResult.Errors.Select(e => e.Description))}");
+            }
+            var (jwtToken, accessExpireAtUtc) = _tokenProcessor.GenerateJwtToken(user);
+            var newRefreshToken = _tokenProcessor.GenerateRefreshToken();
+            var newRefreshExpireAtUtc = DateTime.UtcNow.AddDays(7);
+
+            user.RefreshToken = newRefreshToken;
+            user.RefreshTokenExpireAtUtc = newRefreshExpireAtUtc;
+            await _userManager.UpdateAsync(user);
+
+            _tokenProcessor.WriteAuthTokenAsHttpOnlyCookie("ACCESS_TOKEN", jwtToken, accessExpireAtUtc);
+            _tokenProcessor.WriteAuthTokenAsHttpOnlyCookie("REFRESH_TOKEN", newRefreshToken, newRefreshExpireAtUtc);
+
+        }
     }
 
 

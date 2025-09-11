@@ -18,6 +18,7 @@ using System.Text;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using CapstoneProject.Server.Handler;
 using CapstoneProject.Server.Authentication.Infrastructure.Processor;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace CapstoneProject.Server
 {
@@ -87,6 +88,20 @@ namespace CapstoneProject.Server
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddCookie().AddGoogle(options =>
+            {
+                var clientId = builder.Configuration["Authentication:Google:ClientId"];
+                var clientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+
+                if (clientId == null || clientSecret == null)
+                {
+                    throw new ArgumentException("Google authentication is not configured properly.");
+                }
+
+                options.ClientId = clientId;
+                options.ClientSecret = clientSecret;
+                options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+
             }).AddJwtBearer(options =>
             {
                 var jwtOptions = builder.Configuration.GetSection(JwtOptions.JwtOptionsKey)

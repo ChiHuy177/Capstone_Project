@@ -30,8 +30,8 @@ namespace CapstoneProject.Server.Data
                 entity.Property(e => e.IsUserMessage).IsRequired();
             });
 
-            modelBuilder.Entity<User>().Property(u => u.FirstName).HasMaxLength(256);
-            modelBuilder.Entity<User>().Property(u => u.LastName).HasMaxLength(256);
+            modelBuilder.Entity<User>().Property(u => u.FullName).HasMaxLength(256);
+
         }
     }
 } 

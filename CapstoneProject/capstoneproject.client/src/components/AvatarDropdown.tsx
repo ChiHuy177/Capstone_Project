@@ -9,12 +9,17 @@ const AvatarDropdown: React.FC = () => {
         {
             label: 'Đăng xuất',
             key: '3',
-            onClick: async () => { await logout(); }
+            onClick: async () => {
+                await logout();
+            },
         },
     ];
     return (
         <Dropdown menu={{ items }} placement="bottomRight" trigger={['click']} arrow>
-            <Avatar style={{ cursor: 'pointer' }}>HUY</Avatar>
+            <Avatar
+                style={{ cursor: 'pointer' }}
+                src="https://api.dicebear.com/7.x/miniavs/svg?seed=3"
+            />
         </Dropdown>
     );
 };

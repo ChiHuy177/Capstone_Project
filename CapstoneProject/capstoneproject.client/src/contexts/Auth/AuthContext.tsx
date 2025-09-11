@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import type { LoginRequest } from '../../models/AuthModel';
+import type { LoginRequest, RegisterRequest } from '../../models/AuthModel';
 import { AuthService } from '../../services/AuthService';
 
 interface User {
@@ -14,6 +14,7 @@ interface AuthContextType {
     login: (data: LoginRequest) => Promise<void>;
     logout: () => Promise<void>;
     loading: boolean;
+    register: (data: RegisterRequest) => Promise<void>;
 }
 
 interface AuthProviderProps {
@@ -97,11 +98,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }
     };
 
+    const register = async (data: RegisterRequest) => {
+        setLoading(true);
+        try {
+            await AuthService.register(data);
+        } catch (error) {
+            console.error('Register error:', error);
+        }
+    };
+
     const value: AuthContextType = {
         isAuthenticated,
         user,
         login,
         logout,
+        register,
         loading,
     };
 

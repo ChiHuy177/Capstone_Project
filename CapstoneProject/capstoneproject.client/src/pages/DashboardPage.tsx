@@ -18,6 +18,8 @@ import {
     Divider,
     Tooltip,
     Avatar,
+    Empty,
+    Spin,
 } from 'antd';
 import {
     ReloadOutlined,
@@ -30,6 +32,10 @@ import {
     DashboardOutlined,
     UnorderedListOutlined,
     AppstoreOutlined,
+    EyeOutlined,
+    ClockCircleOutlined,
+    TeamOutlined,
+    CommentOutlined,
 } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import ChatService from '../services/ChatService';
@@ -65,6 +71,7 @@ const DashboardPage: React.FC = () => {
     const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
     const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
     const [loading, setLoading] = useState(false);
+    const [tableLoading, setTableLoading] = useState(false);
     const [selectedSession, setSelectedSession] = useState<ChatSession | null>(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [searchText, setSearchText] = useState('');
@@ -144,6 +151,23 @@ const DashboardPage: React.FC = () => {
         const interval = setInterval(fetchChatMessages, 30000);
         return () => clearInterval(interval);
     }, []);
+
+    const handleRefresh = async () => {
+        if (tableLoading) return;
+        setTableLoading(true);
+        const minDisplayMs = 500;
+        const start = Date.now();
+        try {
+            await fetchChatMessages();
+        } finally {
+            const elapsed = Date.now() - start;
+            const remaining = minDisplayMs - elapsed;
+            if (remaining > 0) {
+                await new Promise((resolve) => setTimeout(resolve, remaining));
+            }
+            setTableLoading(false);
+        }
+    };
 
     // Lọc sessions theo từ khóa tìm kiếm
     const filteredSessions = searchText
@@ -271,19 +295,24 @@ const DashboardPage: React.FC = () => {
         {
             title: 'Hành động',
             key: 'action',
-            width: 120,
+            width: 140,
             render: (_, record) => (
-                <Space size="middle">
+                <Space size="small">
                     <Button
                         type="primary"
                         size="small"
-                        icon={<SearchOutlined />}
+                        icon={<EyeOutlined />}
                         onClick={() => {
                             setSelectedSession(record);
                             setIsModalVisible(true);
                         }}
+                        style={{
+                            borderRadius: 6,
+                            fontWeight: 500,
+                            boxShadow: '0 2px 4px rgba(24, 144, 255, 0.2)',
+                        }}
                     >
-                        Xem chi tiết
+                        Chi tiết
                     </Button>
                 </Space>
             ),
@@ -347,6 +376,12 @@ const DashboardPage: React.FC = () => {
                 <Tag
                     color={isUser ? 'blue' : 'green'}
                     icon={isUser ? <UserOutlined /> : <RobotOutlined />}
+                    style={{
+                        borderRadius: 6,
+                        fontWeight: 500,
+                        padding: '4px 8px',
+                        fontSize: '12px',
+                    }}
                 >
                     {isUser ? 'User' : 'ChatGPT'}
                 </Tag>
@@ -379,12 +414,13 @@ const DashboardPage: React.FC = () => {
     };
 
     return (
-        <Layout className="dashboard-layout" style={{ minHeight: '100vh' }}>
+        <Layout className="dashboard-layout" style={{ minHeight: '100vh', background: '#f5f5f5' }}>
             <Header
                 style={{
                     background: '#fff',
-                    padding: '0 16px',
-                    boxShadow: '0 1px 4px rgba(0,21,41,.08)',
+                    padding: '0 24px',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                    borderBottom: '1px solid #f0f0f0',
                 }}
             >
                 <div
@@ -395,252 +431,582 @@ const DashboardPage: React.FC = () => {
                         height: '100%',
                     }}
                 >
-                    <Title level={3} style={{ margin: 0 }}>
-                        <DashboardOutlined />
+                    <Title level={3} style={{ margin: 0, color: '#124170', fontWeight: 600 }}>
+                        <DashboardOutlined style={{ color: '#67C090', marginRight: 8 }} />
                         <span className="hidden-xs">Hệ thống quản lý Chat</span>
                         <span className="visible-xs">Dashboard</span>
                     </Title>
                 </div>
             </Header>
 
-            <Content style={{ padding: '0 16px', margin: '16px 0' }}>
-                <Breadcrumb style={{ margin: '16px 0' }}>
+            <Content style={{ padding: '0 24px', margin: '24px 0' }}>
+                <Breadcrumb style={{ margin: '0 0 24px 0' }}>
                     <Breadcrumb.Item href="/">
-                        <HomeOutlined />
+                        <HomeOutlined style={{ color: '#67C090' }} />
                         <span className="hidden-xs">Trang chủ</span>
                         <span className="visible-xs">Trang chủ</span>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
-                        <DashboardOutlined />
+                        <DashboardOutlined style={{ color: '#67C090' }} />
                         <span className="hidden-xs">Dashboard</span>
                         <span className="visible-xs">Dashboard</span>
                     </Breadcrumb.Item>
                 </Breadcrumb>
 
                 <div
-                    style={{ background: '#fff', padding: '16px', minHeight: 360, borderRadius: 4 }}
+                    style={{
+                        background: '#fff',
+                        padding: '24px',
+                        minHeight: 360,
+                        borderRadius: 8,
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                    }}
                 >
-                    <Row gutter={[16, 24]}>
-                        <Col xs={24} sm={8}>
-                            <Card bordered={false} hoverable>
-                                <Statistic
-                                    title="Tổng tin nhắn"
-                                    value={numberOfMessages?.allMessage}
-                                    prefix={<MessageOutlined />}
-                                    valueStyle={{ color: '#3f8600' }}
-                                />
-                            </Card>
-                        </Col>
-                        <Col xs={24} sm={8}>
-                            <Card bordered={false} hoverable>
-                                <Statistic
-                                    title="Tin nhắn người dùng"
-                                    value={numberOfMessages?.userMessage}
-                                    prefix={<UserOutlined />}
-                                    valueStyle={{ color: '#1890ff' }}
-                                />
-                            </Card>
-                        </Col>
-                        <Col xs={24} sm={8}>
-                            <Card bordered={false} hoverable>
-                                <Statistic
-                                    title="Tin nhắn AI-agent"
-                                    value={numberOfMessages?.botMessage}
-                                    prefix={<RobotOutlined />}
-                                    valueStyle={{ color: '#52c41a' }}
-                                />
-                            </Card>
-                        </Col>
-                        <Col xs={24} sm={8}>
-                            <Card bordered={false} hoverable>
-                                <Statistic
-                                    title="Số người dùng"
-                                    value={numberOfMessages?.numberOfUsers}
-                                    prefix={<UserOutlined />}
-                                    valueStyle={{ color: '#722ed1' }}
-                                />
-                            </Card>
-                        </Col>
-                    </Row>
-
-                    <Divider />
-
-                    <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
-                        <Col xs={24} sm={24} md={16} lg={18}>
-                            <Space wrap size="small">
-                                <Button
-                                    type="primary"
-                                    icon={<ReloadOutlined />}
-                                    onClick={fetchChatMessages}
-                                    loading={loading}
-                                    size="small"
-                                >
-                                    <span className="hidden-xs">Làm mới dữ liệu</span>
-                                    <span className="visible-xs">Làm mới</span>
-                                </Button>
-                                <Button.Group size="small">
-                                    <Button
-                                        type={viewMode === 'sessions' ? 'primary' : 'default'}
-                                        icon={<AppstoreOutlined />}
-                                        onClick={() => setViewMode('sessions')}
+                    {/* Statistics Overview */}
+                    <div style={{ marginBottom: 24 }}>
+                        <Title level={4} style={{ marginBottom: 16, color: '#124170' }}>
+                            <DashboardOutlined style={{ marginRight: 8, color: '#67C090' }} />
+                            Tổng quan hệ thống
+                        </Title>
+                        <Row gutter={[24, 24]}>
+                            <Col xs={24} sm={12} lg={6}>
+                                <Spin spinning={loading || tableLoading}>
+                                    <Card
+                                        bordered={false}
+                                        hoverable
+                                        style={{
+                                            borderRadius: 12,
+                                            background: 'linear-gradient(135deg, #124170 50%)',
+                                            color: 'white',
+                                            transition: 'all 0.3s ease',
+                                            border: '1px solid rgba(38, 102, 127, 0.1)',
+                                        }}
+                                        bodyStyle={{ padding: '20px' }}
                                     >
-                                        <span className="hidden-xs">Theo Session</span>
-                                        <span className="visible-xs">Session</span>
-                                    </Button>
-                                    <Button
-                                        type={viewMode === 'messages' ? 'primary' : 'default'}
-                                        icon={<UnorderedListOutlined />}
-                                        onClick={() => setViewMode('messages')}
+                                        <Statistic
+                                            title={
+                                                <span
+                                                    style={{
+                                                        color: 'rgba(255,255,255,0.9)',
+                                                        fontSize: '14px',
+                                                        fontWeight: '500',
+                                                    }}
+                                                >
+                                                    Tổng tin nhắn
+                                                </span>
+                                            }
+                                            value={numberOfMessages?.allMessage || 0}
+                                            prefix={
+                                                <MessageOutlined
+                                                    style={{
+                                                        color: 'rgba(255,255,255,0.95)',
+                                                        fontSize: '18px',
+                                                    }}
+                                                />
+                                            }
+                                            valueStyle={{
+                                                color: '#fff',
+                                                fontSize: '28px',
+                                                fontWeight: '700',
+                                                textShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                                            }}
+                                            loading={loading}
+                                        />
+                                    </Card>
+                                </Spin>
+                            </Col>
+                            <Col xs={24} sm={12} lg={6}>
+                                <Spin spinning={loading || tableLoading}>
+                                    <Card
+                                        bordered={false}
+                                        hoverable
+                                        style={{
+                                            borderRadius: 12,
+                                            background: 'linear-gradient(135deg, #67C090)',
+                                            color: '#124170',
+                                            transition: 'all 0.3s ease',
+                                            border: '1px solid rgba(103, 192, 144, 0.2)',
+                                        }}
+                                        bodyStyle={{ padding: '20px' }}
                                     >
-                                        <span className="hidden-xs">Theo Tin nhắn</span>
-                                        <span className="visible-xs">Tin nhắn</span>
+                                        <Statistic
+                                            title={
+                                                <span
+                                                    style={{
+                                                        color: '#26667F',
+                                                        fontSize: '14px',
+                                                        fontWeight: '500',
+                                                    }}
+                                                >
+                                                    Tin nhắn người dùng
+                                                </span>
+                                            }
+                                            value={numberOfMessages?.userMessage || 0}
+                                            prefix={
+                                                <UserOutlined
+                                                    style={{
+                                                        color: '#124170',
+                                                        fontSize: '18px',
+                                                    }}
+                                                />
+                                            }
+                                            valueStyle={{
+                                                color: '#124170',
+                                                fontSize: '28px',
+                                                fontWeight: '700',
+                                                textShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                                            }}
+                                            loading={loading}
+                                        />
+                                    </Card>
+                                </Spin>
+                            </Col>
+                            <Col xs={24} sm={12} lg={6}>
+                                <Spin spinning={loading || tableLoading}>
+                                    {' '}
+                                    <Card
+                                        bordered={false}
+                                        hoverable
+                                        style={{
+                                            borderRadius: 12,
+                                            background: 'linear-gradient(135deg, #26667F)',
+                                            color: 'white',
+                                            transition: 'all 0.3s ease',
+                                            border: '1px solid rgba(103, 192, 144, 0.1)',
+                                        }}
+                                        bodyStyle={{ padding: '20px' }}
+                                    >
+                                        <Statistic
+                                            title={
+                                                <span
+                                                    style={{
+                                                        color: 'rgba(255,255,255,0.9)',
+                                                        fontSize: '14px',
+                                                        fontWeight: '500',
+                                                    }}
+                                                >
+                                                    Tin nhắn AI-agent
+                                                </span>
+                                            }
+                                            value={numberOfMessages?.botMessage || 0}
+                                            prefix={
+                                                <RobotOutlined
+                                                    style={{
+                                                        color: 'rgba(255,255,255,0.95)',
+                                                        fontSize: '18px',
+                                                    }}
+                                                />
+                                            }
+                                            valueStyle={{
+                                                color: '#fff',
+                                                fontSize: '28px',
+                                                fontWeight: '700',
+                                                textShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                                            }}
+                                            loading={loading}
+                                        />
+                                    </Card>
+                                </Spin>
+                            </Col>
+                            <Col xs={24} sm={12} lg={6}>
+                                <Spin spinning={loading || tableLoading}>
+                                    <Card
+                                        bordered={false}
+                                        hoverable
+                                        style={{
+                                            borderRadius: 12,
+                                            background:
+                                                'linear-gradient(135deg, #124170 0%, #26667F 100%)',
+                                            color: 'white',
+                                            transition: 'all 0.3s ease',
+                                            border: '1px solid rgba(18, 65, 112, 0.1)',
+                                        }}
+                                        bodyStyle={{ padding: '20px' }}
+                                    >
+                                        <Statistic
+                                            title={
+                                                <span
+                                                    style={{
+                                                        color: 'rgba(255,255,255,0.9)',
+                                                        fontSize: '14px',
+                                                        fontWeight: '500',
+                                                    }}
+                                                >
+                                                    Số người dùng
+                                                </span>
+                                            }
+                                            value={numberOfMessages?.numberOfUsers || 0}
+                                            prefix={
+                                                <TeamOutlined
+                                                    style={{
+                                                        color: 'rgba(255,255,255,0.95)',
+                                                        fontSize: '18px',
+                                                    }}
+                                                />
+                                            }
+                                            valueStyle={{
+                                                color: '#fff',
+                                                fontSize: '28px',
+                                                fontWeight: '700',
+                                                textShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                                            }}
+                                            loading={loading}
+                                        />
+                                    </Card>
+                                </Spin>
+                            </Col>
+                        </Row>
+                    </div>
+
+                    <Divider style={{ margin: '24px 0' }} />
+
+                    {/* Controls Section */}
+                    <div style={{ marginBottom: 24 }}>
+                        <Title level={4} style={{ marginBottom: 16, color: '#124170' }}>
+                            <CommentOutlined style={{ marginRight: 8, color: '#67C090' }} />
+                            Quản lý dữ liệu
+                        </Title>
+
+                        <Row gutter={[16, 16]} align="middle">
+                            <Col xs={24} sm={24} md={16} lg={18}>
+                                <Space wrap size="middle">
+                                    <Button
+                                        type="primary"
+                                        icon={<ReloadOutlined />}
+                                        onClick={handleRefresh}
+                                        loading={loading || tableLoading}
+                                        size="middle"
+                                        style={{
+                                            borderRadius: 8,
+                                            fontWeight: 500,
+                                            boxShadow: '0 2px 4px rgba(103, 192, 144, 0.2)',
+                                            background:
+                                                'linear-gradient(135deg, #67C090 0%, #26667F 100%)',
+                                            border: 'none',
+                                        }}
+                                    >
+                                        <span className="hidden-xs">Làm mới dữ liệu</span>
+                                        <span className="visible-xs">Làm mới</span>
                                     </Button>
-                                </Button.Group>
-                                <Badge
-                                    count={
+
+                                    <div
+                                        style={{
+                                            display: 'inline-flex',
+                                            borderRadius: 8,
+                                            overflow: 'hidden',
+                                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                                        }}
+                                    >
+                                        <Button
+                                            type={viewMode === 'sessions' ? 'primary' : 'default'}
+                                            icon={<AppstoreOutlined />}
+                                            onClick={() => setViewMode('sessions')}
+                                            style={{
+                                                borderRadius: 0,
+                                                fontWeight: 500,
+                                                borderRight:
+                                                    viewMode === 'sessions'
+                                                        ? 'none'
+                                                        : '1px solid #d9d9d9',
+                                            }}
+                                        >
+                                            <span className="hidden-xs">Theo Session</span>
+                                            <span className="visible-xs">Session</span>
+                                        </Button>
+                                        <Button
+                                            type={viewMode === 'messages' ? 'primary' : 'default'}
+                                            icon={<UnorderedListOutlined />}
+                                            onClick={() => setViewMode('messages')}
+                                            style={{
+                                                borderRadius: 0,
+                                                fontWeight: 500,
+                                                borderLeft:
+                                                    viewMode === 'messages'
+                                                        ? 'none'
+                                                        : '1px solid #d9d9d9',
+                                            }}
+                                        >
+                                            <span className="hidden-xs">Theo Tin nhắn</span>
+                                            <span className="visible-xs">Tin nhắn</span>
+                                        </Button>
+                                    </div>
+
+                                    <Badge
+                                        count={
+                                            viewMode === 'sessions'
+                                                ? filteredSessions.length
+                                                : filteredMessages.length
+                                        }
+                                        style={{ backgroundColor: '#67C090' }}
+                                    >
+                                        <Button
+                                            size="middle"
+                                            style={{
+                                                borderRadius: 8,
+                                                fontWeight: 500,
+                                                background: '#DDF4E7',
+                                                borderColor: '#67C090',
+                                                color: '#124170',
+                                            }}
+                                        >
+                                            <span className="hidden-xs">
+                                                {viewMode === 'sessions'
+                                                    ? 'Tổng số session'
+                                                    : 'Tổng số tin nhắn'}{' '}
+                                                hiển thị
+                                            </span>
+                                            <span className="visible-xs">
+                                                {viewMode === 'sessions' ? 'Session' : 'Tin nhắn'}
+                                            </span>
+                                        </Button>
+                                    </Badge>
+                                </Space>
+                            </Col>
+                            <Col xs={24} sm={24} md={8} lg={6}>
+                                <Search
+                                    placeholder={
                                         viewMode === 'sessions'
-                                            ? filteredSessions.length
-                                            : filteredMessages.length
+                                            ? 'Tìm kiếm session hoặc user ID'
+                                            : 'Tìm kiếm tin nhắn hoặc user ID'
                                     }
-                                >
-                                    <Button size="small">
-                                        <span className="hidden-xs">
-                                            {viewMode === 'sessions'
-                                                ? 'Tổng số session'
-                                                : 'Tổng số tin nhắn'}{' '}
-                                            hiển thị
-                                        </span>
-                                        <span className="visible-xs">
-                                            {viewMode === 'sessions' ? 'Session' : 'Tin nhắn'}
-                                        </span>
-                                    </Button>
-                                </Badge>
-                            </Space>
-                        </Col>
-                        <Col xs={24} sm={24} md={8} lg={6}>
-                            <Search
-                                placeholder={
-                                    viewMode === 'sessions'
-                                        ? 'Tìm kiếm session hoặc user ID'
-                                        : 'Tìm kiếm tin nhắn hoặc user ID'
-                                }
-                                allowClear
-                                enterButton
-                                size="small"
-                                style={{ width: '100%' }}
-                                value={searchText}
-                                onChange={(e) => setSearchText(e.target.value)}
-                            />
-                        </Col>
-                    </Row>
+                                    allowClear
+                                    enterButton={<SearchOutlined />}
+                                    size="middle"
+                                    style={{
+                                        width: '100%',
+                                        borderRadius: 8,
+                                    }}
+                                    value={searchText}
+                                    onChange={(e) => setSearchText(e.target.value)}
+                                />
+                            </Col>
+                        </Row>
+                    </div>
 
-                    {viewMode === 'sessions' ? (
-                        <Table
-                            columns={sessionColumns}
-                            dataSource={filteredSessions}
-                            rowKey="sessionId"
-                            loading={loading}
-                            pagination={{
-                                pageSize: 10,
-                                showSizeChanger: true,
-                                showQuickJumper: true,
-                                showTotal: (total, range) => (
-                                    <span className="hidden-xs">
-                                        {`${range[0]}-${range[1]} của ${total} session`}
-                                    </span>
-                                ),
-                                size: 'small',
-                            }}
-                            scroll={{ x: 1000, y: 400 }}
-                            bordered
-                            size="small"
-                            className="resizable-table"
-                        />
-                    ) : (
-                        <Table
-                            columns={columns}
-                            dataSource={filteredMessages}
-                            rowKey="id"
-                            loading={loading}
-                            pagination={{
-                                pageSize: 10,
-                                showSizeChanger: true,
-                                showQuickJumper: true,
-                                showTotal: (total, range) => (
-                                    <span className="hidden-xs">
-                                        {`${range[0]}-${range[1]} của ${total} tin nhắn`}
-                                    </span>
-                                ),
-                                size: 'small',
-                            }}
-                            scroll={{ x: 800, y: 400 }}
-                            bordered
-                            size="small"
-                            rowClassName={(record) =>
-                                record.isUserMessage ? 'user-message-row' : 'bot-message-row'
-                            }
-                            className="resizable-table"
-                        />
-                    )}
+                    {/* Data Table Section */}
+                    <div
+                        style={{
+                            background: '#fafafa',
+                            padding: '20px',
+                            borderRadius: 12,
+                            border: '1px solid #f0f0f0',
+                        }}
+                    >
+                        <Title level={5} style={{ marginBottom: 16, color: '#124170' }}>
+                            <UnorderedListOutlined style={{ marginRight: 8, color: '#67C090' }} />
+                            {viewMode === 'sessions' ? 'Danh sách Session' : 'Danh sách Tin nhắn'}
+                        </Title>
+
+                        <Spin spinning={loading || tableLoading} tip="Đang tải..." size="large">
+                            {viewMode === 'sessions' ? (
+                                filteredSessions.length > 0 ? (
+                                    <Table
+                                        columns={sessionColumns}
+                                        dataSource={filteredSessions}
+                                        rowKey="sessionId"
+                                        pagination={{
+                                            pageSize: 10,
+                                            showSizeChanger: true,
+                                            showQuickJumper: true,
+                                            showTotal: (total, range) => (
+                                                <span style={{ color: '#666', fontSize: '14px' }}>
+                                                    {`${range[0]}-${range[1]} của ${total} session`}
+                                                </span>
+                                            ),
+                                            size: 'default',
+                                            style: { marginTop: 16 },
+                                        }}
+                                        scroll={{ x: 1000, y: 400 }}
+                                        bordered={false}
+                                        size="small"
+                                        className="modern-table"
+                                        style={{
+                                            background: '#fff',
+                                            borderRadius: 8,
+                                            overflow: 'hidden',
+                                        }}
+                                    />
+                                ) : (
+                                    <Empty
+                                        description="Không có dữ liệu session nào"
+                                        image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                        style={{ padding: '40px 0' }}
+                                    />
+                                )
+                            ) : filteredMessages.length > 0 ? (
+                                <Table
+                                    columns={columns}
+                                    dataSource={filteredMessages}
+                                    rowKey="id"
+                                    pagination={{
+                                        pageSize: 10,
+                                        showSizeChanger: true,
+                                        showQuickJumper: true,
+                                        showTotal: (total, range) => (
+                                            <span style={{ color: '#666', fontSize: '14px' }}>
+                                                {`${range[0]}-${range[1]} của ${total} tin nhắn`}
+                                            </span>
+                                        ),
+                                        size: 'default',
+                                        style: { marginTop: 16 },
+                                    }}
+                                    scroll={{ x: 800, y: 400 }}
+                                    bordered={false}
+                                    size="small"
+                                    rowClassName={(record) =>
+                                        record.isUserMessage
+                                            ? 'user-message-row'
+                                            : 'bot-message-row'
+                                    }
+                                    className="modern-table"
+                                    style={{
+                                        background: '#fff',
+                                        borderRadius: 8,
+                                        overflow: 'hidden',
+                                    }}
+                                />
+                            ) : (
+                                <Empty
+                                    description="Không có dữ liệu tin nhắn nào"
+                                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                    style={{ padding: '40px 0' }}
+                                />
+                            )}
+                        </Spin>
+                    </div>
                 </div>
             </Content>
 
             <Modal
                 title={
                     <Space>
-                        <MessageOutlined />
-                        <span>Chi tiết Session</span>
+                        <MessageOutlined style={{ color: '#1890ff' }} />
+                        <span style={{ fontWeight: 600 }}>Chi tiết Session</span>
                     </Space>
                 }
                 open={isModalVisible}
                 onCancel={() => setIsModalVisible(false)}
                 footer={[
-                    <Button key="close" onClick={() => setIsModalVisible(false)}>
+                    <Button
+                        key="close"
+                        onClick={() => setIsModalVisible(false)}
+                        style={{
+                            borderRadius: 6,
+                            fontWeight: 500,
+                            minWidth: 80,
+                        }}
+                    >
                         Đóng
                     </Button>,
                 ]}
-                width="90%"
+                width="95%"
                 style={{ maxWidth: 1600 }}
+                bodyStyle={{ padding: '24px' }}
             >
                 {selectedSession && (
                     <div>
-                        <Row gutter={[16, 16]}>
+                        <Row gutter={[24, 24]}>
                             <Col xs={24} md={8}>
-                                <Card size="small" title="Thông tin Session">
-                                    <p>
-                                        <strong>Session ID:</strong>
-                                    </p>
-                                    <Text code style={{ fontSize: '12px' }}>
-                                        {selectedSession.sessionId}
-                                    </Text>
-                                    <p style={{ marginTop: 8 }}>
-                                        <strong>User ID:</strong>
-                                        <Space style={{ marginLeft: 8 }}>
-                                            <Avatar size="small" icon={<UserOutlined />} />
-                                            {selectedSession.userId}
+                                <Card
+                                    size="small"
+                                    title={
+                                        <Space>
+                                            <ClockCircleOutlined style={{ color: '#1890ff' }} />
+                                            <span style={{ fontWeight: 600 }}>
+                                                Thông tin Session
+                                            </span>
                                         </Space>
-                                    </p>
-                                    <p>
-                                        <strong>Số tin nhắn:</strong> {selectedSession.messageCount}
-                                    </p>
-                                    <p>
-                                        <strong>Thời gian bắt đầu:</strong>
-                                        <br />
-                                        {convertToVietnamTime(
-                                            selectedSession.startTime
-                                        ).toLocaleString('vi-VN')}
-                                    </p>
-                                    <p>
-                                        <strong>Thời gian kết thúc:</strong>
-                                        <br />
-                                        {convertToVietnamTime(
-                                            selectedSession.endTime
-                                        ).toLocaleString('vi-VN')}
-                                    </p>
+                                    }
+                                    style={{ borderRadius: 8 }}
+                                    headStyle={{
+                                        background: '#fafafa',
+                                        borderRadius: '8px 8px 0 0',
+                                        fontWeight: 600,
+                                    }}
+                                >
+                                    <div style={{ marginBottom: 16 }}>
+                                        <Text strong style={{ color: '#262626' }}>
+                                            Session ID:
+                                        </Text>
+                                        <div style={{ marginTop: 4 }}>
+                                            <Text
+                                                code
+                                                style={{ fontSize: '12px', background: '#f5f5f5' }}
+                                            >
+                                                {selectedSession.sessionId}
+                                            </Text>
+                                        </div>
+                                    </div>
+
+                                    <div style={{ marginBottom: 16 }}>
+                                        <Text strong style={{ color: '#262626' }}>
+                                            User ID:
+                                        </Text>
+                                        <div style={{ marginTop: 4 }}>
+                                            <Space>
+                                                <Avatar size="small" icon={<UserOutlined />} />
+                                                <Text>{selectedSession.userId}</Text>
+                                            </Space>
+                                        </div>
+                                    </div>
+
+                                    <div style={{ marginBottom: 16 }}>
+                                        <Text strong style={{ color: '#262626' }}>
+                                            Số tin nhắn:
+                                        </Text>
+                                        <div style={{ marginTop: 4 }}>
+                                            <Badge
+                                                count={selectedSession.messageCount}
+                                                style={{ backgroundColor: '#52c41a' }}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div style={{ marginBottom: 16 }}>
+                                        <Text strong style={{ color: '#262626' }}>
+                                            Thời gian bắt đầu:
+                                        </Text>
+                                        <div style={{ marginTop: 4 }}>
+                                            <Text style={{ fontSize: '13px', color: '#666' }}>
+                                                {convertToVietnamTime(
+                                                    selectedSession.startTime
+                                                ).toLocaleString('vi-VN')}
+                                            </Text>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <Text strong style={{ color: '#262626' }}>
+                                            Thời gian kết thúc:
+                                        </Text>
+                                        <div style={{ marginTop: 4 }}>
+                                            <Text style={{ fontSize: '13px', color: '#666' }}>
+                                                {convertToVietnamTime(
+                                                    selectedSession.endTime
+                                                ).toLocaleString('vi-VN')}
+                                            </Text>
+                                        </div>
+                                    </div>
                                 </Card>
                             </Col>
                             <Col xs={24} md={16}>
-                                <Card size="small" title="Tất cả tin nhắn trong session">
+                                <Card
+                                    size="small"
+                                    title={
+                                        <Space>
+                                            <UnorderedListOutlined style={{ color: '#1890ff' }} />
+                                            <span style={{ fontWeight: 600 }}>
+                                                Tất cả tin nhắn trong session
+                                            </span>
+                                        </Space>
+                                    }
+                                    style={{ borderRadius: 8 }}
+                                    headStyle={{
+                                        background: '#fafafa',
+                                        borderRadius: '8px 8px 0 0',
+                                        fontWeight: 600,
+                                    }}
+                                >
                                     <Table
                                         columns={columns}
                                         dataSource={selectedSession.messages}
@@ -648,13 +1014,17 @@ const DashboardPage: React.FC = () => {
                                         loading={loading}
                                         pagination={false}
                                         scroll={{ x: 800, y: 400 }}
-                                        bordered
+                                        bordered={false}
                                         size="small"
                                         rowClassName={(record) =>
                                             record.isUserMessage
                                                 ? 'user-message-row'
                                                 : 'bot-message-row'
                                         }
+                                        style={{
+                                            background: '#fff',
+                                            borderRadius: 8,
+                                        }}
                                     />
                                 </Card>
                             </Col>
@@ -667,3 +1037,113 @@ const DashboardPage: React.FC = () => {
 };
 
 export default DashboardPage;
+
+// CSS Styles for enhanced UI
+const styles = `
+    .dashboard-layout .ant-table-thead > tr > th {
+        background: #fafafa !important;
+        font-weight: 600 !important;
+        color: #262626 !important;
+        border-bottom: 2px solid #f0f0f0 !important;
+    }
+    
+    .dashboard-layout .ant-table-tbody > tr:hover > td {
+        background: #f5f5f5 !important;
+    }
+    
+    .dashboard-layout .user-message-row {
+        background: #f6ffed !important;
+    }
+    
+    .dashboard-layout .bot-message-row {
+        background: #f0f9ff !important;
+    }
+    
+    .dashboard-layout .modern-table .ant-table-tbody > tr > td {
+        border-bottom: 1px solid #f0f0f0 !important;
+        padding: 12px 16px !important;
+    }
+    
+    .dashboard-layout .ant-card-hoverable:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+    }
+    
+    .dashboard-layout .ant-statistic-title {
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        letter-spacing: 0.5px !important;
+    }
+    
+    .dashboard-layout .ant-statistic-content {
+        font-size: 28px !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.5px !important;
+    }
+    
+    .dashboard-layout .ant-btn-primary {
+        background: linear-gradient(135deg, #67C090 0%, #26667F 100%) !important;
+        border: none !important;
+    }
+    
+    .dashboard-layout .ant-btn-primary:hover {
+        background: linear-gradient(135deg, #26667F 0%, #124170 100%) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(103, 192, 144, 0.3) !important;
+    }
+    
+    
+    .dashboard-layout .ant-badge-count {
+        font-size: 12px !important;
+        font-weight: 600 !important;
+    }
+    
+    .dashboard-layout .ant-tag {
+        border-radius: 6px !important;
+        font-weight: 500 !important;
+    }
+    
+    .dashboard-layout .ant-modal-header {
+        border-bottom: 1px solid #f0f0f0 !important;
+        padding: 16px 24px !important;
+    }
+    
+    .dashboard-layout .ant-modal-body {
+        padding: 24px !important;
+    }
+    
+    .dashboard-layout .ant-pagination {
+        margin-top: 16px !important;
+    }
+    
+    .dashboard-layout .ant-pagination-item-active {
+        background: #67C090 !important;
+        border-color: #67C090 !important;
+    }
+    
+    .dashboard-layout .ant-empty-description {
+        color: #999 !important;
+        font-size: 14px !important;
+    }
+    
+    @media (max-width: 768px) {
+        .dashboard-layout .ant-card {
+            margin-bottom: 16px !important;
+        }
+        
+        .dashboard-layout .ant-table {
+            font-size: 12px !important;
+        }
+        
+        .dashboard-layout .ant-statistic-content {
+            font-size: 20px !important;
+        }
+    }
+`;
+
+// Inject styles
+if (typeof document !== 'undefined') {
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = styles;
+    document.head.appendChild(styleSheet);
+}
