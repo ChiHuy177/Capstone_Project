@@ -5,6 +5,7 @@ import { ConfigProvider } from 'antd';
 import { AuthProvider } from './contexts/Auth/AuthContext';
 
 
+
 function App() {
     return (
         <AuthProvider>
