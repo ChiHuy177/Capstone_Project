@@ -1,14 +1,17 @@
 import { Form, Input, Button, Checkbox, Typography, Card, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { useAuth } from '../../contexts/Auth/AuthContext';
+
 import useForm from 'antd/es/form/hooks/useForm';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { useAuth } from '@contexts/Auth/AuthContext';
 
 const { Title, Link } = Typography;
 
 const LoginForm = () => {
     const { login } = useAuth();
     const [form] = useForm();
+    const [isLoginError, setIsLoginError] = useState(false);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const onFinish = async (values: any) => {
         try {
@@ -19,10 +22,11 @@ const LoginForm = () => {
             };
             await login(loginData);
             message.success('Đăng nhập thành công!');
+            setIsLoginError(false); // Reset error state on success
             // navigate('/');
         } catch (error: unknown) {
             const anyError = error as { response?: { data?: unknown } };
-            let serverMessage = 'Đăng nhập thất bại.';
+            let serverMessage = 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.';
             const data = anyError?.response?.data;
             if (typeof data === 'string') {
                 serverMessage = data;
@@ -30,7 +34,22 @@ const LoginForm = () => {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 serverMessage = (data as any).message ?? serverMessage;
             }
-            console.log(serverMessage);
+            setIsLoginError(true);
+            message.error({
+                content: serverMessage,
+                duration: 5,
+                style: {
+                    marginTop: '20vh',
+                },
+            });
+            console.log('Error message:', serverMessage);
+        }
+    };
+
+    // Reset error state when user starts typing
+    const handleInputChange = () => {
+        if (isLoginError) {
+            setIsLoginError(false);
         }
     };
 
@@ -55,10 +74,6 @@ const LoginForm = () => {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4, ease: 'easeOut' }}
-                whileHover={{
-                    scale: 1.02,
-                    transition: { duration: 0.2 },
-                }}
             >
                 <Card
                     style={{
@@ -158,6 +173,7 @@ const LoginForm = () => {
                                     border: '2px solid #e5e7eb',
                                     backgroundColor: '#f9fafb',
                                 }}
+                                onChange={handleInputChange}
                             />
                         </Form.Item>
 
@@ -202,6 +218,12 @@ const LoginForm = () => {
                                     message: 'Vui lòng nhập mật khẩu!',
                                 },
                             ]}
+                            help={
+                                isLoginError
+                                    ? 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.'
+                                    : ''
+                            }
+                            validateStatus={isLoginError ? 'error' : ''}
                             style={{ marginBottom: '28px' }}
                         >
                             <Input.Password
@@ -213,6 +235,7 @@ const LoginForm = () => {
                                     border: '2px solid #e5e7eb',
                                     backgroundColor: '#f9fafb',
                                 }}
+                                onChange={handleInputChange}
                             />
                         </Form.Item>
 
@@ -261,6 +284,69 @@ const LoginForm = () => {
                             </Button>
                         </Form.Item>
 
+                        {/* Google Login Button */}
+                        <Form.Item style={{ marginBottom: '24px' }}>
+                            <Button
+                                onClick={signInWithGG}
+                                icon={
+                                    <img
+                                        src="google.png"
+                                        style={{ width: '18px', height: '18px' }}
+                                    ></img>
+                                }
+                                block
+                                style={{
+                                    height: '52px',
+                                    borderRadius: '8px',
+                                    backgroundColor: '#ffffff',
+                                    borderColor: '#dadce0',
+                                    color: '#3c4043',
+                                    fontSize: '16px',
+                                    fontWeight: '500',
+                                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                Đăng nhập với Google
+                            </Button>
+                        </Form.Item>
+
+                        {/* Divider */}
+                        <div
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                marginBottom: '24px',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    flex: 1,
+                                    height: '1px',
+                                    backgroundColor: '#e5e7eb',
+                                }}
+                            />
+                            <span
+                                style={{
+                                    padding: '0 16px',
+                                    color: '#6b7280',
+                                    fontSize: '14px',
+                                    fontWeight: '500',
+                                }}
+                            >
+                                hoặc
+                            </span>
+                            <div
+                                style={{
+                                    flex: 1,
+                                    height: '1px',
+                                    backgroundColor: '#e5e7eb',
+                                }}
+                            />
+                        </div>
+
                         {/* Register Link */}
                         <div
                             style={{
@@ -280,32 +366,6 @@ const LoginForm = () => {
                             >
                                 Đăng ký tài khoản
                             </Link>
-                            <Button
-                                onClick={signInWithGG}
-                                style={{
-                                    height: '52px',
-                                    borderRadius: '8px',
-                                    backgroundColor: '#133F68',
-                                    borderColor: '#133F68',
-                                    fontSize: '16px',
-                                    fontWeight: '600',
-                                    boxShadow: '0 4px 12px rgba(15, 118, 110, 0.3)',
-                                    transition: 'all 0.3s ease',
-                                    color: 'white',
-                                }}
-                                onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
-                                    const el = e.currentTarget;
-                                    el.style.backgroundColor = '#133F68';
-                                    el.style.transform = 'translateY(-1px)';
-                                }}
-                                onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
-                                    const el = e.currentTarget;
-                                    el.style.backgroundColor = '#133F68';
-                                    el.style.transform = 'translateY(0)';
-                                }}
-                            >
-                                LOGIN WITH GOOGLE
-                            </Button>
                         </div>
                     </Form>
                 </Card>

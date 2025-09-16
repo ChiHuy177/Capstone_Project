@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Input, Button, Typography, Card, message } from 'antd';
 import { LockOutlined, MailOutlined, IdcardOutlined } from '@ant-design/icons';
-import { useAuth } from '../../contexts/Auth/AuthContext';
+import { useAuth } from '@contexts/Auth/AuthContext';
 import { motion } from 'framer-motion';
 
 const { Title, Link } = Typography;
@@ -43,10 +43,6 @@ const RegisterForm = () => {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4, ease: 'easeOut' }}
-                whileHover={{
-                    scale: 1.02,
-                    transition: { duration: 0.2 },
-                }}
             >
                 <Card
                     style={{

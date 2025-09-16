@@ -2,6 +2,7 @@
 using CapstoneProject.Server.Authentication.Entities;
 using CapstoneProject.Server.Authentication.Exception;
 using CapstoneProject.Server.Authentication.Requests;
+using CapstoneProject.Server.Models.Identity;
 using CapstoneProject.Server.Repository.interfaces;
 using CapstoneProject.Server.Services.interfaces;
 using Microsoft.AspNetCore.Authentication;
@@ -14,13 +15,15 @@ namespace CapstoneProject.Server.Services.implementations
         private readonly IAuthTokenProcessor _tokenProcessor;
         private readonly UserManager<User> _userManager;
         private readonly IAccountRepository _userRepository;
-
+        private readonly RoleManager<Role> _roleManager;
+    
         public AccountService(IAuthTokenProcessor tokenProcessor, UserManager<User> userManager,
-            IAccountRepository userRepository)
+            IAccountRepository userRepository, RoleManager<Role> roleManager)
         {
             _tokenProcessor = tokenProcessor;
             _userManager = userManager;
             _userRepository = userRepository;
+            _roleManager = roleManager;
         }
 
         public async Task RegisterAsync(RegisterRequest registerRequest)
@@ -43,6 +46,8 @@ namespace CapstoneProject.Server.Services.implementations
             {
                 throw new RegisterFailException(result.Errors.Select(x => x.Description));
             }
+
+            await _userManager.AddToRoleAsync(newUser, "User");
         }
 
         public async Task LoginAsync(LoginRequest loginRequest)
@@ -54,7 +59,9 @@ namespace CapstoneProject.Server.Services.implementations
                 throw new LoginFailException(loginRequest.Email);
             }
 
-            var (jwtToken, expirationDateInUtc) = _tokenProcessor.GenerateJwtToken(user);
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var (jwtToken, expirationDateInUtc) = _tokenProcessor.GenerateJwtToken(user, roles);
             var refreshTokenValue = _tokenProcessor.GenerateRefreshToken();
 
             var refreshTokenExpirationDateInUtc = DateTime.UtcNow.AddDays(7);
@@ -87,8 +94,10 @@ namespace CapstoneProject.Server.Services.implementations
                 throw new RefreshTokenInvalidException("Refresh token has expired");
             }
 
+            var roles = await _userManager.GetRolesAsync(user);
+
             // Issue new access token and rotate refresh token
-            var (jwtToken, accessExpireAtUtc) = _tokenProcessor.GenerateJwtToken(user);
+            var (jwtToken, accessExpireAtUtc) = _tokenProcessor.GenerateJwtToken(user, roles);
             var newRefreshToken = _tokenProcessor.GenerateRefreshToken();
             var newRefreshExpireAtUtc = DateTime.UtcNow.AddDays(7);
 
@@ -131,8 +140,9 @@ namespace CapstoneProject.Server.Services.implementations
             var existingUser = await _userManager.FindByLoginAsync("Google", email);
             if (existingUser != null)
             {
+                var role = await _userManager.GetRolesAsync(existingUser);
                 // User already linked with Google, proceed to login
-                var (jwtToken1, accessExpireAtUtc1) = _tokenProcessor.GenerateJwtToken(existingUser);
+                var (jwtToken1, accessExpireAtUtc1) = _tokenProcessor.GenerateJwtToken(existingUser,role);
                 var newRefreshToken1 = _tokenProcessor.GenerateRefreshToken();
                 var newRefreshExpireAtUtc1 = DateTime.UtcNow.AddDays(7);
 
@@ -178,7 +188,8 @@ namespace CapstoneProject.Server.Services.implementations
                 throw new ExternalLoginProviderException("Google",
                 $"Failed to link Google account: {string.Join(", ", loginResult.Errors.Select(e => e.Description))}");
             }
-            var (jwtToken, accessExpireAtUtc) = _tokenProcessor.GenerateJwtToken(user);
+            var roles = await _userManager.GetRolesAsync(user);
+            var (jwtToken, accessExpireAtUtc) = _tokenProcessor.GenerateJwtToken(user, roles);
             var newRefreshToken = _tokenProcessor.GenerateRefreshToken();
             var newRefreshExpireAtUtc = DateTime.UtcNow.AddDays(7);
 

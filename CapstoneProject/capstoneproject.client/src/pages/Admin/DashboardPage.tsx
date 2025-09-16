@@ -38,8 +38,8 @@ import {
     CommentOutlined,
 } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import ChatService from '../services/ChatService';
-import type { CountChatModel } from '../models/CountChatModel';
+
+import type { CountChatModel } from '@models/CountChatModel';
 import { Activity, Clock } from 'lucide-react';
 import {
     ResponsiveContainer,
@@ -52,6 +52,7 @@ import {
     AreaChart,
     Area,
 } from 'recharts';
+import ChatService from '@services/ChatService';
 
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;

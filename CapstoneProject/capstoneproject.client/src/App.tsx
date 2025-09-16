@@ -3,6 +3,7 @@ import 'antd/dist/reset.css';
 import RoutesApp from './routes';
 import { ConfigProvider } from 'antd';
 import { AuthProvider } from './contexts/Auth/AuthContext';
+import UEHChatbot from './pages/Client/Chat/Chat';
 
 
 
@@ -15,6 +16,7 @@ function App() {
                 </BrowserRouter>
             </ConfigProvider>
         </AuthProvider>
+        // <UEHChatbot/>
     );
 }
 

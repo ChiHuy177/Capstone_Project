@@ -20,7 +20,8 @@ namespace CapstoneProject.Server.Services
 
         private readonly IGenericRepository<ChatMessage> _genericRepository;
 
-        public ChatService(ApplicationDbContext context, IChatRepository chatRepository, IKnowledgeService knowledgeService, IConfiguration configuration, IGenericRepository<ChatMessage> genericRepository)
+        public ChatService(ApplicationDbContext context, IChatRepository chatRepository, IKnowledgeService knowledgeService,
+         IConfiguration configuration, IGenericRepository<ChatMessage> genericRepository)
         {
             _context = context;
             _chatRepository = chatRepository;
