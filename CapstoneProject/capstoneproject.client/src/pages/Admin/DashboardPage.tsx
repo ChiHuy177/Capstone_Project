@@ -529,7 +529,7 @@ const DashboardPage: React.FC = () => {
                                             transition: 'all 0.3s ease',
                                             border: '1px solid rgba(38, 102, 127, 0.1)',
                                         }}
-                                        bodyStyle={{ padding: '20px' }}
+                                        styles={{ body: { padding: '20px' } }}
                                     >
                                         <Statistic
                                             title={
@@ -575,7 +575,7 @@ const DashboardPage: React.FC = () => {
                                             transition: 'all 0.3s ease',
                                             border: '1px solid rgba(103, 192, 144, 0.2)',
                                         }}
-                                        bodyStyle={{ padding: '20px' }}
+                                        styles={{ body: { padding: '20px' } }}
                                     >
                                         <Statistic
                                             title={
@@ -622,7 +622,7 @@ const DashboardPage: React.FC = () => {
                                             transition: 'all 0.3s ease',
                                             border: '1px solid rgba(103, 192, 144, 0.1)',
                                         }}
-                                        bodyStyle={{ padding: '20px' }}
+                                        styles={{ body: { padding: '20px' } }}
                                     >
                                         <Statistic
                                             title={
@@ -669,7 +669,7 @@ const DashboardPage: React.FC = () => {
                                             transition: 'all 0.3s ease',
                                             border: '1px solid rgba(18, 65, 112, 0.1)',
                                         }}
-                                        bodyStyle={{ padding: '20px' }}
+                                        styles={{ body: { padding: '20px' } }}
                                     >
                                         <Statistic
                                             title={
@@ -1045,7 +1045,7 @@ const DashboardPage: React.FC = () => {
                 ]}
                 width="95%"
                 style={{ maxWidth: 1600 }}
-                bodyStyle={{ padding: '24px' }}
+                styles={{ body: { padding: '24px' } }}
             >
                 {selectedSession && (
                     <div>

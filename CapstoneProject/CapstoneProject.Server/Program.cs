@@ -21,6 +21,7 @@ using CapstoneProject.Server.Authentication.Infrastructure.Processor;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using CapstoneProject.Server.Services.implementations.Analystics;
 using CapstoneProject.Server.Models.Identity;
+using CapstoneProject.Server.Middleware;
 
 namespace CapstoneProject.Server
 {
@@ -159,6 +160,9 @@ namespace CapstoneProject.Server
 
             app.UseExceptionHandler(_ => { });
             app.UseHttpsRedirection();
+
+            //middleware
+            app.UseMiddleware<GlobalExceptionMiddleware>();
 
             // Use CORS
             app.UseCors("AllowAll");

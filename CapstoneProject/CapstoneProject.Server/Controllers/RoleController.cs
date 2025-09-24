@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CapstoneProject.Server.Models;
+using CapstoneProject.Server.Models.Identity;
+using CapstoneProject.Server.Models.Response;
 using CapstoneProject.Server.Services.interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
@@ -13,7 +15,7 @@ namespace CapstoneProject.Server.Controllers
 {
     [ApiController]
     [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = "AdminOnly")]
     public class RoleController : ControllerBase
     {
         private readonly IRoleService _roleService;
@@ -27,7 +29,16 @@ namespace CapstoneProject.Server.Controllers
         public async Task<IActionResult> GetAllRoles()
         {
             var roles = await _roleService.GetAllRolesAsync();
-            return Ok(roles);
+            return Ok(new ApiResponse<IEnumerable<Role>>
+            {
+                Metadata = new Metadata
+                {
+                    Code = 200,
+                    Message = "Success",
+                    Timestamp = DateTime.UtcNow
+                },
+                Data = roles
+            });
         }
 
         [HttpGet("{roleId}")]

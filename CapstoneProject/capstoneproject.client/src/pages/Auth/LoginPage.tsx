@@ -1,5 +1,5 @@
 import { Form, Input, Button, Checkbox, Typography, Card, message } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { UserOutlined, LockOutlined, LoadingOutlined } from '@ant-design/icons';
 
 import useForm from 'antd/es/form/hooks/useForm';
 import { motion } from 'framer-motion';
@@ -12,15 +12,25 @@ const LoginForm = () => {
     const { login } = useAuth();
     const [form] = useForm();
     const [isLoginError, setIsLoginError] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const onFinish = async (values: any) => {
+        setIsLoading(true);
+        setIsLoginError(false);
+
+        // Tạo promise để đảm bảo loading hiển thị ít nhất 1 giây
+        const minLoadingTime = new Promise((resolve) => setTimeout(resolve, 1000));
+
         try {
             const loginData = {
                 username: values.username,
                 email: values.username,
                 password: values.password,
             };
-            await login(loginData);
+
+            // Chạy song song login và minLoadingTime
+            const [, loginResult] = await Promise.all([minLoadingTime, login(loginData)]);
+
             message.success('Đăng nhập thành công!');
             setIsLoginError(false); // Reset error state on success
             // navigate('/');
@@ -43,6 +53,8 @@ const LoginForm = () => {
                 },
             });
             console.log('Error message:', serverMessage);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -259,28 +271,37 @@ const LoginForm = () => {
                                 type="primary"
                                 htmlType="submit"
                                 block
+                                loading={isLoading}
+                                disabled={isLoading}
+                                icon={isLoading ? <LoadingOutlined /> : null}
                                 style={{
                                     height: '52px',
                                     borderRadius: '8px',
-                                    backgroundColor: '#133F68',
-                                    borderColor: '#133F68',
+                                    backgroundColor: isLoading ? '#9ca3af' : '#133F68',
+                                    borderColor: isLoading ? '#9ca3af' : '#133F68',
                                     fontSize: '16px',
                                     fontWeight: '600',
-                                    boxShadow: '0 4px 12px rgba(15, 118, 110, 0.3)',
+                                    boxShadow: isLoading
+                                        ? 'none'
+                                        : '0 4px 12px rgba(15, 118, 110, 0.3)',
                                     transition: 'all 0.3s ease',
                                 }}
                                 onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
-                                    const el = e.currentTarget;
-                                    el.style.backgroundColor = '#133F68';
-                                    el.style.transform = 'translateY(-1px)';
+                                    if (!isLoading) {
+                                        const el = e.currentTarget;
+                                        el.style.backgroundColor = '#133F68';
+                                        el.style.transform = 'translateY(-1px)';
+                                    }
                                 }}
                                 onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
-                                    const el = e.currentTarget;
-                                    el.style.backgroundColor = '#133F68';
-                                    el.style.transform = 'translateY(0)';
+                                    if (!isLoading) {
+                                        const el = e.currentTarget;
+                                        el.style.backgroundColor = '#133F68';
+                                        el.style.transform = 'translateY(0)';
+                                    }
                                 }}
                             >
-                                Đăng nhập
+                                {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
                             </Button>
                         </Form.Item>
 

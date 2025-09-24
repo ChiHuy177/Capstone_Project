@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Form,
     Input,
@@ -13,6 +13,7 @@ import {
     Breadcrumb,
     Row,
     Col,
+    Tooltip,
 } from 'antd';
 import {
     SettingOutlined,
@@ -23,6 +24,9 @@ import {
     KeyOutlined,
     GlobalOutlined,
     SkinOutlined,
+    CopyOutlined,
+    CheckOutlined,
+    ReloadOutlined,
 } from '@ant-design/icons';
 
 const { Title, Text } = Typography;
@@ -36,9 +40,15 @@ interface ConfigFormData {
     language: string;
 }
 
+const { TextArea } = Input;
+
 const ConfigurePage: React.FC = () => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
+    const [copied, setCopied] = useState(false);
+    const [configText, setConfigText] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
 
     // Danh sách các model AI
     const aiModels = [
@@ -60,6 +70,30 @@ const ConfigurePage: React.FC = () => {
         { value: 'en', label: 'English' },
         { value: 'zh', label: '中文' },
     ];
+
+    // Hàm để fetch nội dung script
+    const fetchScriptContent = async () => {
+        setIsLoading(true);
+        setError('');
+        try {
+            const response = await fetch('/scriptChatBox.js');
+            if (!response.ok) {
+                throw new Error('Không thể tải nội dung script');
+            }
+            const text = await response.text();
+            setConfigText(text);
+        } catch (err) {
+            setError('Có lỗi khi tải nội dung script. Vui lòng thử lại sau.');
+            console.error('Lỗi khi tải script:', err);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Fetch script content khi component mount
+    useEffect(() => {
+        fetchScriptContent();
+    }, []);
 
     const handleSave = async (values: ConfigFormData) => {
         setLoading(true);
@@ -192,6 +226,93 @@ const ConfigurePage: React.FC = () => {
                                                 </Option>
                                             ))}
                                         </Select>
+                                    </Form.Item>
+
+                                    <Form.Item
+                                        label={
+                                            <Space>
+                                                <CopyOutlined />
+                                                <span>Script Chat Box</span>
+                                            </Space>
+                                        }
+                                        tooltip="Copy script chat box"
+                                    >
+                                        <div style={{ position: 'relative' }}>
+                                            <TextArea
+                                                value={configText}
+                                                onChange={(e) => setConfigText(e.target.value)}
+                                                autoSize={{ minRows: 6, maxRows: 10 }}
+                                                style={{
+                                                    fontFamily: 'monospace',
+                                                    fontSize: '14px',
+                                                    backgroundColor: '#f5f5f5',
+                                                }}
+                                                disabled={isLoading}
+                                                placeholder={
+                                                    isLoading
+                                                        ? 'Đang tải nội dung script...'
+                                                        : 'Nội dung script sẽ hiển thị ở đây'
+                                                }
+                                            />
+                                            <Space
+                                                style={{ position: 'absolute', right: 8, top: 8 }}
+                                            >
+                                                <Tooltip title="Tải lại nội dung">
+                                                    <Button
+                                                        icon={<ReloadOutlined spin={isLoading} />}
+                                                        onClick={fetchScriptContent}
+                                                        loading={isLoading}
+                                                    />
+                                                </Tooltip>
+                                                <Tooltip
+                                                    title={copied ? 'Đã copy!' : 'Copy script'}
+                                                >
+                                                    <Button
+                                                        icon={
+                                                            copied ? (
+                                                                <CheckOutlined />
+                                                            ) : (
+                                                                <CopyOutlined />
+                                                            )
+                                                        }
+                                                        style={{
+                                                            backgroundColor: copied
+                                                                ? '#52c41a'
+                                                                : undefined,
+                                                            borderColor: copied
+                                                                ? '#52c41a'
+                                                                : undefined,
+                                                            color: copied ? 'white' : undefined,
+                                                        }}
+                                                        onClick={() => {
+                                                            navigator.clipboard.writeText(
+                                                                configText
+                                                            );
+                                                            setCopied(true);
+                                                            message.success(
+                                                                'Đã copy nội dung script!'
+                                                            );
+                                                            setTimeout(
+                                                                () => setCopied(false),
+                                                                2000
+                                                            );
+                                                        }}
+                                                        disabled={isLoading || !configText}
+                                                    />
+                                                </Tooltip>
+                                            </Space>
+                                            {error && (
+                                                <div
+                                                    style={{
+                                                        color: '#ff4d4f',
+                                                        marginTop: 8,
+                                                        fontSize: 12,
+                                                    }}
+                                                >
+                                                    {error}
+                                                </div>
+                                            )}
+                                        </div>
                                     </Form.Item>
                                 </Form>
                             </Card>

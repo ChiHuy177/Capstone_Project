@@ -3,7 +3,8 @@ import 'antd/dist/reset.css';
 import RoutesApp from './routes';
 import { ConfigProvider } from 'antd';
 import { AuthProvider } from './contexts/Auth/AuthContext';
-import UEHChatbot from './pages/Client/Chat/Chat';
+import AntdServerClock from '@components/TimeClock';
+
 
 
 
@@ -16,7 +17,7 @@ function App() {
                 </BrowserRouter>
             </ConfigProvider>
         </AuthProvider>
-        // <UEHChatbot/>
+        // <AntdServerClock apiUrl='https://localhost:5026/api/Time/now' timeZone='Asia/Ho_Chi_Minh' hour12={false} showSeconds/>
     );
 }
 
