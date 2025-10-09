@@ -9,6 +9,7 @@
     <PackageJsonScriptsBuild Condition="$(PackageJsonScriptsBuild) == ''">tsc -b &amp;&amp; vite build</PackageJsonScriptsBuild>
     <PackageJsonScriptsLint Condition="$(PackageJsonScriptsLint) == ''">eslint .</PackageJsonScriptsLint>
     <PackageJsonScriptsPreview Condition="$(PackageJsonScriptsPreview) == ''">vite preview</PackageJsonScriptsPreview>
+    <PackageJsonDependenciesAntDesignIcons Condition="$(PackageJsonDependenciesAntDesignIcons) == ''">^5.6.1</PackageJsonDependenciesAntDesignIcons>
     <PackageJsonDependenciesLordiconReact Condition="$(PackageJsonDependenciesLordiconReact) == ''">^1.11.0</PackageJsonDependenciesLordiconReact>
     <PackageJsonDependenciesMicrosoftSignalr Condition="$(PackageJsonDependenciesMicrosoftSignalr) == ''">^9.0.6</PackageJsonDependenciesMicrosoftSignalr>
     <PackageJsonDependenciesAntd Condition="$(PackageJsonDependenciesAntd) == ''">^5.26.6</PackageJsonDependenciesAntd>

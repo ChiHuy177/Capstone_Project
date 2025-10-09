@@ -98,7 +98,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = () => {
                     <div
                         style={{ display: 'flex', alignItems: 'center', gap: 24, paddingRight: 24 }}
                     >
+                        {/* <ThemeToggle /> */}
                         <AvatarDropdown />
+                        {/* <AntdServerClock
+                            apiUrl="https://localhost:5026/api/Time/now"
+                            timeZone="Asia/Ho_Chi_Minh"
+                            hour12={false}
+                            showSeconds
+                        /> */}
                     </div>
                 </Header>
                 <Content
