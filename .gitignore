@@ -1,21 +1,54 @@
-CapstoneProject/CapstoneProject.Server/obj/Debug/net9.0/CapstoneProject.Server.AssemblyInfo.cs
-CapstoneProject/CapstoneProject.Server/obj/Debug/net9.0/CapstoneProject.Server.AssemblyInfo.cs
-CapstoneProject/.vs/CapstoneProject/DesignTimeBuild/.dtbcache.v2
-CapstoneProject/.vs/CapstoneProject/FileContentIndex/3b78931c-adf3-45dc-bcff-06c2bfe0f5f4.vsidx
-*.vsidx
-*.vsidx
-/CapstoneProject/.vs
-/CapstoneProject/.vs/CapstoneProject
-*.bin
-CapstoneProject/.vs/CapstoneProject/FileContentIndex/3b78931c-adf3-45dc-bcff-06c2bfe0f5f4.vsidx
-CapstoneProject/CapstoneProject.Server/obj/Debug/net9.0/CapstoneProject.Server.AssemblyInfo.cs
-CapstoneProject/CapstoneProject.Server/CapstoneProject.Server.csproj
+# Build artifacts
+bin/
+obj/
 
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.slnLaunch.user
+*.rsuser
+
+# Visual Studio cache
+.vs/
+*.db
+*.db-shm
 *.db-wal
-CapstoneProject/.vs/CapstoneProject/v17/.futdcache.v2
-CapstoneProject/.vs/CapstoneProject/CopilotIndices/17.12.38.29086/SemanticSymbols.db-shm
-CapstoneProject/CapstoneProject.slnLaunch.user
-CapstoneProject/.vs/CapstoneProject/CopilotIndices/17.12.38.29086/SemanticSymbols.db-shm
-CapstoneProject/.vs/CapstoneProject/CopilotIndices/17.12.38.29086/CodeChunks.db
-CapstoneProject/.vs/CapstoneProject/v17/DocumentLayout.backup.json
-CapstoneProject/.vs/CapstoneProject/v17/.suo
+*.dtbcache.v2
+*.futdcache.v2
+*.vsidx
+*.vscode/
+
+# Copilot cache
+**/CopilotIndices/
+
+# Backup and temp files
+*.bak
+*.backup
+*.tmp
+*.log
+
+# IDE metadata
+*.ide
+*.pidb
+*.pdb
+*.mdb
+*.cache
+
+# Publish folders
+publish/
+out/
+Debug/
+Release/
+
+# OS-specific junk
+.DS_Store
+Thumbs.db
+
+# Optional: Ignore local secrets and configs
+*.env
+*.local.json
+
+# JetBrains Rider (nếu có)
+.idea/
+*.iml
