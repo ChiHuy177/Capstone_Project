@@ -47,7 +47,34 @@ CREATE DATABASE capstoneproject;
 }
 ```
 
-### 2. Chạy Server
+### 2. Cấu hình ChatService
+
+Để sử dụng ChatService, bạn cần cấu hình các thông số sau trong `CapstoneProject.Server/appsettings.json`:
+
+```json
+{
+  "ChatGPT": {
+    "ApiKey": "your_openai_api_key",
+    "BaseUrl": "https://api.openai.com/v1",
+    "Model": "gpt-3.5-turbo"
+  }
+}
+```
+
+Trong đó:
+
+- `ApiKey`: API key của OpenAI (bắt buộc)
+- `BaseUrl`: URL của OpenAI API (mặc định là https://api.openai.com/v1)
+- `Model`: Model GPT muốn sử dụng (mặc định là gpt-3.5-turbo)
+
+Lưu ý:
+
+- Bạn cần đăng ký tài khoản OpenAI và lấy API key tại: https://platform.openai.com
+- Giữ API key bảo mật và không chia sẻ công khai
+- Có thể sử dụng các model khác như: gpt-4, gpt-4-turbo-preview, gpt-3.5-turbo-16k
+- Kiểm tra giá và credit limit của từng model trước khi sử dụng
+
+### 3. Chạy Server
 
 ```bash
 cd CapstoneProject/CapstoneProject.Server

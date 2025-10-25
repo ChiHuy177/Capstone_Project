@@ -19,12 +19,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using CapstoneProject.Server.Handler;
 using CapstoneProject.Server.Authentication.Infrastructure.Processor;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using CapstoneProject.Server.Services.implementations.Analystics;
+using CapstoneProject.Server.Models.Identity;
+using CapstoneProject.Server.Middleware;
 
 namespace CapstoneProject.Server
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -53,6 +56,8 @@ namespace CapstoneProject.Server
                     .WithScopedLifetime()
             );
 
+            builder.Services.AddScoped<IHourlyCountService, HourlyCountsService>();
+
             // Add CORS for SignalR
             builder.Services.AddCors(options =>
             {
@@ -73,7 +78,7 @@ namespace CapstoneProject.Server
             builder.Services.Configure<JwtOptions>(
                 builder.Configuration.GetSection(JwtOptions.JwtOptionsKey));
 
-            builder.Services.AddIdentity<User, IdentityRole<Guid>>(opt =>
+            builder.Services.AddIdentity<User, Role>(opt =>
             {
                 opt.Password.RequireDigit = true;
                 opt.Password.RequireLowercase = true;
@@ -81,7 +86,8 @@ namespace CapstoneProject.Server
                 opt.Password.RequireUppercase = true;
                 opt.Password.RequiredLength = 8;
                 opt.User.RequireUniqueEmail = true;
-            }).AddEntityFrameworkStores<ApplicationDbContext>();
+            }).AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
             builder.Services.AddAuthentication(opt =>
             {
@@ -128,7 +134,11 @@ namespace CapstoneProject.Server
                 };
             });
 
-            builder.Services.AddAuthorization();
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("UserAndAdmin", policy => policy.RequireRole("User", "Admin"));
+            });
 
             builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
@@ -151,6 +161,9 @@ namespace CapstoneProject.Server
             app.UseExceptionHandler(_ => { });
             app.UseHttpsRedirection();
 
+            //middleware
+            app.UseMiddleware<GlobalExceptionMiddleware>();
+
             // Use CORS
             app.UseCors("AllowAll");
 
@@ -164,6 +177,22 @@ namespace CapstoneProject.Server
 
             // Map fallback to SPA AFTER all API endpoints
             app.MapFallbackToFile("/index.html");
+
+            // Thêm seed data cho roles (sau khi tạo app, trước app.Run())
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
+
+                var roles = new[] { "Admin", "User" };
+                foreach (var roleName in roles)
+                {
+                    if (!await roleManager.RoleExistsAsync(roleName))
+                    {
+                        var role = Role.Create(roleName);
+                        await roleManager.CreateAsync(role);
+                    }
+                }
+            }
 
             app.Run();
         }

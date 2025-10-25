@@ -1,5 +1,6 @@
 ﻿using CapstoneProject.Server.Authentication.Entities;
 using CapstoneProject.Server.Authentication.Infrastructure.Options;
+using CapstoneProject.Server.Models.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -34,7 +35,7 @@ namespace CapstoneProject.Server.Authentication.Infrastructure.Processor
             });
         }
 
-        public (string jwtToken, DateTime expireAtUtc) GenerateJwtToken(User user)
+        public (string jwtToken, DateTime expireAtUtc) GenerateJwtToken(User user, IEnumerable<string> roles)
         {
             var signingKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_jwtOptions.Secret));
@@ -49,7 +50,8 @@ namespace CapstoneProject.Server.Authentication.Infrastructure.Processor
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email.ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.FullName)
+                new Claim(ClaimTypes.Name, user.FullName),
+                new Claim(ClaimTypes.Role, string.Join(",", roles))
             };
 
             var expires = DateTime.UtcNow.AddMinutes(_jwtOptions.ExpirationTimeInMinutes);

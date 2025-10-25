@@ -2,7 +2,7 @@
 
 namespace CapstoneProject.Server.Repository.interfaces
 {
-    public interface IChatRepository
+    public interface IChatRepository : IGenericRepository<ChatMessage>
     {
         public Task<List<ChatMessage>> GetChatHistory(string sessionID, int limit);
         public Task<List<ChatMessage>> GetAll(int limit);

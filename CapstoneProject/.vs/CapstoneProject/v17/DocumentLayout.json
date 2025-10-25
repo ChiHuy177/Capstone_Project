@@ -3,47 +3,32 @@
   "WorkspaceRootPath": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Migrations\\20250910023014_update-user-table.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:CapstoneProject.Server\\Migrations\\20250910023014_update-user-table.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\services\\implementations\\accountservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\services\\implementations\\accountservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\authentication\\requests\\registerrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\authentication\\requests\\registerrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\authentication\\exception\\registerfailexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\authentication\\exception\\registerfailexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\authentication\\exception\\useralreadyexistexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\authentication\\exception\\useralreadyexistexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\authentication\\requests\\loginrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\authentication\\requests\\loginrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\authentication\\application\\abstract\\iauthtokenprocessor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\authentication\\application\\abstract\\iauthtokenprocessor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\repository\\implementations\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\repository\\implementations\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\authentication\\infrastructure\\processor\\authtokenprocessor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\authentication\\infrastructure\\processor\\authtokenprocessor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\repository\\implementations\\chatrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\repository\\implementations\\chatrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\services\\implementations\\chatservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\services\\implementations\\chatservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\controllers\\chatcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\controllers\\chatcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|d:\\github\\capstone_project\\capstoneproject\\capstoneproject.server\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA404541-D173-4C50-AD9C-B993B557E929}|CapstoneProject.Server\\CapstoneProject.Server.csproj|solutionrelative:capstoneproject.server\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -53,7 +38,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 296,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 11,
           "Children": [
             {
               "$type": "Bookmark",
@@ -72,138 +57,98 @@
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "20250910023014_update-user-table.cs",
-              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Migrations\\20250910023014_update-user-table.cs",
-              "RelativeDocumentMoniker": "CapstoneProject.Server\\Migrations\\20250910023014_update-user-table.cs",
-              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Migrations\\20250910023014_update-user-table.cs",
-              "RelativeToolTip": "CapstoneProject.Server\\Migrations\\20250910023014_update-user-table.cs",
-              "ViewState": "AgIAABYAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-10T02:30:14.912Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Microsoft.Common.CurrentVersion.targets",
-              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
-              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
-              "ViewState": "AgIAAL4UAAAAAAAAAAAtwMkUAAAEAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
-              "WhenOpened": "2025-09-10T02:29:51.54Z",
+              "Title": "GenericRepository.cs",
+              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Repository\\implementations\\GenericRepository.cs",
+              "RelativeDocumentMoniker": "CapstoneProject.Server\\Repository\\implementations\\GenericRepository.cs",
+              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Repository\\implementations\\GenericRepository.cs",
+              "RelativeToolTip": "CapstoneProject.Server\\Repository\\implementations\\GenericRepository.cs",
+              "ViewState": "AgIAAD4BAAAAAAAAAAAmwIYAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-20T11:52:44.748Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "ApplicationDbContext.cs",
-              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Data\\ApplicationDbContext.cs",
-              "RelativeDocumentMoniker": "CapstoneProject.Server\\Data\\ApplicationDbContext.cs",
-              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Data\\ApplicationDbContext.cs",
-              "RelativeToolTip": "CapstoneProject.Server\\Data\\ApplicationDbContext.cs",
-              "ViewState": "AgIAABcAAAAAAAAAAAAawCEAAAAAAAAAAAAAAA==",
+              "Title": "ChatRepository.cs",
+              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Repository\\implementations\\ChatRepository.cs",
+              "RelativeDocumentMoniker": "CapstoneProject.Server\\Repository\\implementations\\ChatRepository.cs",
+              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Repository\\implementations\\ChatRepository.cs",
+              "RelativeToolTip": "CapstoneProject.Server\\Repository\\implementations\\ChatRepository.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAQwBIAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-10T02:29:12.459Z",
+              "WhenOpened": "2025-10-20T11:51:53.236Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ChatService.cs",
+              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Services\\implementations\\ChatService.cs",
+              "RelativeDocumentMoniker": "CapstoneProject.Server\\Services\\implementations\\ChatService.cs",
+              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Services\\implementations\\ChatService.cs",
+              "RelativeToolTip": "CapstoneProject.Server\\Services\\implementations\\ChatService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-20T11:51:19.183Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ChatController.cs",
+              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Controllers\\ChatController.cs",
+              "RelativeDocumentMoniker": "CapstoneProject.Server\\Controllers\\ChatController.cs",
+              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Controllers\\ChatController.cs",
+              "RelativeToolTip": "CapstoneProject.Server\\Controllers\\ChatController.cs",
+              "ViewState": "AgIAADEAAAAAAAAAAAAkwEIAAABFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-20T11:50:55.797Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "RegisterFailException.cs",
-              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Authentication\\Exception\\RegisterFailException.cs",
-              "RelativeDocumentMoniker": "CapstoneProject.Server\\Authentication\\Exception\\RegisterFailException.cs",
-              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Authentication\\Exception\\RegisterFailException.cs",
-              "RelativeToolTip": "CapstoneProject.Server\\Authentication\\Exception\\RegisterFailException.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAABeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-05T03:23:04.185Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "UserAlreadyExistException.cs",
-              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Authentication\\Exception\\UserAlreadyExistException.cs",
-              "RelativeDocumentMoniker": "CapstoneProject.Server\\Authentication\\Exception\\UserAlreadyExistException.cs",
-              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Authentication\\Exception\\UserAlreadyExistException.cs",
-              "RelativeToolTip": "CapstoneProject.Server\\Authentication\\Exception\\UserAlreadyExistException.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-05T03:18:19.396Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "LoginRequest.cs",
-              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Authentication\\Requests\\LoginRequest.cs",
-              "RelativeDocumentMoniker": "CapstoneProject.Server\\Authentication\\Requests\\LoginRequest.cs",
-              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Authentication\\Requests\\LoginRequest.cs",
-              "RelativeToolTip": "CapstoneProject.Server\\Authentication\\Requests\\LoginRequest.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-05T03:15:04.484Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "RegisterRequest.cs",
-              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Authentication\\Requests\\RegisterRequest.cs",
-              "RelativeDocumentMoniker": "CapstoneProject.Server\\Authentication\\Requests\\RegisterRequest.cs",
-              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Authentication\\Requests\\RegisterRequest.cs",
-              "RelativeToolTip": "CapstoneProject.Server\\Authentication\\Requests\\RegisterRequest.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-05T03:15:02.7Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "AccountService.cs",
-              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Services\\implementations\\AccountService.cs",
-              "RelativeDocumentMoniker": "CapstoneProject.Server\\Services\\implementations\\AccountService.cs",
-              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Services\\implementations\\AccountService.cs",
-              "RelativeToolTip": "CapstoneProject.Server\\Services\\implementations\\AccountService.cs",
-              "ViewState": "AgIAABcAAAAAAAAAAAA8wCgAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-05T03:12:18.539Z",
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\appsettings.json",
+              "RelativeDocumentMoniker": "CapstoneProject.Server\\appsettings.json",
+              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\appsettings.json",
+              "RelativeToolTip": "CapstoneProject.Server\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAABqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-10-20T11:27:50.981Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 6,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "CapstoneProject.Server\\Controllers\\AccountController.cs",
+              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "CapstoneProject.Server\\Controllers\\AccountController.cs",
+              "ViewState": "AgIAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-20T11:20:47.235Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Program.cs",
               "RelativeDocumentMoniker": "CapstoneProject.Server\\Program.cs",
               "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Program.cs",
               "RelativeToolTip": "CapstoneProject.Server\\Program.cs",
-              "ViewState": "AgIAAGEAAAAAAAAAAAAIwHAAAAAwAAAAAAAAAA==",
+              "ViewState": "AgIAAGEAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-05T02:50:19.619Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "IAuthTokenProcessor.cs",
-              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Authentication\\Application\\Abstract\\IAuthTokenProcessor.cs",
-              "RelativeDocumentMoniker": "CapstoneProject.Server\\Authentication\\Application\\Abstract\\IAuthTokenProcessor.cs",
-              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Authentication\\Application\\Abstract\\IAuthTokenProcessor.cs",
-              "RelativeToolTip": "CapstoneProject.Server\\Authentication\\Application\\Abstract\\IAuthTokenProcessor.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAkAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-05T02:46:26.555Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "AuthTokenProcessor.cs",
-              "DocumentMoniker": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Authentication\\Infrastructure\\Processor\\AuthTokenProcessor.cs",
-              "RelativeDocumentMoniker": "CapstoneProject.Server\\Authentication\\Infrastructure\\Processor\\AuthTokenProcessor.cs",
-              "ToolTip": "D:\\GitHub\\Capstone_Project\\CapstoneProject\\CapstoneProject.Server\\Authentication\\Infrastructure\\Processor\\AuthTokenProcessor.cs",
-              "RelativeToolTip": "CapstoneProject.Server\\Authentication\\Infrastructure\\Processor\\AuthTokenProcessor.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAwAAAA4AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-05T02:34:06.716Z"
+              "WhenOpened": "2025-10-20T11:19:14.521Z",
+              "EditorCaption": ""
             }
           ]
         }

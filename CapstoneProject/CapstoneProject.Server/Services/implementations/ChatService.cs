@@ -20,7 +20,8 @@ namespace CapstoneProject.Server.Services
 
         private readonly IGenericRepository<ChatMessage> _genericRepository;
 
-        public ChatService(ApplicationDbContext context, IChatRepository chatRepository, IKnowledgeService knowledgeService, IConfiguration configuration, IGenericRepository<ChatMessage> genericRepository)
+        public ChatService(ApplicationDbContext context, IChatRepository chatRepository, IKnowledgeService knowledgeService,
+         IConfiguration configuration, IGenericRepository<ChatMessage> genericRepository)
         {
             _context = context;
             _chatRepository = chatRepository;
@@ -31,8 +32,7 @@ namespace CapstoneProject.Server.Services
 
         public async Task<ChatMessage> SaveMessageAsync(ChatMessage message)
         {
-            _context.ChatMessages.Add(message);
-            await _context.SaveChangesAsync();
+            await _chatRepository.AddAsync(message);
             return message;
         }
 
@@ -143,6 +143,7 @@ namespace CapstoneProject.Server.Services
         {
             var swAll = System.Diagnostics.Stopwatch.StartNew();
 
+            var knowledge = _knowledgeService.GetKnowledge();
 
             var url = "https://openrouter.ai/api/v1/chat/completions";
 
@@ -158,7 +159,10 @@ namespace CapstoneProject.Server.Services
                 model = model,
                 messages = new object[]
                 {
-                    new { role = "system", content = "Bạn là 1 người làm công tác tuyển sinh của trường Đại học quốc tế miền đông, Việt Nam" },
+                    new { role = "system", content = $"Bạn là 1 người làm công tác tuyển sinh của trường Đại học quốc tế miền đông," +
+                    $" Việt Nam, dựa vào content này để trả lời ${knowledge}, nếu không có thông tin thì hãy ghi " +
+                    $"là Tôi chưa được cập nhật thông tin này," +
+                    $" hãy liên hệ với email của EIU để tìm hiểu thêm bạn nhé!, không cần trả lời dài dòng gì" },
                     new { role = "user",   content = userMessage }
                 },
                 max_tokens = 1024,
