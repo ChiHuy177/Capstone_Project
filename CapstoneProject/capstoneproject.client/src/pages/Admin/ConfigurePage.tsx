@@ -90,24 +90,66 @@ const ConfigurePage: React.FC = () => {
         }
     };
 
-    // Fetch script content khi component mount
+    // Load cấu hình hiện tại khi component mount
+    const loadCurrentConfig = async () => {
+        try {
+            const response = await fetch('/api/config', {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+
+            if (response.ok) {
+                const configs = await response.json();
+                form.setFieldsValue({
+                    apiToken: configs.apiToken || '',
+                    aiModel: configs.aiModel || 'gpt-3.5-turbo',
+                    theme: configs.theme || 'light',
+                    language: configs.language || 'vi',
+                });
+            }
+        } catch (error) {
+            console.error('Error loading config:', error);
+        }
+    };
+
+    // Fetch script content và load config khi component mount
     useEffect(() => {
         fetchScriptContent();
+        loadCurrentConfig();
     }, []);
 
     const handleSave = async (values: ConfigFormData) => {
         setLoading(true);
 
         try {
-            console.log('=== CONFIGURATION DATA ===');
-            console.log('API Token:', values.apiToken);
-            console.log('Selected AI Model:', values.aiModel);
-            console.log('Theme:', values.theme);
-            console.log('Language:', values.language);
-            console.log('Timestamp:', new Date().toISOString());
-            console.log('========================');
+            // Lưu từng cấu hình vào database
+            const configs = [
+                {
+                    key: 'apiToken',
+                    value: values.apiToken,
+                    description: 'API Token cho dịch vụ AI',
+                    isEncrypted: true,
+                },
+                { key: 'aiModel', value: values.aiModel, description: 'Model AI được sử dụng' },
+                { key: 'theme', value: values.theme, description: 'Theme giao diện' },
+                { key: 'language', value: values.language, description: 'Ngôn ngữ hiển thị' },
+            ];
 
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            for (const config of configs) {
+                const response = await fetch('/api/config', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                    body: JSON.stringify(config),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Lỗi khi lưu cấu hình ${config.key}`);
+                }
+            }
 
             message.success('Cấu hình đã được lưu thành công!');
         } catch (error) {
