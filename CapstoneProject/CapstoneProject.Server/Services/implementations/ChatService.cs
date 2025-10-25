@@ -159,7 +159,10 @@ namespace CapstoneProject.Server.Services
                 model = model,
                 messages = new object[]
                 {
-                    new { role = "system", content = $"Bạn là 1 người làm công tác tuyển sinh của trường Đại học quốc tế miền đông, Việt Nam, dựa vào content này để trả lời ${knowledge}, nếu không có thông tin thì hãy ghi là Tôi chưa được cập nhật thông tin này, hãy liên hệ với email của EIU để tìm hiểu thêm bạn nhé!, không cần trả lời dài dòng gì" },
+                    new { role = "system", content = $"Bạn là 1 người làm công tác tuyển sinh của trường Đại học quốc tế miền đông," +
+                    $" Việt Nam, dựa vào content này để trả lời ${knowledge}, nếu không có thông tin thì hãy ghi " +
+                    $"là Tôi chưa được cập nhật thông tin này," +
+                    $" hãy liên hệ với email của EIU để tìm hiểu thêm bạn nhé!, không cần trả lời dài dòng gì" },
                     new { role = "user",   content = userMessage }
                 },
                 max_tokens = 1024,

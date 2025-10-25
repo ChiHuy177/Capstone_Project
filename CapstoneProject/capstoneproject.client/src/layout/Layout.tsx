@@ -9,6 +9,8 @@ import {
 import type { MenuProps } from 'antd';
 import AvatarDropdown from '../components/AvatarDropdown';
 import { NavLink, Outlet } from 'react-router-dom';
+import { ThemeToggle } from '@components/ThemeToggle';
+import AntdServerClock from '@components/TimeClock';
 
 const { Header, Sider, Content } = Layout;
 
@@ -98,14 +100,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = () => {
                     <div
                         style={{ display: 'flex', alignItems: 'center', gap: 24, paddingRight: 24 }}
                     >
-                        {/* <ThemeToggle /> */}
                         <AvatarDropdown />
-                        {/* <AntdServerClock
+                        <AntdServerClock
                             apiUrl="https://localhost:5026/api/Time/now"
                             timeZone="Asia/Ho_Chi_Minh"
                             hour12={false}
                             showSeconds
-                        /> */}
+                        />
+                        {/* <ThemeToggle /> */}
                     </div>
                 </Header>
                 <Content

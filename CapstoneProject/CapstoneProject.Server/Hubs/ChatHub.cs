@@ -8,7 +8,7 @@ namespace CapstoneProject.Server.Hubs
     {
         private readonly IChatService _chatService;
         private static readonly Dictionary<string, string> _userSessions = new();
-        const string apiKey = "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";
+        const string apiKey = "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";
         const string url = "";
         const string model = "deepseek/deepseek-r1-0528-qwen3-8b:free";
 
