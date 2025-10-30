@@ -21,7 +21,7 @@ namespace CapstoneProject.Server.Data
 
         public DbSet<HourlyCount> HourlyCounts { get; set; }
 
-        public DbSet<SystemConfig> SystemConfigs { get; set; }
+        public DbSet<UserConfig> UserConfigs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -51,15 +51,25 @@ namespace CapstoneProject.Server.Data
                 entity.Property(r => r.IsActive).HasDefaultValue(true);
             });
 
-            modelBuilder.Entity<SystemConfig>(entity =>
+            modelBuilder.Entity<UserConfig>(entity =>
             {
-                entity.HasKey(e => e.Key);
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.UserId).IsRequired();
                 entity.Property(e => e.Key).HasMaxLength(100).IsRequired();
                 entity.Property(e => e.Value).HasMaxLength(2000).IsRequired();
                 entity.Property(e => e.Description).HasMaxLength(500);
                 entity.Property(e => e.CreatedAt).IsRequired();
                 entity.Property(e => e.UpdatedAt).IsRequired();
                 entity.Property(e => e.IsEncrypted).HasDefaultValue(false);
+
+                // Unique constraint: mỗi user chỉ có 1 config cho mỗi key
+                entity.HasIndex(e => new { e.UserId, e.Key }).IsUnique();
+
+                // Foreign key relationship
+                entity.HasOne(e => e.User)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
             var roleAdminId = new Guid("A3E0A2C9-4BDF-4F9E-9D6C-2E2E7D5C6A11");
             var roleUserId = new Guid("B4F1B3DA-5CEA-41AA-AB77-9C9C3F7D8B22");

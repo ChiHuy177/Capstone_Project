@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using CapstoneProject.Server.Services.interfaces;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace CapstoneProject.Server.Controllers
 {
@@ -9,11 +10,21 @@ namespace CapstoneProject.Server.Controllers
     [Authorize] // Chỉ user đã đăng nhập mới có thể truy cập
     public class ConfigController : ControllerBase
     {
-        private readonly IConfigService _configService;
+        private readonly IUserConfigService _userConfigService;
 
-        public ConfigController(IConfigService configService)
+        public ConfigController(IUserConfigService userConfigService)
         {
-            _configService = configService;
+            _userConfigService = userConfigService;
+        }
+
+        private Guid GetCurrentUserId()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                throw new UnauthorizedAccessException("User ID not found in token");
+            }
+            return Guid.Parse(userIdClaim.Value);
         }
 
         [HttpGet]
@@ -21,7 +32,8 @@ namespace CapstoneProject.Server.Controllers
         {
             try
             {
-                var configs = await _configService.GetAllConfigsAsync();
+                var userId = GetCurrentUserId();
+                var configs = await _userConfigService.GetUserConfigsAsync(userId);
                 return Ok(configs);
             }
             catch (Exception ex)
@@ -35,7 +47,8 @@ namespace CapstoneProject.Server.Controllers
         {
             try
             {
-                var config = await _configService.GetConfigAsync(key);
+                var userId = GetCurrentUserId();
+                var config = await _userConfigService.GetUserConfigAsync(userId, key);
                 if (config == null)
                 {
                     return NotFound(new { message = $"Không tìm thấy cấu hình với key: {key}" });
@@ -53,12 +66,19 @@ namespace CapstoneProject.Server.Controllers
         {
             try
             {
+                Console.WriteLine($"UpdateConfig called with: {System.Text.Json.JsonSerializer.Serialize(request)}");
+
                 if (string.IsNullOrEmpty(request.Key) || string.IsNullOrEmpty(request.Value))
                 {
+                    Console.WriteLine("Validation failed: Key or Value is empty");
                     return BadRequest(new { message = "Key và Value không được để trống" });
                 }
 
-                await _configService.SetConfigValueAsync(
+                var userId = GetCurrentUserId();
+                Console.WriteLine($"User ID: {userId}");
+
+                await _userConfigService.SetUserConfigValueAsync(
+                    userId,
                     request.Key,
                     request.Value,
                     request.Description,
@@ -69,6 +89,8 @@ namespace CapstoneProject.Server.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error in UpdateConfig: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
                 return StatusCode(500, new { message = "Lỗi khi cập nhật cấu hình", error = ex.Message });
             }
         }
@@ -78,7 +100,8 @@ namespace CapstoneProject.Server.Controllers
         {
             try
             {
-                var result = await _configService.DeleteConfigAsync(key);
+                var userId = GetCurrentUserId();
+                var result = await _userConfigService.DeleteUserConfigAsync(userId, key);
                 if (!result)
                 {
                     return NotFound(new { message = $"Không tìm thấy cấu hình với key: {key}" });

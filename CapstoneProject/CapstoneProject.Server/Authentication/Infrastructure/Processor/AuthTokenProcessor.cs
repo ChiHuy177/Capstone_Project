@@ -55,6 +55,8 @@ namespace CapstoneProject.Server.Authentication.Infrastructure.Processor
             };
 
             var expires = DateTime.UtcNow.AddMinutes(_jwtOptions.ExpirationTimeInMinutes);
+            // var expires = DateTime.UtcNow.AddSeconds(5); // For testing purposes, set to 30 seconds
+
 
             var token = new JwtSecurityToken(
                 issuer: _jwtOptions.Issuer,

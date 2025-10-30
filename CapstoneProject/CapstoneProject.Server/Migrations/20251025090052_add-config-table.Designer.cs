@@ -4,6 +4,7 @@ using CapstoneProject.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CapstoneProject.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251025090052_add-config-table")]
+    partial class addconfigtable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -206,7 +209,7 @@ namespace CapstoneProject.Server.Migrations
                         new
                         {
                             Id = new Guid("a3e0a2c9-4bdf-4f9e-9d6c-2e2e7d5c6a11"),
-                            CreatedAt = new DateTime(2025, 10, 27, 10, 10, 34, 982, DateTimeKind.Utc).AddTicks(7285),
+                            CreatedAt = new DateTime(2025, 10, 25, 9, 0, 51, 779, DateTimeKind.Utc).AddTicks(2130),
                             IsActive = true,
                             Name = "Admin",
                             NormalizedName = "ADMIN"
@@ -214,20 +217,18 @@ namespace CapstoneProject.Server.Migrations
                         new
                         {
                             Id = new Guid("b4f1b3da-5cea-41aa-ab77-9c9c3f7d8b22"),
-                            CreatedAt = new DateTime(2025, 10, 27, 10, 10, 34, 982, DateTimeKind.Utc).AddTicks(7737),
+                            CreatedAt = new DateTime(2025, 10, 25, 9, 0, 51, 779, DateTimeKind.Utc).AddTicks(2626),
                             IsActive = true,
                             Name = "User",
                             NormalizedName = "USER"
                         });
                 });
 
-            modelBuilder.Entity("CapstoneProject.Server.Models.UserConfig", b =>
+            modelBuilder.Entity("CapstoneProject.Server.Models.SystemConfig", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Key")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
@@ -242,32 +243,17 @@ namespace CapstoneProject.Server.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false);
 
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.Property<string>("Prompt")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("char(36)");
 
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasMaxLength(2000)
                         .HasColumnType("varchar(2000)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Key");
 
-                    b.HasIndex("UserId", "Key")
-                        .IsUnique();
-
-                    b.ToTable("UserConfigs");
+                    b.ToTable("SystemConfigs");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -371,17 +357,6 @@ namespace CapstoneProject.Server.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("CapstoneProject.Server.Models.UserConfig", b =>
-                {
-                    b.HasOne("CapstoneProject.Server.Authentication.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
