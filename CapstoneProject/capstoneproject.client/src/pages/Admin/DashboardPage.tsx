@@ -53,7 +53,6 @@ import {
     Area,
 } from 'recharts';
 
-import { useAuth } from '@contexts/Auth/AuthContext';
 import { useAxiosAuth } from '@utils/useAxiosHook';
 import { ChatService } from '@services/ChatService';
 
@@ -93,7 +92,6 @@ const DashboardPage: React.FC = () => {
     const [searchText, setSearchText] = useState('');
     const [viewMode, setViewMode] = useState<'messages' | 'sessions'>('sessions');
     const [numberOfMessages, setNumberOfMessages] = useState<CountChatModel>();
-    const api = useAxiosAuth();
     const chatService = ChatService();
 
     const byDay = React.useMemo(() => {

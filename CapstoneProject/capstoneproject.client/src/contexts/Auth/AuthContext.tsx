@@ -44,11 +44,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
             try {
                 const refreshed = await AuthService.refreshToken();
-                console.log(refreshed);
                 if (refreshed) {
                     setAccessToken(refreshed);
                     setIsAuthenticated(true);
-                    console.log("vo roi ne")
+                    console.log('vo roi ne');
                     // const me = await AuthService.getMe();
                     // setUser(me ?? null);
                 } else {

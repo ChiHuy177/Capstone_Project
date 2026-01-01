@@ -63,7 +63,7 @@ namespace CapstoneProject.Server
             {
                 options.AddPolicy("AllowAll", policy =>
                 {
-                    policy.WithOrigins("https://localhost:54410", "http://localhost:54410")
+                    policy.WithOrigins("https://localhost:54410", "http://localhost:54410", "http://localhost:3000")
                           .AllowAnyMethod()
                           .AllowAnyHeader()
                           .AllowCredentials();

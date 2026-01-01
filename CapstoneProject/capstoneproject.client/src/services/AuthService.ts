@@ -1,13 +1,20 @@
 /* eslint-disable no-useless-catch */
 import type { LoginRequest, RegisterRequest } from '../models/AuthModel';
 import apiClient from '../utils/apiClient';
+import NetworkService from './NetworkService';
 
 export class AuthService {
     static async doLogin(loginData: LoginRequest) {
         try {
-            const response = await apiClient.post('api/account/login', loginData, {
-                withCredentials: true,
+            // const response = await apiClient.post('api/account/login', loginData, {
+            //     withCredentials: true,
+            // });
+            const response = await NetworkService.requestJson({
+                method: 'POST',
+                url: '/api/account/login',
+                data: loginData,
             });
+            console.log(response);
             if (response.status) {
                 return response.data;
             }
