@@ -2,6 +2,7 @@
 using CapstoneProject.Server.Authentication.Entities;
 using CapstoneProject.Server.Authentication.Exception;
 using CapstoneProject.Server.Authentication.Requests;
+using CapstoneProject.Server.Models;
 using CapstoneProject.Server.Models.Identity;
 using CapstoneProject.Server.Repository.interfaces;
 using CapstoneProject.Server.Services.interfaces;
@@ -50,7 +51,7 @@ namespace CapstoneProject.Server.Services.implementations
             await _userManager.AddToRoleAsync(newUser, "User");
         }
 
-        public async Task LoginAsync(LoginRequest loginRequest)
+        public async Task<TokenResponseModel> LoginAsync(LoginRequest loginRequest)
         {
             var user = await _userManager.FindByEmailAsync(loginRequest.Email);
 
@@ -71,11 +72,18 @@ namespace CapstoneProject.Server.Services.implementations
 
             await _userManager.UpdateAsync(user);
 
-            _tokenProcessor.WriteAuthTokenAsHttpOnlyCookie("ACCESS_TOKEN", jwtToken, expirationDateInUtc);
+            // _tokenProcessor.WriteAuthTokenAsHttpOnlyCookie("ACCESS_TOKEN", jwtToken, expirationDateInUtc);
             _tokenProcessor.WriteAuthTokenAsHttpOnlyCookie("REFRESH_TOKEN", refreshTokenValue, refreshTokenExpirationDateInUtc);
+            
+            var jwtTokenResponse = new TokenResponseModel
+            {
+                accessToken = jwtToken,
+                refreshToken = refreshTokenValue
+            };
+            return jwtTokenResponse;
         }
 
-        public async Task RefreshTokenAsync(string? refreshToken)
+        public async Task<string> RefreshTokenAsync(string? refreshToken)
         {
             if (string.IsNullOrEmpty(refreshToken))
             {
@@ -105,8 +113,9 @@ namespace CapstoneProject.Server.Services.implementations
             user.RefreshTokenExpireAtUtc = newRefreshExpireAtUtc;
             await _userManager.UpdateAsync(user);
 
-            _tokenProcessor.WriteAuthTokenAsHttpOnlyCookie("ACCESS_TOKEN", jwtToken, accessExpireAtUtc);
+            // _tokenProcessor.WriteAuthTokenAsHttpOnlyCookie("ACCESS_TOKEN", jwtToken, accessExpireAtUtc);
             _tokenProcessor.WriteAuthTokenAsHttpOnlyCookie("REFRESH_TOKEN", newRefreshToken, newRefreshExpireAtUtc);
+            return jwtToken;
         }
 
         public async Task LogoutAsync(string userId)

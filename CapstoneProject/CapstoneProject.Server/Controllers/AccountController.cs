@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Identity;
 using CapstoneProject.Server.Authentication.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
+using CapstoneProject.Server.Authentication.Exception;
+using Microsoft.AspNetCore.Authentication.BearerToken;
 
 namespace CapstoneProject.Server.Controllers
 {
@@ -34,18 +36,26 @@ namespace CapstoneProject.Server.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequest loginRequest)
+        public async Task<ActionResult> Login(LoginRequest loginRequest)
         {
-            await _accountService.LoginAsync(loginRequest);
-            return new OkResult();
+            try
+            {
+                var accessToken = await _accountService.LoginAsync(loginRequest);
+                return Ok(accessToken);
+            }
+            catch (LoginFailException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+
+            }
         }
 
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken()
         {
             var refreshToken = HttpContext.Request.Cookies["REFRESH_TOKEN"];
-            await _accountService.RefreshTokenAsync(refreshToken);
-            return new OkObjectResult(new { user = new { } });
+            var newAccessToken = await _accountService.RefreshTokenAsync(refreshToken);
+            return new OkObjectResult(newAccessToken);
         }
 
         [HttpPost("logout")]

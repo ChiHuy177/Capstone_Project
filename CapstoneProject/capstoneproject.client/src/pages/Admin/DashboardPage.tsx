@@ -52,7 +52,9 @@ import {
     AreaChart,
     Area,
 } from 'recharts';
-import ChatService from '@services/ChatService';
+
+import { useAxiosAuth } from '@utils/useAxiosHook';
+import { ChatService } from '@services/ChatService';
 
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;
@@ -90,6 +92,7 @@ const DashboardPage: React.FC = () => {
     const [searchText, setSearchText] = useState('');
     const [viewMode, setViewMode] = useState<'messages' | 'sessions'>('sessions');
     const [numberOfMessages, setNumberOfMessages] = useState<CountChatModel>();
+    const chatService = ChatService();
 
     const byDay = React.useMemo(() => {
         const toVNDayKey = (d: Date) => {
@@ -129,7 +132,7 @@ const DashboardPage: React.FC = () => {
     const fetchChatMessages = async () => {
         setLoading(true);
         try {
-            const data = await ChatService.getAllMessage();
+            const data = await chatService.getAllMessage();
             setChatMessages(data);
 
             // Gom nhóm dữ liệu theo sessionId
@@ -183,7 +186,7 @@ const DashboardPage: React.FC = () => {
     const fetchNumberOfMessages = async () => {
         setLoading(true);
         try {
-            const data = await ChatService.countAllMessage();
+            const data = await chatService.countAllMessage();
             setNumberOfMessages(data);
         } catch (error) {
             message.error(error instanceof Error ? error.message : String(error));

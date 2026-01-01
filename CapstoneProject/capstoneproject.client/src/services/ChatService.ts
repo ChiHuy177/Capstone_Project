@@ -1,17 +1,17 @@
 import apiClient from '../utils/apiClient';
 
-export default class ChatService {
-    static async getAllMessage() {
+export const ChatService = () => ({
+    getAllMessage: async () => {
         const result = await apiClient.get('api/chat/messages');
         if (result.status) {
             return result.data;
         }
-    }
+    },
 
-    static async countAllMessage() {
+    countAllMessage: async () => {
         const result = await apiClient.get('api/chat/count');
         if (result.status) {
             return result.data;
         }
-    }
-}
+    },
+});

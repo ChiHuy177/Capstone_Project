@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Layout, Menu } from 'antd';
 import {
     MenuUnfoldOutlined,
@@ -8,7 +8,7 @@ import {
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import AvatarDropdown from '../components/AvatarDropdown';
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { ThemeToggle } from '@components/ThemeToggle';
 import AntdServerClock from '@components/TimeClock';
 
@@ -18,19 +18,35 @@ type DashboardLayoutProps = object;
 
 const items: MenuProps['items'] = [
     {
-        key: '1',
+        key: 'dashboard',
         icon: <DashboardOutlined />,
         label: <NavLink to="/">Dashboard</NavLink>,
     },
     {
-        key: '2',
+        key: 'configure',
         icon: <VideoCameraOutlined />,
         label: <NavLink to="/configure">Configure</NavLink>,
     },
 ];
 
+const routeToMenuKeyMap: Array<{ pattern: RegExp; key: string }> = [
+    { pattern: /^\/$/, key: 'dashboard' },
+    { pattern: /^\/dashboard/, key: 'dashboard' },
+    { pattern: /^\/configure/, key: 'configure' },
+];
+
 const DashboardLayout: React.FC<DashboardLayoutProps> = () => {
-    const [collapsed, setCollapsed] = React.useState(false);
+    const [collapsed, setCollapsed] = useState(false);
+    const location = useLocation();
+
+    const selectedKey = useMemo(() => {
+        const found = routeToMenuKeyMap.find((r) => r.pattern.test(location.pathname));
+        return found ? found.key : '';
+    }, [location.pathname]);
+
+    useEffect(() => {
+        console.log('Current selected menu key:', selectedKey);
+    });
 
     return (
         <Layout style={{ minHeight: '100vh' }}>
@@ -67,7 +83,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = () => {
                 <Menu
                     theme="dark"
                     mode="inline"
-                    defaultSelectedKeys={['1']}
+                    selectedKeys={[selectedKey]}
                     items={items}
                     style={{ background: '#174168' }}
                 />
@@ -101,12 +117,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = () => {
                         style={{ display: 'flex', alignItems: 'center', gap: 24, paddingRight: 24 }}
                     >
                         <AvatarDropdown />
-                        <AntdServerClock
+                        {/* <AntdServerClock
                             apiUrl="https://localhost:5026/api/Time/now"
                             timeZone="Asia/Ho_Chi_Minh"
                             hour12={false}
                             showSeconds
-                        />
+                        /> */}
                         {/* <ThemeToggle /> */}
                     </div>
                 </Header>

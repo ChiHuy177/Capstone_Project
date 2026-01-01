@@ -4,6 +4,7 @@ using CapstoneProject.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CapstoneProject.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251027013528_add-user-config-table")]
+    partial class adduserconfigtable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -206,7 +209,7 @@ namespace CapstoneProject.Server.Migrations
                         new
                         {
                             Id = new Guid("a3e0a2c9-4bdf-4f9e-9d6c-2e2e7d5c6a11"),
-                            CreatedAt = new DateTime(2025, 10, 27, 10, 10, 34, 982, DateTimeKind.Utc).AddTicks(7285),
+                            CreatedAt = new DateTime(2025, 10, 27, 1, 35, 27, 801, DateTimeKind.Utc).AddTicks(6725),
                             IsActive = true,
                             Name = "Admin",
                             NormalizedName = "ADMIN"
@@ -214,11 +217,43 @@ namespace CapstoneProject.Server.Migrations
                         new
                         {
                             Id = new Guid("b4f1b3da-5cea-41aa-ab77-9c9c3f7d8b22"),
-                            CreatedAt = new DateTime(2025, 10, 27, 10, 10, 34, 982, DateTimeKind.Utc).AddTicks(7737),
+                            CreatedAt = new DateTime(2025, 10, 27, 1, 35, 27, 801, DateTimeKind.Utc).AddTicks(7335),
                             IsActive = true,
                             Name = "User",
                             NormalizedName = "USER"
                         });
+                });
+
+            modelBuilder.Entity("CapstoneProject.Server.Models.SystemConfig", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<bool>("IsEncrypted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("varchar(2000)");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("SystemConfigs");
                 });
 
             modelBuilder.Entity("CapstoneProject.Server.Models.UserConfig", b =>
@@ -246,10 +281,6 @@ namespace CapstoneProject.Server.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
-
-                    b.Property<string>("Prompt")
-                        .IsRequired()
-                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
