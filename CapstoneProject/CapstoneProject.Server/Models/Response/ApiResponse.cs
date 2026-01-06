@@ -10,18 +10,32 @@ namespace CapstoneProject.Server.Models.Response
         public Metadata Metadata { get; set; }
         public T? Data { get; set; }
         public static ApiResponse<T> Success(T data, string message = "Success", int? code = null)
-    {
-        return new ApiResponse<T>
         {
-            Metadata = new Metadata
+            return new ApiResponse<T>
             {
-                Message = message,
-                Code = code ?? 200,
-                Timestamp = DateTime.UtcNow
-            },
-            Data = data
-        };
-    }
+                Metadata = new Metadata
+                {
+                    Message = message,
+                    Code = code ?? 200,
+                    Timestamp = DateTime.UtcNow
+                },
+                Data = data
+            };
+        }
+
+        public static ApiResponse<T> Error(string message, int? code = null)
+        {
+            return new ApiResponse<T>
+            {
+                Metadata = new Metadata
+                {
+                    Message = message,
+                    Code = code ?? 400,
+                    Timestamp = DateTime.UtcNow
+                },
+                Data = default(T)
+            };
+        }
 
     }
 }
