@@ -37,7 +37,7 @@ class PdfService:
         )
         print("PostgreSQL vector store sẵn sàng!")
     
-    async def process_pdf(self, file: UploadFile, uploaded_by: str = "admin") -> dict:
+    async def process_pdf(self, file: UploadFile, year: int = 2026, uploaded_by: str = "admin") -> dict:
         """
         Xử lý file PDF
         
@@ -61,7 +61,9 @@ class PdfService:
                 original_filename=file.filename,
                 file_size=file.size if hasattr(file, 'size') else 0,
                 uploaded_by=uploaded_by,
-                status='processing'
+                status='processing',
+                academic_year=year, 
+                is_active=(year == 2026)
             )
             db.add(db_document)
             db.commit()
@@ -91,7 +93,9 @@ class PdfService:
                     "document_id": str(document_id),
                     "chunk_index": i,
                     "source_file": file.filename,
-                    "uploaded_at": datetime.utcnow().isoformat()
+                    "uploaded_at": datetime.utcnow().isoformat(),
+                    "academic_year": year,
+                    "is_active": (year == 2026) 
                 })
             
             # Lưu vào PostgreSQL vector store
@@ -126,19 +130,38 @@ class PdfService:
         finally:
             db.close()
     
-    def search_documents(self, query: str, top_k: int = 5) -> dict:
+    def search_documents(self, query: str, top_k: int = 5, year: int = None) -> dict:
         """
         Tìm kiếm documents
         
         Args:
             query: Câu query
             top_k: Số kết quả trả về
+            year: Năm học filter (None = search all active)
             
         Returns:
             Dict với kết quả search
         """
-        # Search với score
-        results = self.vectorstore.similarity_search_with_score(query, k=top_k)
+        # Build filter
+        filter_dict = {}
+        if year is not None:
+            filter_dict["academic_year"] = year
+        else:
+            # Nếu không chỉ định year → search documents active
+            filter_dict["is_active"] = True
+        
+        # Search với filter
+        if filter_dict:
+            results = self.vectorstore.similarity_search_with_score(
+                query, 
+                k=top_k,
+                filter=filter_dict
+            )
+        else:
+            results = self.vectorstore.similarity_search_with_score(
+                query, 
+                k=top_k
+            )
         
         formatted_results = [
             {

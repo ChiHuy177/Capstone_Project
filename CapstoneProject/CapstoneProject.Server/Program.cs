@@ -58,6 +58,13 @@ namespace CapstoneProject.Server
 
             builder.Services.AddScoped<IHourlyCountService, HourlyCountsService>();
 
+            builder.Services.AddHttpClient<ILangChainService, LangChainService>(client =>
+            {
+                var langChainUrl = builder.Configuration["LangChain:ServiceUrl"] ?? "http://localhost:8000";
+                client.BaseAddress = new Uri(langChainUrl);
+                client.Timeout = TimeSpan.FromMinutes(5);
+            });
+
             // Add CORS for SignalR
             builder.Services.AddCors(options =>
             {

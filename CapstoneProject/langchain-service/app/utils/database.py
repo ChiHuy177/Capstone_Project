@@ -1,5 +1,5 @@
 
-from sqlalchemy import create_engine, Column, String, Integer, BigInteger, DateTime, Text
+from sqlalchemy import Boolean, create_engine, Column, String, Integer, BigInteger, DateTime, Text
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -28,9 +28,11 @@ class Document(Base):
     total_pages = Column(Integer)
     total_chunks = Column(Integer)
     error_message = Column(Text)
-    doc_metadata = Column('metadata', JSONB)  # ← SỬA: map 'doc_metadata' → 'metadata' column
+    doc_metadata = Column('metadata', JSONB)  
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    academic_year = Column(Integer, nullable=True, comment='Năm học (VD: 2025, 2026)')
+    is_active = Column(Boolean, default=False, comment='Document active hay không')
 
 def get_db():
     """Get database session"""
