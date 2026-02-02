@@ -52,3 +52,5 @@ Thumbs.db
 # JetBrains Rider (nếu có)
 .idea/
 *.iml
+
+.claude
