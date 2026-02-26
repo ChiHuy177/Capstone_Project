@@ -5,6 +5,7 @@ import {
     MenuFoldOutlined,
     VideoCameraOutlined,
     DashboardOutlined,
+    FileTextOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import AvatarDropdown from '../components/AvatarDropdown';
@@ -27,12 +28,18 @@ const items: MenuProps['items'] = [
         icon: <VideoCameraOutlined />,
         label: <NavLink to="/configure">Configure</NavLink>,
     },
+    {
+        key: 'pdf-upload',
+        icon: <FileTextOutlined />,
+        label: <NavLink to="/pdf-upload">Upload PDF</NavLink>,
+    },
 ];
 
 const routeToMenuKeyMap: Array<{ pattern: RegExp; key: string }> = [
     { pattern: /^\/$/, key: 'dashboard' },
     { pattern: /^\/dashboard/, key: 'dashboard' },
     { pattern: /^\/configure/, key: 'configure' },
+    { pattern: /^\/pdf-upload/, key: 'pdf-upload' },
 ];
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = () => {

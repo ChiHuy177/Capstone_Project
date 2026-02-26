@@ -76,8 +76,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const login = async (data: LoginRequest) => {
         // setLoading(true);
         try {
-            const response: Token = await AuthService.doLogin(data);
-            console.log(response.accessToken);
+            const response = await AuthService.doLogin(data);
+            console.log(response);
             setIsAuthenticated(true);
             // setUser(response.user);
             sessionStorage.setItem('hasLoggedIn', 'true');

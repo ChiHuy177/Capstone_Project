@@ -18,7 +18,6 @@ const LoginForm = () => {
         setIsLoading(true);
         setIsLoginError(false);
 
-        // Tạo promise để đảm bảo loading hiển thị ít nhất 1 giây
         const minLoadingTime = new Promise((resolve) => setTimeout(resolve, 1000));
 
         try {
@@ -28,8 +27,8 @@ const LoginForm = () => {
                 password: values.password,
             };
 
-            // Chạy song song login và minLoadingTime
-            const [, loginResult] = await Promise.all([minLoadingTime, login(loginData)]);
+            const loginResult = await login(loginData);
+            console.log('Login result:', loginResult);
 
             message.success('Đăng nhập thành công!');
             setIsLoginError(false); // Reset error state on success
