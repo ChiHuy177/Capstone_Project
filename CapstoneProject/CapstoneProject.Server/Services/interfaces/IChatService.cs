@@ -1,4 +1,5 @@
 using CapstoneProject.Server.Models;
+using CapstoneProject.Server.Models.Chat;
 
 namespace CapstoneProject.Server.Services
 {
@@ -11,7 +12,10 @@ namespace CapstoneProject.Server.Services
         Task<List<string>> GetUserSessionsAsync(string userId);
         Task<object> GetNumberOfMessagesAsync();
         Task<string> GetGeminiReponseAsync(string userMessage, string model, string url, string apiKey);
-
         Task<string> GetAIResponseAsync(string userMessage, string apiKey, string model);
+        Task<SendMessageResponse> SendMessageWithRAGAsync(SendMessageRequest request);
+
+        // Streaming methods
+        IAsyncEnumerable<StreamChunk> StreamMessageWithRAGAsync(SendMessageRequest request, CancellationToken cancellationToken = default);
     }
 }
