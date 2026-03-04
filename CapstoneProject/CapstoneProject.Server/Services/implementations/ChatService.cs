@@ -166,6 +166,8 @@ namespace CapstoneProject.Server.Services
             // Headers
             client.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiKey);
+            client.DefaultRequestHeaders.Add("HTTP-Referer", "http://localhost:5026");
+            client.DefaultRequestHeaders.Add("X-Title", "EIU ChatBot");
 
             string prompt = $@"# VAI TRÒ
             Bạn là một chuyên viên tư vấn tuyển sinh thân thiện và chuyên nghiệp của trường Đại học Quốc tế Miền Đông (EIU) tại Việt Nam.
@@ -213,6 +215,7 @@ namespace CapstoneProject.Server.Services
             sw.Stop();
             var receivedAt = DateTime.UtcNow;
             Console.WriteLine($"[DeepSeek] Sent: {sentAt:o}, Received: {receivedAt:o}, Duration: {sw.ElapsedMilliseconds}ms, Status: {(int)response.StatusCode}");
+            Console.WriteLine($"[OpenRouter Response]: {respText}");
 
             try
             {
@@ -374,8 +377,8 @@ namespace CapstoneProject.Server.Services
             // Fetch conversation history (last 5 messages)
             var conversationHistory = await GetConversationHistoryAsync(sessionId, 5);
             var url = "https://openrouter.ai/api/v1/chat/completions";
-            var apiKey = _configuration["OpenRouter:ApiKey"];
-            var model = _configuration["OpenRouter:Model"] ?? "deepseek/deepseek-chat";
+            var apiKey = "..";
+            var model = "arcee-ai/trinity-large-preview:free";
 
             if (string.IsNullOrEmpty(apiKey))
             {
@@ -386,6 +389,8 @@ namespace CapstoneProject.Server.Services
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiKey);
+            client.DefaultRequestHeaders.Add("HTTP-Referer", "http://localhost:5026");
+            client.DefaultRequestHeaders.Add("X-Title", "EIU ChatBot");
 
             string prompt = $@"# VAI TRÒ
 Bạn là một chuyên viên tư vấn tuyển sinh thân thiện và chuyên nghiệp của trường Đại học Quốc tế Miền Đông (EIU) tại Việt Nam.
@@ -433,6 +438,7 @@ Mục tiêu của bạn là cung cấp thông tin chính xác và hữu ích cho
 
             _logger.LogInformation("[AI Response] Duration: {Duration}ms, Status: {Status}",
                 sw.ElapsedMilliseconds, (int)response.StatusCode);
+            Console.WriteLine($"[OpenRouter RAG Response]: {respText}");
 
             try
             {
@@ -445,6 +451,7 @@ Mục tiêu của bạn là cung cấp thông tin chính xác và hữu ích cho
                     {
                         var msg = err.TryGetProperty("message", out var m) ? m.GetString() : err.ToString();
                         _logger.LogError("AI API Error: {Error}", msg);
+                        Console.WriteLine($"[OpenRouter Error]: {msg}");
                     }
                     return "Tôi chưa được cập nhật thông tin này, hãy liên hệ với email của EIU để tìm hiểu thêm bạn nhé!";
                 }
@@ -661,6 +668,8 @@ Mục tiêu của bạn là cung cấp thông tin chính xác và hữu ích cho
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiKey);
+            client.DefaultRequestHeaders.Add("HTTP-Referer", "http://localhost:5026");
+            client.DefaultRequestHeaders.Add("X-Title", "EIU ChatBot");
             client.Timeout = TimeSpan.FromMinutes(2);
 
             var jsonContent = new StringContent(

@@ -2,7 +2,7 @@ import axios, { AxiosError, type AxiosInstance } from 'axios';
 import { AuthStore } from './AuthStore';
 import { AuthService } from '@services/AuthService';
 
-const BASE_URL = 'https://localhost:5026/';
+const BASE_URL = 'http://localhost:5026/';
 export const REFRESH_TOKEN_URL = 'api/Account/refresh-token';
 
 const apiClient: AxiosInstance = axios.create({

@@ -66,7 +66,7 @@ const LoginForm = () => {
 
     const signInWithGG = () => {
         window.location.href =
-            'https://localhost:5026/api/account/login/google?returnUrl=https://localhost:54410/';
+            'http://localhost:5026/api/account/login/google?returnUrl=http://localhost:54410/';
     };
 
     return (

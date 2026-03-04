@@ -74,7 +74,6 @@ export default defineConfig({
                 secure: false,
             },
         },
-        https: false,
         port: 54410,
         
         // https: {
