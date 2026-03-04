@@ -127,6 +127,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             await AuthService.register(data);
         } catch (error) {
             console.error('Register error:', error);
+            throw error;
+        } finally {
+            setLoading(false);
         }
     };
 
