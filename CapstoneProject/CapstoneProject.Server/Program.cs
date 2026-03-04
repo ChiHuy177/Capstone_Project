@@ -96,26 +96,28 @@ namespace CapstoneProject.Server
             }).AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
-            builder.Services.AddAuthentication(opt =>
+            var authBuilder = builder.Services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddCookie().AddGoogle(options =>
+            }).AddCookie();
+
+            // Only add Google authentication if configured
+            var googleClientId = builder.Configuration["Authentication:Google:ClientId"];
+            var googleClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+
+            if (!string.IsNullOrEmpty(googleClientId) && !string.IsNullOrEmpty(googleClientSecret))
             {
-                var clientId = builder.Configuration["Authentication:Google:ClientId"];
-                var clientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-
-                if (clientId == null || clientSecret == null)
+                authBuilder.AddGoogle(options =>
                 {
-                    throw new ArgumentException("Google authentication is not configured properly.");
-                }
+                    options.ClientId = googleClientId;
+                    options.ClientSecret = googleClientSecret;
+                    options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                });
+            }
 
-                options.ClientId = clientId;
-                options.ClientSecret = clientSecret;
-                options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-
-            }).AddJwtBearer(options =>
+            authBuilder.AddJwtBearer(options =>
             {
                 var jwtOptions = builder.Configuration.GetSection(JwtOptions.JwtOptionsKey)
                 .Get<JwtOptions>() ?? throw new ArgumentException(nameof(JwtOptions));
