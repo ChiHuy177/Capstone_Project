@@ -694,18 +694,23 @@
                 throw new Error('SignalR object không tồn tại');
             }
 
-            // Sử dụng HTTPS URL với port đúng
-            const baseUrl =
-                window.location.protocol === 'https:'
-                    ? 'https://localhost:5026'
-                    : 'http://localhost:5026';
+            // Sử dụng URL tương đối để Vite proxy hoặc direct connection
+            // Nếu đang chạy trên cùng origin với server, dùng relative URL
+            // Nếu không, dùng absolute URL tới server
+            const isDevMode = window.location.hostname === 'localhost';
+            const hubUrl = isDevMode
+                ? `${window.location.origin}/chatHub`  // Vite sẽ proxy tới server
+                : '/chatHub';
+
+            console.log('🔗 SignalR Hub URL:', hubUrl);
 
             connection = new signalR.HubConnectionBuilder()
-                .withUrl(`${baseUrl}/chatHub`, {
-                    skipNegotiation: true,
-                    transport: signalR.HttpTransportType.WebSockets,
+                .withUrl(hubUrl, {
+                    // Để SignalR tự động negotiate transport (WebSockets, SSE, Long Polling)
+                    withCredentials: true,
                 })
-                .withAutomaticReconnect()
+                .withAutomaticReconnect([0, 2000, 5000, 10000, 30000]) // Retry với delay tăng dần
+                .configureLogging(signalR.LogLevel.Information)
                 .build();
 
             // Lắng nghe tin nhắn từ server

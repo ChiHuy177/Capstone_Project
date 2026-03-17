@@ -135,5 +135,101 @@ namespace CapstoneProject.Server.Services.implementations
                 throw new Exception($"Lỗi tìm kiếm: {ex.Message}", ex);
             }
         }
+
+        public async Task<AdvancedSearchResponse> AdvancedSearchAsync(SearchRequest request)
+        {
+            try
+            {
+                _logger.LogInformation(
+                    "Advanced searching with query: {Query}, Year: {Year}",
+                    request.Query,
+                    request.Year
+                );
+
+                var url = $"{_pythonServiceUrl}/api/pdf/advanced/search?query={Uri.EscapeDataString(request.Query)}&top_k={request.TopK}";
+
+                if (request.Year.HasValue)
+                {
+                    url += $"&year={request.Year.Value}";
+                }
+
+                // Add advanced search options
+                url += "&use_rerank=true&use_expansion=true";
+
+                var response = await _httpClient.PostAsync(url, null);
+                response.EnsureSuccessStatusCode();
+
+                var responseJson = await response.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<AdvancedSearchResponse>(
+                    responseJson,
+                    new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+
+                _logger.LogInformation(
+                    "Advanced search completed. Found {Count} results, Intents: {Intents}",
+                    result?.Results?.Count ?? 0,
+                    string.Join(", ", result?.QueryInfo?.Intents ?? new List<string>()));
+
+                return result ?? new AdvancedSearchResponse();
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "HTTP error in advanced search");
+                throw new Exception($"Lỗi kết nối Python service: {ex.Message}", ex);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in advanced search");
+                throw new Exception($"Lỗi tìm kiếm nâng cao: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<ChatContextResponse> GetChatContextAsync(string query, int topK = 5, int? year = null)
+        {
+            try
+            {
+                _logger.LogInformation(
+                    "Getting chat context for query: {Query}",
+                    query
+                );
+
+                var url = $"{_pythonServiceUrl}/api/pdf/advanced/context?query={Uri.EscapeDataString(query)}&top_k={topK}&max_tokens=2000";
+
+                if (year.HasValue)
+                {
+                    url += $"&year={year.Value}";
+                }
+
+                var response = await _httpClient.PostAsync(url, null);
+                response.EnsureSuccessStatusCode();
+
+                var responseJson = await response.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<ChatContextResponse>(
+                    responseJson,
+                    new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+
+                _logger.LogInformation(
+                    "Chat context retrieved. Sources: {Count}, Context length: {Length}",
+                    result?.Sources?.Count ?? 0,
+                    result?.Context?.Length ?? 0);
+
+                return result ?? new ChatContextResponse();
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "HTTP error getting chat context");
+                throw new Exception($"Lỗi kết nối Python service: {ex.Message}", ex);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting chat context");
+                throw new Exception($"Lỗi lấy context: {ex.Message}", ex);
+            }
+        }
     }
 }

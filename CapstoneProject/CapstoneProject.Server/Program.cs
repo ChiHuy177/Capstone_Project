@@ -51,7 +51,12 @@ namespace CapstoneProject.Server
                     .AsMatchingInterface()
                     .WithScopedLifetime()
 
-                .AddClasses(classes => classes.Where(type => type.Name.EndsWith("Service")))
+                // Exclude services that are registered manually with specific configurations
+                .AddClasses(classes => classes.Where(type =>
+                    type.Name.EndsWith("Service") &&
+                    type.Name != "LangChainService" &&
+                    type.Name != "KnowledgeService" &&
+                    type.Name != "HourlyCountsService"))
                     .AsMatchingInterface()
                     .WithScopedLifetime()
             );
@@ -70,7 +75,15 @@ namespace CapstoneProject.Server
             {
                 options.AddPolicy("AllowAll", policy =>
                 {
-                    policy.WithOrigins("https://localhost:54410", "http://localhost:54410", "http://localhost:3000")
+                    policy.WithOrigins(
+                            "https://localhost:54410",
+                            "http://localhost:54410",
+                            "http://localhost:3000",
+                            "http://localhost:5026",
+                            "https://localhost:5026",
+                            "http://localhost:5173",  // Vite default port
+                            "https://localhost:5173"
+                          )
                           .AllowAnyMethod()
                           .AllowAnyHeader()
                           .AllowCredentials();
@@ -137,7 +150,21 @@ namespace CapstoneProject.Server
                 {
                     OnMessageReceived = context =>
                     {
-                        context.Token = context.Request.Cookies["ACCESS_TOKEN"];
+                        // Lấy token từ cookie
+                        var token = context.Request.Cookies["ACCESS_TOKEN"];
+
+                        // Nếu là SignalR request, lấy token từ query string
+                        var path = context.HttpContext.Request.Path;
+                        if (path.StartsWithSegments("/chatHub"))
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+                            if (!string.IsNullOrEmpty(accessToken))
+                            {
+                                token = accessToken;
+                            }
+                        }
+
+                        context.Token = token;
                         return Task.CompletedTask;
                     }
                 };

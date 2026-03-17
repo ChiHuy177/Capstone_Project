@@ -316,7 +316,6 @@ namespace CapstoneProject.Server.Services
         private async Task<(string Context, List<RAGSource> Sources)> GetRAGContextAsync(string userMessage, int? year)
         {
             var sources = new List<RAGSource>();
-            var contextBuilder = new StringBuilder();
 
             try
             {
@@ -328,7 +327,60 @@ namespace CapstoneProject.Server.Services
                     return (_knowledgeService.GetKnowledge(), sources);
                 }
 
-                // Search documents
+                // Sử dụng Advanced Search với GetChatContextAsync
+                // Endpoint này đã bao gồm: query expansion, reranking, deduplication, formatting
+                var contextResponse = await _langChainService.GetChatContextAsync(
+                    query: userMessage,
+                    topK: 5,
+                    year: year
+                );
+
+                if (string.IsNullOrEmpty(contextResponse.Context))
+                {
+                    _logger.LogInformation("No RAG results found, falling back to static knowledge");
+                    return (_knowledgeService.GetKnowledge(), sources);
+                }
+
+                // Convert sources
+                foreach (var source in contextResponse.Sources)
+                {
+                    sources.Add(new RAGSource
+                    {
+                        SourceFile = source.File,
+                        Page = source.Page,
+                        Score = source.Score
+                    });
+                }
+
+                // Log query info nếu có
+                if (contextResponse.QueryInfo != null)
+                {
+                    _logger.LogInformation(
+                        "RAG context built. Intents: {Intents}, Keywords: {Keywords}, Sources: {Count}",
+                        string.Join(", ", contextResponse.QueryInfo.Intents),
+                        string.Join(", ", contextResponse.QueryInfo.Keywords),
+                        sources.Count);
+                }
+
+                return (contextResponse.Context, sources);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting RAG context, trying fallback to basic search");
+
+                // Fallback to basic search nếu advanced search fail
+                return await GetRAGContextBasicAsync(userMessage, year);
+            }
+        }
+
+        // Fallback method - basic search
+        private async Task<(string Context, List<RAGSource> Sources)> GetRAGContextBasicAsync(string userMessage, int? year)
+        {
+            var sources = new List<RAGSource>();
+            var contextBuilder = new StringBuilder();
+
+            try
+            {
                 var searchRequest = new SearchRequest
                 {
                     Query = userMessage,
@@ -340,11 +392,9 @@ namespace CapstoneProject.Server.Services
 
                 if (searchResponse.Results == null || searchResponse.Results.Count == 0)
                 {
-                    _logger.LogInformation("No RAG results found, falling back to static knowledge");
                     return (_knowledgeService.GetKnowledge(), sources);
                 }
 
-                // Format context từ search results
                 foreach (var result in searchResponse.Results)
                 {
                     contextBuilder.AppendLine($"[Nguồn: {result.Metadata.SourceFile}, Trang {result.Metadata.Page}]");
@@ -362,12 +412,11 @@ namespace CapstoneProject.Server.Services
                     });
                 }
 
-                _logger.LogInformation("RAG context built with {Count} sources", sources.Count);
                 return (contextBuilder.ToString(), sources);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting RAG context, falling back to static knowledge");
+                _logger.LogError(ex, "Basic search also failed, falling back to static knowledge");
                 return (_knowledgeService.GetKnowledge(), sources);
             }
         }
@@ -377,8 +426,8 @@ namespace CapstoneProject.Server.Services
             // Fetch conversation history (last 5 messages)
             var conversationHistory = await GetConversationHistoryAsync(sessionId, 5);
             var url = "https://openrouter.ai/api/v1/chat/completions";
-            var apiKey = "..";
-            var model = "arcee-ai/trinity-large-preview:free";
+            var apiKey = "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";
+            var model = _configuration["OpenRouter:Model"] ?? "arcee-ai/trinity-large-preview:free";
 
             if (string.IsNullOrEmpty(apiKey))
             {
@@ -412,6 +461,8 @@ Mục tiêu của bạn là cung cấp thông tin chính xác và hữu ích cho
 
 # KNOWLEDGE
 {ragContext}";
+
+            Console.WriteLine(prompt);
 
             var requestBody = new
             {

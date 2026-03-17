@@ -33,7 +33,44 @@ namespace CapstoneProject.Server.Models.LangChain
         public string UploadedAt { get; set; } = string.Empty;
 
         public int? AcademicYear { get; set; }
-        
+
         public bool? IsActive { get; set; }
+
+        public double? RelevanceScore { get; set; }
+
+        public string? Category { get; set; }
+
+        public string? Type { get; set; }
+    }
+
+    // Advanced Search Response
+    public class AdvancedSearchResponse
+    {
+        public List<SearchResult> Results { get; set; } = new();
+        public QueryInfo? QueryInfo { get; set; }
+    }
+
+    public class QueryInfo
+    {
+        public string Original { get; set; } = string.Empty;
+        public string Normalized { get; set; } = string.Empty;
+        public List<string> Intents { get; set; } = new();
+        public List<string> Keywords { get; set; } = new();
+        public List<string> ExpandedQueries { get; set; } = new();
+    }
+
+    // Chat Context Response
+    public class ChatContextResponse
+    {
+        public string Context { get; set; } = string.Empty;
+        public List<ContextSource> Sources { get; set; } = new();
+        public QueryInfo? QueryInfo { get; set; }
+    }
+
+    public class ContextSource
+    {
+        public string File { get; set; } = string.Empty;
+        public int Page { get; set; }
+        public double Score { get; set; }
     }
 }
