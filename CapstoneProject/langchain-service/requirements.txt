@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+python-multipart
+langchain
+langchain-community
+langchain-ollama
+langchain-text-splitters
+langchain-postgres
+pdfplumber
+chromadb
+python-dotenv
+psycopg2-binary
+sqlalchemy

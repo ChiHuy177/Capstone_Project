@@ -13,6 +13,7 @@ import { Spin } from "antd";
 import LoginForm from "@pages/Auth/LoginPage";
 import ConfigurePage from "@pages/Admin/ConfigurePage";
 import DashboardPage from "@pages/Admin/DashboardPage";
+import PdfUploadPage from "@pages/Admin/PdfUploadPage";
 import DashboardLayout from "@layout/Layout";
 
 
@@ -31,6 +32,7 @@ const RoutesApp: React.FC = () => (
         <Route element={<DashboardLayout />}>
           <Route index element={<DashboardPage />} />
           <Route path="configure" element={<ConfigurePage />} />
+          <Route path="pdf-upload" element={<PdfUploadPage />} />
         </Route>
         {/* 404 cho người đã đăng nhập */}
         <Route path="*" element={<NotFoundPage />} />

@@ -51,19 +51,39 @@ namespace CapstoneProject.Server
                     .AsMatchingInterface()
                     .WithScopedLifetime()
 
-                .AddClasses(classes => classes.Where(type => type.Name.EndsWith("Service")))
+                // Exclude services that are registered manually with specific configurations
+                .AddClasses(classes => classes.Where(type =>
+                    type.Name.EndsWith("Service") &&
+                    type.Name != "LangChainService" &&
+                    type.Name != "KnowledgeService" &&
+                    type.Name != "HourlyCountsService"))
                     .AsMatchingInterface()
                     .WithScopedLifetime()
             );
 
             builder.Services.AddScoped<IHourlyCountService, HourlyCountsService>();
 
+            builder.Services.AddHttpClient<ILangChainService, LangChainService>(client =>
+            {
+                var langChainUrl = builder.Configuration["LangChain:ServiceUrl"] ?? "http://localhost:8000";
+                client.BaseAddress = new Uri(langChainUrl);
+                client.Timeout = TimeSpan.FromMinutes(5);
+            });
+
             // Add CORS for SignalR
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
                 {
-                    policy.WithOrigins("https://localhost:54410", "http://localhost:54410", "http://localhost:3000")
+                    policy.WithOrigins(
+                            "https://localhost:54410",
+                            "http://localhost:54410",
+                            "http://localhost:3000",
+                            "http://localhost:5026",
+                            "https://localhost:5026",
+                            "http://localhost:5173",  // Vite default port
+                            "https://localhost:5173"
+                          )
                           .AllowAnyMethod()
                           .AllowAnyHeader()
                           .AllowCredentials();
@@ -89,26 +109,28 @@ namespace CapstoneProject.Server
             }).AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
-            builder.Services.AddAuthentication(opt =>
+            var authBuilder = builder.Services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddCookie().AddGoogle(options =>
+            }).AddCookie();
+
+            // Only add Google authentication if configured
+            var googleClientId = builder.Configuration["Authentication:Google:ClientId"];
+            var googleClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+
+            if (!string.IsNullOrEmpty(googleClientId) && !string.IsNullOrEmpty(googleClientSecret))
             {
-                var clientId = builder.Configuration["Authentication:Google:ClientId"];
-                var clientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-
-                if (clientId == null || clientSecret == null)
+                authBuilder.AddGoogle(options =>
                 {
-                    throw new ArgumentException("Google authentication is not configured properly.");
-                }
+                    options.ClientId = googleClientId;
+                    options.ClientSecret = googleClientSecret;
+                    options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                });
+            }
 
-                options.ClientId = clientId;
-                options.ClientSecret = clientSecret;
-                options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-
-            }).AddJwtBearer(options =>
+            authBuilder.AddJwtBearer(options =>
             {
                 var jwtOptions = builder.Configuration.GetSection(JwtOptions.JwtOptionsKey)
                 .Get<JwtOptions>() ?? throw new ArgumentException(nameof(JwtOptions));
@@ -128,7 +150,21 @@ namespace CapstoneProject.Server
                 {
                     OnMessageReceived = context =>
                     {
-                        context.Token = context.Request.Cookies["ACCESS_TOKEN"];
+                        // Lấy token từ cookie
+                        var token = context.Request.Cookies["ACCESS_TOKEN"];
+
+                        // Nếu là SignalR request, lấy token từ query string
+                        var path = context.HttpContext.Request.Path;
+                        if (path.StartsWithSegments("/chatHub"))
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+                            if (!string.IsNullOrEmpty(accessToken))
+                            {
+                                token = accessToken;
+                            }
+                        }
+
+                        context.Token = token;
                         return Task.CompletedTask;
                     }
                 };

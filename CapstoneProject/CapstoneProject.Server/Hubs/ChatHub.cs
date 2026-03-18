@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
 using CapstoneProject.Server.Models;
+using CapstoneProject.Server.Models.Chat;
 using CapstoneProject.Server.Services;
 
 namespace CapstoneProject.Server.Hubs
@@ -8,9 +9,6 @@ namespace CapstoneProject.Server.Hubs
     {
         private readonly IChatService _chatService;
         private static readonly Dictionary<string, string> _userSessions = new();
-        const string apiKey = "";
-        const string url = "";
-        const string model = "deepseek/deepseek-r1-0528-qwen3-8b:free";
 
         public ChatHub(IChatService chatService)
         {
@@ -29,33 +27,16 @@ namespace CapstoneProject.Server.Hubs
 
             string sessionId = _userSessions[user];
 
-            // Lưu tin nhắn user vào database
-            var userMessage = new ChatMessage
+            var request = new SendMessageRequest
             {
-                UserId = user,
                 Message = message,
-                IsUserMessage = true,
-                Timestamp = DateTime.UtcNow,
+                UserId = user,
                 SessionId = sessionId
             };
 
-            await _chatService.SaveMessageAsync(userMessage);
+            var response = await _chatService.SendMessageWithRAGAsync(request);
 
-            var aiResponse = await _chatService.GetAIResponseAsync(message, apiKey, model);
-
-            // Lưu response của ChatGPT vào database
-            var botMessage = new ChatMessage
-            {
-                UserId = "ChatGPT",
-                Message = aiResponse,
-                IsUserMessage = false,
-                Timestamp = DateTime.UtcNow,
-                SessionId = sessionId
-            };
-
-            await _chatService.SaveMessageAsync(botMessage);
-
-            await Clients.Caller.SendAsync("ReceiveMessage", "ChatGPT", aiResponse);
+            await Clients.Caller.SendAsync("ReceiveMessage", "ChatGPT", response.Message);
         }
 
         public async Task JoinChat(string user)

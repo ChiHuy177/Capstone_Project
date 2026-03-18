@@ -73,8 +73,14 @@ export default defineConfig({
                 target,
                 secure: false,
             },
+            // Proxy cho SignalR hub
+            '/chatHub': {
+                target: 'https://localhost:5026',
+                secure: false,  // Chấp nhận self-signed certificate
+                ws: true,       // Cho phép WebSocket proxy
+                changeOrigin: true,
+            },
         },
-        https: false,
         port: 54410,
         
         // https: {
