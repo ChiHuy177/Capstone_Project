@@ -1,0 +1,41 @@
+{
+  "description": "Sample test data cho ROUGE evaluation",
+  "usage": "Sử dụng với endpoint POST /evaluation/rouge/batch",
+  "pairs": [
+    {
+      "question": "Học phí ngành Công nghệ thông tin là bao nhiêu?",
+      "generated_answer": "Học phí ngành Công nghệ thông tin là 20 triệu đồng mỗi năm học",
+      "reference_answer": "Học phí ngành CNTT là 20.000.000 VNĐ/năm học"
+    },
+    {
+      "question": "Điểm chuẩn ngành Kinh tế năm 2026 là bao nhiêu?",
+      "generated_answer": "Điểm chuẩn ngành Kinh tế năm 2026 là 25 điểm",
+      "reference_answer": "Ngành Kinh tế có điểm chuẩn 25.0 điểm trong năm 2026"
+    },
+    {
+      "question": "Thời gian đào tạo ngành Y khoa?",
+      "generated_answer": "Ngành Y khoa có thời gian đào tạo 6 năm",
+      "reference_answer": "Chương trình đào tạo bác sĩ Y khoa kéo dài 6 năm"
+    },
+    {
+      "question": "Hồ sơ xét tuyển gồm những gì?",
+      "generated_answer": "Hồ sơ xét tuyển bao gồm: đơn đăng ký, bản sao học bạ THPT, giấy chứng nhận tốt nghiệp, CMND/CCCD, ảnh 3x4",
+      "reference_answer": "Hồ sơ cần có: Đơn xét tuyển, học bạ THPT (bản sao), bằng tốt nghiệp hoặc giấy chứng nhận tốt nghiệp tạm thời, CMND hoặc CCCD, 2 ảnh 3x4"
+    },
+    {
+      "question": "Trường có bao nhiêu cơ sở đào tạo?",
+      "generated_answer": "Trường có 3 cơ sở đào tạo tại TP.HCM, Hà Nội và Đà Nẵng",
+      "reference_answer": "Trường có 3 campus: TP. Hồ Chí Minh, Hà Nội, Đà Nẵng"
+    }
+  ],
+  "rag_test_cases": [
+    {
+      "question": "Học phí ngành CNTT là bao nhiêu?",
+      "expected_answer": "Học phí ngành CNTT là 20 triệu đồng/năm"
+    },
+    {
+      "question": "Điều kiện xét tuyển đại học?",
+      "expected_answer": "Thí sinh cần tốt nghiệp THPT và đạt điểm chuẩn theo ngành"
+    }
+  ]
+}

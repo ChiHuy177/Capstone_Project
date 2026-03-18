@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.routers import pdf_router
+from app.routers import pdf_router, evaluation_router
 
 # Tạo FastAPI app
 app = FastAPI(title="LangChain PDF Service")
@@ -17,6 +17,7 @@ app.add_middleware(
 
 # Thêm routers
 app.include_router(pdf_router.router)
+app.include_router(evaluation_router.router)
 
 @app.get("/")
 def read_root():
