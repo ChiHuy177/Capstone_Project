@@ -11,6 +11,16 @@ from app.utils.semantic_splitter import SemanticTextSplitter, QAOptimizedSplitte
 from app.utils.database import Document, SessionLocal
 import uuid
 from datetime import datetime
+import re
+import logging
+
+# Thêm alias (tên phụ) cho Document của Langchain để không đụng hàng với DB Document
+from langchain_core.documents import Document as LangchainDocument 
+
+# Khởi tạo logger nếu file bạn chưa có
+logger = logging.getLogger(__name__)
+
+# ... (Giữ nguyên các import khác của bạn như file Database Document, v.v.)
 
 
 class PdfServiceV2:
@@ -43,7 +53,7 @@ class PdfServiceV2:
             embeddings=self.embeddings,
             collection_name=settings.COLLECTION_NAME,
             connection=settings.DATABASE_URL,
-            use_jsonb=True,
+            use_jsonb=True, 
         )
         print("PostgreSQL vector store sẵn sàng!")
 
@@ -91,7 +101,7 @@ class PdfServiceV2:
                 content = await file.read()
                 f.write(content)
 
-            # Extract PDF với semantic awareness
+            # 1. Extract PDF
             print(f"Đang extract PDF: {file.filename}")
             if use_qa_mode:
                 pages = extract_pdf_for_qa(temp_file_path)
@@ -105,28 +115,68 @@ class PdfServiceV2:
             db_document.total_pages = total_pages
             db.commit()
 
-            # Split thành chunks với semantic splitter
-            print("Đang chia thành semantic chunks...")
+           # --- BẮT ĐẦU: PRE-SPLITTING (CHIA KHỐI THEO CHỦ ĐỀ CÓ SẴN MARKER) ---
+            print("Đang tiến hành phân loại chủ đề dựa trên Hard Markers...")
+            
+            # Gộp toàn bộ text từ các trang lại
+            # Lưu ý: Dùng " " (khoảng trắng) để join nếu PDF của bạn bị dính chữ, tránh nối 2 từ liền nhau
+            full_text = " ".join([page.page_content for page in pages])
+
+            # 1. Tách text ngay TRƯỚC mỗi cụm (((MỤC LỤC CHI TIẾT: ...)))
+            # Dùng regex lookahead (?=\(\(\() để cắt mà không làm mất marker
+            raw_sections = re.split(r'(?=\(\(\(MỤC LỤC CHI TIẾT:[^)]+\)\)\))', full_text, flags=re.IGNORECASE)
+            
+            topic_documents = []
+            current_topic = "THÔNG TIN CHUNG VỀ EIU" # Chủ đề mặc định đề phòng đoạn đầu không có marker
+            
+            for section_text in raw_sections:
+                section_text = section_text.strip()
+                if not section_text:
+                    continue
+
+                # 2. Trích xuất chính xác tên chủ đề nằm giữa (((MỤC LỤC CHI TIẾT: và )))
+                topic_match = re.search(r'\(\(\(MỤC LỤC CHI TIẾT:\s*([^)]+)\)\)\)', section_text, re.IGNORECASE)
+                
+                if topic_match:
+                    # Lấy tên chủ đề (ví dụ: "NGÀNH KINH TẾ")
+                    current_topic = topic_match.group(1).strip().upper()
+                    
+                    # 3. Làm sạch text: Xóa bỏ cái marker (((...))) thô kệch đi để LLM đọc không bị rối
+                    section_text = re.sub(r'\(\(\(MỤC LỤC CHI TIẾT:[^)]+\)\)\)\s*', '', section_text, flags=re.IGNORECASE)
+
+                # 4. Gắn lại tiền tố [THÔNG TIN: ...] gọn gàng, chuẩn form cho Chunk
+                context_prefix = f"[THÔNG TIN: {current_topic}]"
+                clean_section_text = f"{context_prefix}\n{section_text.strip()}"
+
+                # 5. Tạo Document mới cho khối chủ đề này
+                doc = LangchainDocument(
+                    page_content=clean_section_text,
+                    metadata={"semantic_context": current_topic}
+                )
+                topic_documents.append(doc)
+            # --- KẾT THÚC: PRE-SPLITTING ---
+
+            # --- 2. TIẾN HÀNH CHIA CHUNK TRÊN CÁC KHỐI ĐÃ LÀM SẠCH ---
+            print("Đang chia thành semantic chunks từ các khối chủ đề...")
             if use_qa_mode:
-                chunks = self.qa_splitter.split_documents(pages)
+                chunks = self.qa_splitter.split_documents(topic_documents)
             else:
-                chunks = self.text_splitter.split_documents(pages)
-            print(f"Đã tạo {len(chunks)} chunks")
+                chunks = self.text_splitter.split_documents(topic_documents)
+            
+            print(f"Đã tạo {len(chunks)} chunks an toàn không bị giao thoa!")
 
             # Log sample chunks để debug
-            print("\n=== Sample Chunks ===")
+            print("\n=== Sample Chunks Sau Khi Pre-splitting ===")
             for i, chunk in enumerate(chunks[:3]):
                 print(f"\n--- Chunk {i + 1} ---")
-                print(f"Type: {chunk.metadata.get('type', 'text')}")
-                print(f"Category: {chunk.metadata.get('category', 'N/A')}")
+                print(f"Semantic Context: {chunk.metadata.get('semantic_context')}")
                 print(f"Content preview: {chunk.page_content[:200]}...")
-                print(f"Metadata: {chunk.metadata}")
 
-            # Thêm metadata vào chunks
+            # 3. Thêm metadata hệ thống vào chunks
             for i, chunk in enumerate(chunks):
                 chunk.metadata.update({
                     "document_id": str(document_id),
-                    "chunk_index": chunk.metadata.get("chunk_index", i),
+                    "chunk_index": i,
                     "source_file": file.filename,
                     "uploaded_at": datetime.utcnow().isoformat(),
                     "academic_year": year,
@@ -160,24 +210,32 @@ class PdfServiceV2:
             db_document.error_message = str(e)
             db.commit()
 
+            logger.exception("Error processing PDF %s (year=%s, qa_mode=%s)", file.filename, year, use_qa_mode)
             if os.path.exists(temp_file_path):
                 os.remove(temp_file_path)
             raise e
         finally:
             db.close()
 
-    def search_documents(self, query: str, top_k: int = 5, year: int = None) -> dict:
+    def search_documents(self, query: str, top_k: int = 5, year: int = None, target_topic: str = None) -> dict:
         """
-        Tìm kiếm documents với better ranking
+        Tìm kiếm documents với better ranking và Context-Aware
         """
-        # Build filter
+        print(f"🔍 Đang tìm kiếm cho query: '{query}'")
+        
+        # 1. Build filter cơ bản
         filter_dict = {}
         if year is not None:
             filter_dict["academic_year"] = year
         else:
             filter_dict["is_active"] = True
 
-        # Search
+        # 2. Lọc cứng theo chủ đề (Hard-filter)
+        if target_topic:
+            filter_dict["semantic_context"] = target_topic
+            print(f"🎯 Đã kích hoạt filter chủ đề: {target_topic}")
+
+        # 3. Thực hiện Search
         if filter_dict:
             results = self.vectorstore.similarity_search_with_score(
                 query,
@@ -190,18 +248,42 @@ class PdfServiceV2:
                 k=top_k
             )
 
-        # Format results với additional info
+        # 4. Format kết quả và tối ưu hóa cho LLM đọc
         formatted_results = []
         for doc, score in results:
+            # Convert khoảng cách (distance) sang độ tương đồng (similarity)
+            relevance_score = round(1 - float(score), 4) 
+            
+            # Lấy ngữ cảnh ra từ metadata
+            context = doc.metadata.get("semantic_context", "THÔNG TIN CHUNG")
+            
+            # Làm sạch nội dung: Đảm bảo không bị lặp chữ [THÔNG TIN: ...]
+            clean_content = doc.page_content
+            prefix = f"[THÔNG TIN: {context}]"
+            
+            if clean_content.startswith(prefix):
+                # Cách cắt chuỗi an toàn tuyệt đối, không sợ lỗi do ký tự xuống dòng ẩn
+                clean_content = clean_content[len(prefix):].strip()
+                
+            # Đóng gói lại nội dung theo format chuẩn hóa để LLM dễ hiểu nhất
+            final_content = f"--- BẮT ĐẦU PHẦN THÔNG TIN TỪ CHỦ ĐỀ: {context} ---\n{clean_content}\n--- KẾT THÚC PHẦN THÔNG TIN ---"
+
             formatted_results.append({
-                "content": doc.page_content,
+                "content": final_content,
                 "metadata": {
-                    **doc.metadata,
-                    "relevance_score": round(1 - score, 4)  # Convert distance to similarity
+                    "document_id": doc.metadata.get("document_id"),
+                    "source_file": doc.metadata.get("source_file"),
+                    "semantic_context": context,
+                    "relevance_score": relevance_score
                 },
                 "score": float(score)
             })
 
+        # 5. Nhóm các kết quả theo ngữ cảnh (Context Grouping)
+        # Sắp xếp ưu tiên: Tên chủ đề (A-Z) -> Độ tương đồng (Cao xuống thấp)
+        formatted_results.sort(key=lambda x: (x["metadata"]["semantic_context"], -x["metadata"]["relevance_score"]))
+
+        print(f"✅ Tìm thấy {len(formatted_results)} chunks phù hợp.")
         return {"results": formatted_results}
 
 

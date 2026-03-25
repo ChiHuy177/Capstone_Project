@@ -426,7 +426,7 @@ namespace CapstoneProject.Server.Services
             // Fetch conversation history (last 5 messages)
             var conversationHistory = await GetConversationHistoryAsync(sessionId, 5);
             var url = "https://openrouter.ai/api/v1/chat/completions";
-            var apiKey = "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";
+            var apiKey = "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";
             var model = _configuration["OpenRouter:Model"] ?? "arcee-ai/trinity-large-preview:free";
 
             if (string.IsNullOrEmpty(apiKey))

@@ -1,6 +1,9 @@
 from fastapi import APIRouter, File, UploadFile, HTTPException, Query
+import logging
 from app.models.schemas import ProcessPdfResponse, SearchResponse
 from app.services.pdf_service import pdf_service
+
+logger = logging.getLogger(__name__)
 
 # Import v2 service (semantic chunking)
 try:
@@ -8,7 +11,7 @@ try:
     V2_AVAILABLE = True
 except ImportError:
     V2_AVAILABLE = False
-    print("Warning: pdf_service_v2 not available, using v1")
+    logger.warning("pdf_service_v2 not available, using v1")
 
 # Import advanced search service
 try:
@@ -43,6 +46,7 @@ async def process_pdf(
             result = await pdf_service.process_pdf(file, year=year)
         return result
     except Exception as e:
+        logger.exception("Error in /api/pdf/process (year=%s, use_semantic=%s) for file=%s", year, use_semantic, getattr(file, 'filename', '<no-file>'))
         raise HTTPException(status_code=500, detail=str(e))
 
 

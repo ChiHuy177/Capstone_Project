@@ -124,12 +124,15 @@ class PdfService:
             db_document.error_message = str(e)
             db.commit()
             
-            if os.path.exists(temp_file_path):
-                os.remove(temp_file_path)
-            raise e
-        finally:
-            db.close()
-    
+            # Add debugging logs
+            try:
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.exception("Error processing PDF %s (year=%s)", file.filename, year)
+            except Exception:
+                # tránh lỗi logging thêm
+                pass
+
     def search_documents(self, query: str, top_k: int = 5, year: int = None) -> dict:
         """
         Tìm kiếm documents với Hybrid Search (Semantic + Keyword)
