@@ -53,4 +53,10 @@ Thumbs.db
 .idea/
 *.iml
 
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+
 .claude

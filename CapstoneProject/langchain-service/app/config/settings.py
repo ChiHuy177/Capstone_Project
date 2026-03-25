@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # PostgreSQL connection
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:admin123@localhost:5432/rag_db")
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:123456@localhost:5432/rag_db")
 
 # Vector store settings
 VECTOR_STORE_PATH = os.getenv("VECTOR_STORE_PATH", "./chroma_db")
@@ -12,7 +12,7 @@ COLLECTION_NAME = os.getenv("COLLECTION_NAME", "pdf_documents")
 
 # Ollama settings
 # Options: "nomic-embed-text", "mxbai-embed-large", "snowflake-arctic-embed"
-OLLAMA_MODEL = "mxbai-embed-large"
+OLLAMA_MODEL = "bge-m3"
 
 # Chunking settings (Legacy v1)
 CHUNK_SIZE = 1000

@@ -11,3 +11,8 @@ chromadb
 python-dotenv
 psycopg2-binary
 sqlalchemy
+
+# Evaluation (ROUGE / BLEU)
+rouge-score
+nltk
+requests
