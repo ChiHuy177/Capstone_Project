@@ -6,6 +6,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 
 const RegisterForm = React.lazy(() => import("@pages/Auth/RegisterPage"));
 const NotFoundPage = React.lazy(() => import("@pages/NotFound/NotFoundPage"));
+const LandingPage = React.lazy(() => import("@pages/Public/LandingPage"));
 
 import PublicOnlyRoute from "./PublicOnlyRoute";
 import ProtectedRoute from "./ProtectedRoute";
@@ -21,6 +22,9 @@ import DashboardLayout from "@layout/Layout";
 const RoutesApp: React.FC = () => (
   <Suspense fallback={<Spin indicator={<LoadingOutlined spin />}/>}>
     <Routes>
+      {/* Landing page - public */}
+      <Route path="/landing" element={<LandingPage />} />
+
       {/* chưa đăng nhập */}
       <Route element={<PublicOnlyRoute />}>
         <Route path="/login" element={<LoginForm />} />
@@ -38,8 +42,8 @@ const RoutesApp: React.FC = () => (
         <Route path="*" element={<NotFoundPage />} />
       </Route>
 
-      {/* Bất kỳ route lạ khi chưa đăng nhập -> đẩy về /login */}
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      {/* Bất kỳ route lạ khi chưa đăng nhập -> đẩy về /landing */}
+      <Route path="*" element={<Navigate to="/landing" replace />} />
     </Routes>
   </Suspense>
 );
